@@ -9,17 +9,28 @@
 # ==========
 #
 # There is a slight problem with enharmonic equivalents of accidental keys, which could be rendered
-#   ambiguously.  As such, whenever rendering, :flat or :sharp must be passed in order to specify
-#   which way to "color" the output.  Choices can make a large difference depending on the 
+#   ambiguously.  As such, whenever rendering, `:flat` or `:sharp` must be passed in order to
+#   specify which way to "color" the output.  Choices can make a large difference depending on the 
 #   context/instrument.  In general, String instruments should be Sharp, and Keyboard instruments
 #   should be Flat, but there are subtleties involved.
-# There will eventually be a way to render with a "context" that selects default colors for every
-#   key.
+# A default "color scheme" is provided, along with two other nice settings.  This, combined with
+#   the `:flats` and `:sharps` color schemes (all flat and all sharp, respectively), should be able
+#   to cover all possible scenarios for now, with a little hacking.  However, a way to implement 
+#   custom color schemes should be implemented.
 #
 class SongKey
   
-  @@flat_keys  = %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern }
-  @@sharp_keys = %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern }
+  @@flat_keys   = %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern }
+  @@sharp_keys  = %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern }
+  @@color_key   = %w[ natural flat sharp ].map { |c|.intern }
+  
+  @@color_key_schemes = { :keyboard => [0,1,0,0,1,0,1,0,0,2,0,1],
+                          :string   => [0,2,0,0,2,0,2,0,0,2,0,2],
+                          :default  => [0,1,0,0,2,0,1,0,0,2,0,1],
+                          :flats    => [0,1,0,0,1,0,1,0,0,1,0,1], 
+                          :sharps   => [0,2,0,0,2,0,2,0,0,2,0,2] }
+  
+  COLOR_SCHEMES = Hash.new { |h,s| h[s] = @@color_key_schemes[s].map { |c| @@color_key[c] } }
   
   KEYS = FLAT_KEYS | SHARP_KEYS
   
