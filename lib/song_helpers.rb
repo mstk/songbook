@@ -1,5 +1,3 @@
-class SongKey
-end
-
-class Key
+class Chord
+  
 end
