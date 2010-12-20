@@ -55,6 +55,16 @@ class ChordProgression
   property :progression,  Yaml, :required => true
   # property :resolution,   Integer, :default => 1
   
-  has n, :sections, :through => Resource
+  validates_uniqueness_of :progression
   
+  has n, :sections, :through => Resource
+end
+
+class ColorScheme
+  include DataMapper::Resource
+  
+  property :name,   String, :required => true
+  property :scheme, Yaml,   :required => true
+  
+  validates_uniqueness_of :name
 end
