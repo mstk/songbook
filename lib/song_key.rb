@@ -9,33 +9,27 @@
 # ==========
 #
 # There is a slight problem with enharmonic equivalents of accidental keys, which could be rendered
-#   ambiguously.  As such, whenever rendering, `:flat` or `:sharp` must be passed in order to
-#   specify which way to "color" the output.  Choices can make a large difference depending on the 
-#   context/instrument.  In general, String instruments should be Sharp, and Keyboard instruments
-#   should be Flat, but there are subtleties involved.
-# A default "color scheme" is provided, along with two other nice settings.  This, combined with
-#   the `:flats` and `:sharps` color schemes (all flat and all sharp, respectively), should be able
-#   to cover all possible scenarios for now, with a little hacking.  However, a way to implement 
-#   custom color schemes should be implemented.
+#   ambiguously.  As such, whenever rendering, a "color scheme" must be passed.  This is basically
+#   a default to assign to each key, based on the context corresponding to the color scheme.  If
+#   one wanted to "brute force" to a default color scheme, `:flats` and `:sharps` are available.
+#   The included color schemes are:
+# 
+# - `:default`, for ensemble settings and "general" settings.
+# - `:keyboard`, for keyboard instruments.  Mostly flat, except for F#.
+# - `:string`, for stringed and guitar instruments.  All sharp.
+# - `:flats`.  Self-explanatory -- always flat.
+# - `:sharps`.  Self-explanatory -- always sharp.
 #
+# The ability to create custom color schemes is in development.
 class SongKey
   
-  @@flat_keys   = %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern }
-  @@sharp_keys  = %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern }
-  @@color_key   = %w[ natural flat sharp ].map { |c|.intern }
+  FLAT_KEYS   = %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern }.freeze
+  SHARP_KEYS  = %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern }.freeze
   
-  @@color_key_schemes = { :keyboard => [0,1,0,0,1,0,1,0,0,2,0,1],
-                          :string   => [0,2,0,0,2,0,2,0,0,2,0,2],
-                          :default  => [0,1,0,0,2,0,1,0,0,2,0,1],
-                          :flats    => [0,1,0,0,1,0,1,0,0,1,0,1], 
-                          :sharps   => [0,2,0,0,2,0,2,0,0,2,0,2] }
-  
-  COLOR_SCHEMES = Hash.new { |h,s| h[s] = @@color_key_schemes[s].map { |c| @@color_key[c] } }
-  
-  KEYS = FLAT_KEYS | SHARP_KEYS
+  KEYS = (FLAT_KEYS | SHARP_KEYS).freeze
   
   @@KEY_INDEX = Hash.new do |h,k|
-    [@@flat_keys, @@sharp_keys].each do |key_set|
+    [FLAT_KEYS, SHARP_KEYS].each do |key_set|
       if key_set.include?(k)
         h[k] = SongKey.first_or_create(:key_id => key_set.index(k))
       end
@@ -43,13 +37,34 @@ class SongKey
     h[k] = nil
   end
   
+  @@color_key   = %w[ natural flat sharp ].map { |c|.intern }
+  
+  @@initial_color_scheme_keys = { :keyboard => [0,1,0,0,1,0,1,0,0,2,0,1],
+                                  :string   => [0,2,0,0,2,0,2,0,0,2,0,2],
+                                  :default  => [0,1,0,0,2,0,1,0,0,2,0,1],
+                                  :flats    => [0,1,0,0,1,0,1,0,0,1,0,1], 
+                                  :sharps   => [0,2,0,0,2,0,2,0,0,2,0,2] }
+  
+  @@initial_color_schemes = Hash.new { |h,s| h[s] = @@color_key_schemes[s].map { |c| @@color_key[c] } }
+  
+  @@custom_color_schemes = Hash.new
+  
   # Retrieve the SongKey for a given key_symbol.
   #
   # @param [Symbol] key_symbol A key symbol from SongKey::KEYS.
   # @return [SongKey] SongKey corresponding to that key symbol.
-  #
+  # 
   def SongKey.KEY(key_symbol)
     @@KEY_INDEX[key_symbol]
+  end
+  
+  # Looks up the color scheme array for a given symbol.
+  #
+  # @param [Symbol] scheme_symbol Symbol representing the color scheme.
+  # @return [Array<Symbol>] Color scheme, or an array of color symbols for each key.
+  # 
+  def SongKey.color_scheme(scheme_symbol)
+    @@custom_color_schemes[scheme_symbol] || @@initial_color_schemes[scheme_symbol]
   end
   
 end
