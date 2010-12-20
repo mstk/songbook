@@ -1,0 +1,21 @@
+%h2= @song.title
+
+#song_info
+
+  .artist= @song.artist
+  .song_key
+    Key of
+    %span= @song.song_key
+
+  .time_signature
+    Time Signature
+    %span= @song.time_signature
+  
+
+#song_chords
+  - @song.sections.each do |section|
+    .song_section
+      %span.section_type= section.type
+      - section.chord_progressions.each do |progression|
+        .chord_progression
+          = YAML.load(progression.progression) * ", "

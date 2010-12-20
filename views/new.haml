@@ -1,0 +1,17 @@
+%h2 Submit Song
+
+%form{:action => '/new_song', :method => 'POST'}
+  %p Song Title
+  %input{:type => 'text', :name => 'title'}/
+  %br/
+  
+  %p Chord Progression
+  %input{:type => 'text', :name => 'chord_progression'}/
+  %br/
+  
+  %p Tags
+  %input{:type => 'text', :name => 'tags'}/
+  %br/
+  
+  %input{:type => 'submit', :value => 'Save'}/
+  
