@@ -23,9 +23,11 @@ configure do
   
   require 'models'
   
-  DataMapper.finalize
-  
   $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/lib")
   Dir.glob("#{File.dirname(__FILE__)}/lib/*.rb") { |lib| require File.basename(lib, '.*') }
+  
+  DataMapper.finalize
+  
+  require "#{File.dirname(__FILE__)}/db/seed.rb"
   
 end
