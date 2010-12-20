@@ -1,1 +1,2 @@
 - migrate seed.rb to external YAML file
+- allow non-harmonic chords (Hey Jude Bridge)
