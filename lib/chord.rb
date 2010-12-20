@@ -18,6 +18,8 @@ class Chord
     new(c)
   end
   
+  @@mode_render = { :major => "", :minor => "m" }
+  
   # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be
   # done by @@CHORD_INDEX hash lambda, to maintain singleton pattern.
   #
@@ -34,12 +36,12 @@ class Chord
   # 
   # @param [SongKey] SongKey of the key to render the chord into.
   # @param [ColorScheme] ColorScheme to follow.  See ColorScheme for more info.  Optional -- 
-  #   defaults to a default color scheme.
+  #   defaults to the default color scheme.
   # @return [Symbol] An absolute_chord symbol corresponding to the chord rendered to the given 
   #   SongKey and given ColorScheme.
   # 
-  def render(key,color_scheme = ColorScheme.get('default'))
-    # oh my
+  def render_step(key,color_scheme = ColorScheme.get('default'))
+    "#{key.get_step(@step,color_scheme)}#{@@mode_render[@mode]}".intern
   end
   
   # Retrieve the Chord instance for a given chord_symbol.

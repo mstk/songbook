@@ -26,4 +26,17 @@
 #
 class ColorScheme
   
+  @@natural_key_colors = [:sharp,nil,:sharp,:flat,nil,:sharp,nil,:flat,nil,:sharp]
+  
+  validates_with_block :scheme do
+    @scheme.all? { |c| c.nil? or c == :sharp or c == :flat }
+  end
+  
+  # yeah
+  #
+  #
+  def full_scheme
+    (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] }
+  end
+  
 end

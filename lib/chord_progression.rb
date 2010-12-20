@@ -13,7 +13,7 @@ class ChordProgression
   # 
   # @param [SongKey] SongKey of the key to render the chord progression into.
   # @param [ColorScheme] ColorScheme to follow.  See ColorScheme for more info.  Optional -- 
-  #   defaults to a default color scheme.
+  #   defaults to the default color scheme.
   # @return [Array<Symbol>] Array of absolute_chord symbols corresponding to the stored progression
   #   rendered to the given SongKey and given ColorScheme.
   # 
