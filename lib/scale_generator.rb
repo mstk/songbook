@@ -1,4 +1,7 @@
-# SO UGLY
+# Module providing a generator to generate a scale based on a given key and color/accidental 
+# pattern. Implementation is based on music theory.
+#
+# Main relevant method is ScaleGenerator::generate_scale(song_key,color)
 #
 module ScaleGenerator
   
@@ -30,16 +33,25 @@ module ScaleGenerator
   
   NATURALS.freeze
   
+  # Generates the scale for a given key and given color.
+  # 
+  # @param [SongKey] song_key A SongKey instance to render the scale into.
+  # @param [Symbol] color `:sharp` or `:flat` -- the accidental mode/color to render the scale into.
+  # @return [Array<Symbol>] An array with the symbol of the absolute note value for each step.
+  #
   def generate_scale(song_key, color = :flat)
+    # initialize array of accidentals
     scale_accidentals = Array.new(7) { 0 }
     
+    # get the id of the "natural" of the key, clean of accidentals.
     root_natural = song_key.symbol(ColorScheme.get_all(color)).to_s[0].intern
     natural_id = NATURALS.index(root_natural)
     
-    # fill the scale accidentals
+    # populate the array of accidentals
     number_of_accidentals = CIRCLE_OF_FIFTHS[color].index(song_key.key_id)
     number_of_accidentals.times { |n| scale_accidentals[ACCIDENTALS[color][n]] += COLOR_VALUE[color] }
     
+    # make sure there aren't too many accidentals
     raise "Something is wrong with this scale." if scale_accidentals.any? { |n| n.abs > 3 }
     
     # map scale accidentals to actual scale, by steps

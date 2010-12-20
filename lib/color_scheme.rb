@@ -26,25 +26,20 @@
 #
 class ColorScheme
   
+  # The default key colors for the "natural", white notes.  Can be overriden on a scheme-by-scheme
+  # basis, but definitely not recommended.
   @@natural_key_colors = [:sharp,nil,:sharp,:flat,nil,:sharp,nil,:flat,nil,:sharp]
   
   validates_with_block :scheme do
     @scheme.all? { |c| c.nil? or c == :sharp or c == :flat }
   end
   
-  # yeah
+  # Gets the color scheme that is "all" of a certain color.
+  # 
+  # @param [Symbol] `:sharp` or `:flat` -- color wanted.
+  # @return [ColorScheme] The ColorScheme "sharps" or "flats", depending on what is requested.
   #
-  #
-  def full_scheme
-    @full_scheme (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] } unless @full_scheme
-    @full_scheme
-  end
-  
-  def color_for(key_id)
-    full_scheme[key_id]
-  end
-  
-  def self.get_all(color)
+  def self.get_scheme_all(color)
     if color == :flat
       return ColorScheme.get('flats')
     elsif color == :sharp
@@ -52,6 +47,25 @@ class ColorScheme
     else
       raise ArgumentError
     end
+  end
+  
+  # Gives the full color scheme for this scheme, naturals and accidentals included.
+  # 
+  # @return [Array<Symbol>] Array containing the symbol of colors in the scheme, `:sharp` or 
+  #   `:flat`.
+  #
+  def full_scheme
+    @full_scheme (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] } unless @full_scheme
+    @full_scheme
+  end
+  
+  # Gives the color stored in this scheme for the given SongKey.
+  # 
+  # @param [SongKey] song_key The key to check the for color.
+  # @return [Symbol] `:sharp` or `:flat` -- symbol for the requested color.
+  # 
+  def color_for(song_key)
+      full_scheme[render_key.key_id]
   end
   
 end

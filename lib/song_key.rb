@@ -6,7 +6,7 @@
 # chromatically, from A to G#.  Because of this, SongKeys should be accessed by using
 # SongKey::KEY(symbol for key).
 #
-# Key Coloration
+# Key Coloration/Accidentals
 # ==========
 #
 # There is a slight problem with enharmonic equivalents of accidental keys, which could be rendered
@@ -49,23 +49,38 @@ class SongKey
   # 
   # @param [Integer] step Number of steps from the root note, along the major scale.  Should be
   #   between 0 and 7, but will still work if not.
+  # @param [ColorScheme] color_scheme The color scheme/accidental patten of the key to render 
+  #   the step into.
   # @return [Symbol] A symbol representing the absolute chord.
   #
   def render_step(step,color_scheme = ColorScheme.get('default'))
     scale(color_scheme)[step]
   end
   
+  # Returns the key symbol for this key within the given color scheme.
+  # 
+  # @param [ColorScheme] color_scheme The color scheme/accidental patten of the key to render 
+  #   the step into.
+  # @return [Symbol] A symbol representing the key.
+  # 
   def symbol(color_scheme = ColorScheme.get('default'))
     KEY_SET[color_scheme.color_for(@key_id)][@key_id]
   end
   
+  # Gets the major scale for the key, within a given color scheme.  Caches result based on color.
+  # 
+  # @param [ColorScheme] color_scheme The color scheme/accidental patten of the key to render 
+  #   the step into.
+  # @return [Array<Symbol>] An array with the symbol of the absolute note value for each step, in
+  #   this key.
+  # 
   def scale(color_scheme = ColorScheme.get('default'))
     unless @scales
       @scale_sets = { :flat  => KeyScale::KEY_SCALES[self][:flat],
                       :sharp => KeyScale::KEY_SCALES[self][:sharp] }
     end
     
-    @scales[color_scheme.color_for(@key_id)]
+    @scales[color_scheme.color_for(self)]
   end
   
 end
