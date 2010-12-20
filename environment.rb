@@ -3,6 +3,7 @@ require 'dm-core'
 require 'dm-validations'
 require 'dm-timestamps'
 require 'dm-migrations'
+require 'dm-types'
 require 'ostruct'
 
 require 'sinatra' unless defined?(Sinatra)
@@ -23,11 +24,9 @@ configure do
   
   require 'models'
   
-  $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/lib")
-  Dir.glob("#{File.dirname(__FILE__)}/lib/*.rb") { |lib| require File.basename(lib, '.*') }
-  
   DataMapper.finalize
   
-  require "#{File.dirname(__FILE__)}/db/seed.rb"
+  $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/lib")
+  Dir.glob("#{File.dirname(__FILE__)}/lib/*.rb") { |lib| require File.basename(lib, '.*') }
   
 end

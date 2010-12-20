@@ -3,13 +3,13 @@
 #
 # ColorScheme provides a way to store and access color schemes by name.  By default, there are five
 # included color schemes that should be able to account for all cases, with a little fiddling with
-# `:flats` and `:sharps`.
+# `flats` and `sharps`.
 # 
-# - `:default`, for ensemble settings and "general" settings.  Mostly flat, except for C# and F#.
-# - `:keyboard`, for keyboard instruments.  Mostly flat, except for F#.
-# - `:string`, for stringed and guitar instruments.  All sharp.
-# - `:flats`.  Self-explanatory -- always flat.
-# - `:sharps`.  Self-explanatory -- always sharp.
+# - `default`, for ensemble settings and "general" settings.  Mostly flat, except for C# and F#.
+# - `keyboard`, for keyboard instruments.  Mostly flat, except for F#.
+# - `string`, for stringed and guitar instruments.  All sharp.
+# - `flats`.  Self-explanatory -- always flat.
+# - `sharps`.  Self-explanatory -- always sharp.
 #
 # One can create a custom color scheme with
 #
@@ -19,7 +19,7 @@
 # "white" or natural keys should be assigned `nil`, and all accidental keys either `:sharp` or 
 # `:flat`.  The keys are in ascending chromatic order from A to G#.
 #
-# For example, here is the `color_array` for `:keyboard`:
+# For example, here is the `color_array` for `keyboard`:
 #
 #     # A   Bb    B   C   C#     D   Eb    E   F   F#     G    Ab
 #     [nil,:flat,nil,nil,:sharp,nil,:flat,nil,nil,:sharp,nil,:flat]
@@ -37,6 +37,16 @@ class ColorScheme
   #
   def full_scheme
     (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] }
+  end
+  
+  def self.get_all(color)
+    if color == :flat
+      return ColorScheme.get('flats')
+    elsif color == :sharp
+      return ColorScheme.get('sharps')
+    else
+      raise ArgumentError
+    end
   end
   
 end

@@ -19,14 +19,20 @@ namespace :db do
   desc 'Auto-migrate the database (destroys data)'
   task :migrate => :environment do
     DataMapper.auto_migrate!
+    Rake::Task[:seed].execute
   end
 
   desc 'Auto-upgrade the database (preserves data)'
   task :upgrade => :environment do
     DataMapper.auto_upgrade!
+    Rake::Task[:seed].execute
   end
 end
 
 task :environment do
   require 'environment'
+end
+
+task :seed do
+  require "#{File.dirname(__FILE__)}/db/seed.rb"
 end

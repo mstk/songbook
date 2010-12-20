@@ -52,7 +52,7 @@ class ChordProgression
   include DataMapper::Resource
   
   property :id,           Serial
-  property :progression,  Yaml, :required => true
+  property :progression,  Yaml, :required => true, :lazy => true
   # property :resolution,   Integer, :default => 1
   
   validates_uniqueness_of :progression
@@ -63,8 +63,8 @@ end
 class ColorScheme
   include DataMapper::Resource
   
-  property :name,   String, :required => true
-  property :scheme, Yaml,   :required => true
+  property :name,   String, :required => true, :key => true
+  property :scheme, Yaml,   :required => true, :lazy => true
   
   validates_uniqueness_of :name
 end

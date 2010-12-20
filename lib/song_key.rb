@@ -18,14 +18,10 @@
 #
 class SongKey
   
-  # The steps for each note in the major scale.
-  @@major_scale = [0,2,4,5,7,9,11]
-  
-  KEY_SET = { :flat   => %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern },
+  KEY_SETS = { :flat   => %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern },
               :sharp  => %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern } }
-  KEYS = (KEY_COLORS.values.flatten.uniq)
+  KEYS = (KEY_SETS.values.flatten.uniq)
   
-  @@major_scale.freeze
   KEY_SETS.values.each { |ks| ks.freeze }
   KEYS.freeze
   
@@ -33,18 +29,21 @@ class SongKey
   @@KEY_INDEX = Hash.new do |h,k|
     KEY_SET.values.each do |key_set|
       if key_set.include?(k)
-        h[k] = SongKey.first_or_create(:key_id => key_set.index(k))
+        h[k] = SongKey.first_or_create(:key_id => key_set.index(k)).save
       end
     end
     h[k] = nil
   end
   
-  # Given a step `n`, returns the `n+1`th scale note of the given key.
+  # Given a step `n`, returns the `n+1`th scale note of the given key.  Basically, "rendering"
+  # the relative step into an absolute one.
   # 
-  # 
-  # 
+  # @param [Integer] step Number of steps from the root note, along the major scale.  Should be
+  #   between 0 and 7, but will still work if not.
+  # @return [Symbol] A symbol representing the absolute chord.
+  #
   def render_step(step,color_scheme = ColorScheme.get('default'))
-    rendered_note = KEY_SET[color_scheme.full_scheme[@key_id]][(@key_id + @@major_scale[step]) % 11]
+    KeyScale::KEY_SCALES[self][color_scheme.full_scheme[@key_id]][step]
   end
   
   # Retrieve the SongKey for a given key_symbol.
@@ -56,10 +55,12 @@ class SongKey
     @@KEY_INDEX[key_symbol]
   end
   
-end
-
-class KeyScale
+  def symbol(color_scheme = ColorScheme.get('default'))
+    KEY_SET[color_scheme.full_scheme[@key_id]][@key_id]
+  end
   
-  
+  def natural(color_scheme = ColorScheme.get('default'))
+    symbol(color_scheme).to_s[0].intern
+  end
   
 end
