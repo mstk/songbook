@@ -4,6 +4,10 @@
 # SongKeys are represented internally by a number (from 0 to 11) that represents every key,
 #   chromatically, from A to G#.  Because of this, SongKeys should be accessed by using
 #   SongKey::KEY(symbol for key).
+#
+# Key Coloration
+# ==========
+#
 # There is a slight problem with enharmonic equivalents of accidental keys, which could be rendered
 #   ambiguously.  As such, whenever rendering, :flat or :sharp must be passed in order to specify
 #   which way to "color" the output.  Choices can make a large difference depending on the 
@@ -30,7 +34,8 @@ class SongKey
   
   # Retrieve the SongKey for a given key_symbol.
   #
-  # @param [Symbol] key_symbol A key symbol from SongKey::KEYS
+  # @param [Symbol] key_symbol A key symbol from SongKey::KEYS.
+  # @return [SongKey] SongKey corresponding to that key symbol.
   #
   def SongKey.KEY(key_symbol)
     @@KEY_INDEX[key_symbol]
