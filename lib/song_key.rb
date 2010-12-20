@@ -35,17 +35,6 @@ class SongKey
     h[k] = nil
   end
   
-  # Given a step `n`, returns the `n+1`th scale note of the given key.  Basically, "rendering"
-  # the relative step into an absolute one.
-  # 
-  # @param [Integer] step Number of steps from the root note, along the major scale.  Should be
-  #   between 0 and 7, but will still work if not.
-  # @return [Symbol] A symbol representing the absolute chord.
-  #
-  def render_step(step,color_scheme = ColorScheme.get('default'))
-    KeyScale::KEY_SCALES[self][color_scheme.full_scheme[@key_id]][step]
-  end
-  
   # Retrieve the SongKey for a given key_symbol.
   #
   # @param [Symbol] key_symbol A key symbol from SongKey::KEYS.
@@ -55,12 +44,28 @@ class SongKey
     @@KEY_INDEX[key_symbol]
   end
   
-  def symbol(color_scheme = ColorScheme.get('default'))
-    KEY_SET[color_scheme.full_scheme[@key_id]][@key_id]
+  # Given a step `n`, returns the `n+1`th scale note of the given key.  Basically, "rendering"
+  # the relative step into an absolute one.
+  # 
+  # @param [Integer] step Number of steps from the root note, along the major scale.  Should be
+  #   between 0 and 7, but will still work if not.
+  # @return [Symbol] A symbol representing the absolute chord.
+  #
+  def render_step(step,color_scheme = ColorScheme.get('default'))
+    scale(color_scheme)[step]
   end
   
-  def natural(color_scheme = ColorScheme.get('default'))
-    symbol(color_scheme).to_s[0].intern
+  def symbol(color_scheme = ColorScheme.get('default'))
+    KEY_SET[color_scheme.color_for(@key_id)][@key_id]
+  end
+  
+  def scale(color_scheme = ColorScheme.get('default'))
+    unless @scales
+      @scale_sets = { :flat  => KeyScale::KEY_SCALES[self][:flat],
+                      :sharp => KeyScale::KEY_SCALES[self][:sharp] }
+    end
+    
+    @scales[color_scheme.color_for(@key_id)]
   end
   
 end

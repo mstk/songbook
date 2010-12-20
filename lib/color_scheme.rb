@@ -36,7 +36,12 @@ class ColorScheme
   #
   #
   def full_scheme
-    (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] }
+    @full_scheme (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] } unless @full_scheme
+    @full_scheme
+  end
+  
+  def color_for(key_id)
+    full_scheme[key_id]
   end
   
   def self.get_all(color)
