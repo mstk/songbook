@@ -6,7 +6,9 @@
 #   more often, in the context of a given key (with the appropriate "coloration" -- see SongKey).
 # Even though chords are represented as an array of chord symbols, for rendering purposes, they
 #   are manipulated as instances of the Chord helper class.
-#
+# 
+# @author Justin Le
+# 
 class ChordProgression
   
   # Render the ChordProgression to the given key and color scheme.

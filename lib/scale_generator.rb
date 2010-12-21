@@ -2,7 +2,9 @@
 # pattern. Implementation is based on music theory.
 #
 # Main relevant method is ScaleGenerator::generate_scale(song_key,color)
-#
+# 
+# @author Justin Le
+# 
 module ScaleGenerator
   
   # All of the natural, or white notes.  The major scale is created by rotating the array until

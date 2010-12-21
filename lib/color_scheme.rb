@@ -18,12 +18,14 @@
 # where `color_array` is an array of twelve "colors": `nil` ("natural"), `:sharp`, or `:flat`.  All 
 # "white" or natural keys should be assigned `nil`, and all accidental keys either `:sharp` or 
 # `:flat`.  The keys are in ascending chromatic order from A to G#.
-#
+# 
 # For example, here is the `color_array` for `keyboard`:
 #
 #     # A   Bb    B   C   C#     D   Eb    E   F   F#     G    Ab
 #     [nil,:flat,nil,nil,:sharp,nil,:flat,nil,nil,:sharp,nil,:flat]
-#
+# 
+# @author Justin Le
+# 
 class ColorScheme
   
   # The default key colors for the "natural", white notes.  Can be overriden on a scheme-by-scheme
@@ -55,7 +57,7 @@ class ColorScheme
   #   `:flat`.
   #
   def full_scheme
-    @full_scheme (0..11).map { |n| @scheme[n] || @@natural_key_colors[n] } unless @full_scheme
+    @full_scheme = (0..11).map { |n| (@scheme[n] || @@natural_key_colors[n]) } unless @full_scheme
     @full_scheme
   end
   

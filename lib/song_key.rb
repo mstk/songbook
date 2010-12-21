@@ -15,7 +15,9 @@
 # one wanted to "brute force" to a default color scheme, `:flats` and `:sharps` are available.
 # 
 # See ColorScheme for more information.
-#
+# 
+# @author Justin Le
+# 
 class SongKey
   
   KEY_SETS = { :flat   => %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern },
@@ -49,7 +51,7 @@ class SongKey
   # 
   # @param [Integer] step Number of steps from the root note, along the major scale.  Should be
   #   between 0 and 7, but will still work if not.
-  # @param [ColorScheme] color_scheme The color scheme/accidental patten of the key to render 
+  # @param [ColorScheme] color_scheme The ColorScheme/accidental patten of the key to render 
   #   the step into.
   # @return [Symbol] A symbol representing the absolute chord.
   #

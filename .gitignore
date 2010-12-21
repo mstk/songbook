@@ -1,1 +1,3 @@
-/db/songdb.sqlite3
+/db/*.sqlite3
+/doc/*
+/.yardoc/*
