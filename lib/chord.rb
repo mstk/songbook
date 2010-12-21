@@ -12,15 +12,19 @@ class Chord
   
   private_class_method :new
   
+  # @private
   @@roman_numerals = %w[ I II III IV V VI VII ]
+  # @private
   @@chord_symbols = { :major => @@roman_numerals.map { |c| c.downcase.intern },
                       :minor => @@roman_numerals.map { |c| c.intern } }
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
   
+  # @private
   @@CHORD_INDEX = Hash.new do |h,c|
     new(c)
   end
   
+  # @private
   @@mode_render = { :major => "", :minor => "m" }
   
   # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be

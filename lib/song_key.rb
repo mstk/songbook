@@ -28,6 +28,9 @@ class SongKey
   KEYS.freeze
   
   # Index of SongKey resources/instances for each key symbol.
+  #
+  # @private
+  #
   @@KEY_INDEX = Hash.new do |h,k|
     KEY_SET.values.each do |key_set|
       if key_set.include?(k)

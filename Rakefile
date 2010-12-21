@@ -30,9 +30,9 @@ namespace :db do
 end
 
 task :environment do
-  require 'environment'
+  require "#{File.dirname(__FILE__)}/environment"
 end
 
 task :seed do
-  require "#{File.dirname(__FILE__)}/db/seed.rb"
+  require "#{File.dirname(__FILE__)}/db/seed"
 end

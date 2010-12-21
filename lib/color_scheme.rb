@@ -30,6 +30,9 @@ class ColorScheme
   
   # The default key colors for the "natural", white notes.  Can be overriden on a scheme-by-scheme
   # basis, but definitely not recommended.
+  #
+  # @private
+  #
   @@natural_key_colors = [:sharp,nil,:sharp,:flat,nil,:sharp,nil,:flat,nil,:sharp]
   
   validates_with_block :scheme do
