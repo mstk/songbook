@@ -41,8 +41,10 @@ class ColorScheme
   
   # Gets the color scheme that is "all" of a certain color.
   # 
-  # @param [Symbol] `:sharp` or `:flat` -- color wanted.
-  # @return [ColorScheme] The ColorScheme "sharps" or "flats", depending on what is requested.
+  # @param [Symbol] color
+  #   `:sharp` or `:flat` -- color wanted.
+  # @return [ColorScheme]
+  #   The ColorScheme "sharps" or "flats", depending on what is requested.
   #
   def self.get_scheme_all(color)
     if color == :flat
@@ -56,7 +58,8 @@ class ColorScheme
   
   # Gives the full color scheme for this scheme, naturals and accidentals included.
   # 
-  # @return [Array<Symbol>] Array containing the symbol of colors in the scheme, `:sharp` or 
+  # @return [Array<Symbol>]
+  #   Array containing the symbol of colors in the scheme, `:sharp` or 
   #   `:flat`.
   #
   def full_scheme
@@ -66,8 +69,10 @@ class ColorScheme
   
   # Gives the color stored in this scheme for the given SongKey.
   # 
-  # @param [SongKey] song_key The key to check the for color.
-  # @return [Symbol] `:sharp` or `:flat` -- symbol for the requested color.
+  # @param [SongKey] song_key
+  #   The key to check the for color.
+  # @return [Symbol]
+  #   `:sharp` or `:flat` -- symbol for the requested color.
   # 
   def color_for(song_key)
       full_scheme[render_key.key_id]

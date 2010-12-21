@@ -1,4 +1,4 @@
-# Represents a single Chord, stored as a number and a mode (:major or :minor).  Not actually
+# Represents a single Chord, stored as a number and a mode (`:major or :minor`).  Not actually
 # stored in the database, but rather used as a helper class for ChordProgression to help render 
 # chords into a given key in the proper color.
 # 

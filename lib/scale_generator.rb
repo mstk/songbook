@@ -1,7 +1,7 @@
 # Module providing a generator to generate a scale based on a given key and color/accidental 
 # pattern. Implementation is based on music theory.
 #
-# Main relevant method is ScaleGenerator::generate_scale(song_key,color)
+# Main relevant method is `ScaleGenerator::generate_scale(song_key,color)`
 # 
 # @author Justin Le
 # 
@@ -37,9 +37,12 @@ module ScaleGenerator
   
   # Generates the scale for a given key and given color.
   # 
-  # @param [SongKey] song_key A SongKey instance to render the scale into.
-  # @param [Symbol] color `:sharp` or `:flat` -- the accidental mode/color to render the scale into.
-  # @return [Array<Symbol>] An array with the symbol of the absolute note value for each step.
+  # @param [SongKey] song_key
+  #   A SongKey instance to render the scale into.
+  # @param [Symbol] color
+  #   `:sharp` or `:flat` -- the accidental mode/color to render the scale into.
+  # @return [Array<Symbol>]
+  #   An array with the symbol of the absolute note value for each step.
   #
   def generate_scale(song_key, color = :flat)
     # initialize array of accidentals

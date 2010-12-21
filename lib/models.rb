@@ -27,10 +27,9 @@ end
 class SongKey
   include DataMapper::Resource
   
-  property :key_id,    Integer, :required => true, :key => true
+  property :key_id,    Integer, :required => true, :key => true, :set => 0..11
   
   validates_uniqueness_of :key_id
-  validates_within :key_id, (0..11)
   
   has n, :songs
 end
