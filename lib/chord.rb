@@ -21,8 +21,6 @@ class Chord
   # All valid chord symbols
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
   
-  # TODO: Find a way to represent slash chords.
-  
   # Special tags avialable to modify chords.  Go along "for the ride".
   CHORD_MODIFIERS = ["*","+","sus","sus2","2","5","6","7","M7"]
   
@@ -33,7 +31,7 @@ class Chord
   
   # @private
   @@CHORD_INDEX = Hash.new do |h,c|
-    new(c)
+    h[c] = new(c)
   end
   
   # @private
@@ -62,9 +60,6 @@ class Chord
   #   SongKey corresponding to that chord symbol
   #
   def Chord.CHORD(chord_symbol)
-    # validation
-    Chord.extract_chords(chord_symbol)
-    
     @@CHORD_INDEX[chord_symbol]
   end
   
@@ -74,10 +69,11 @@ class Chord
   #   The symbol representing the roman-numeral relative value of the chord
   #
   def symbol
+    mod_string = @sub ? "b" : ""
     if @modulation == 0
-      @@chord_symbols[@mode][@step]
+      "#{mod_string}#{@@chord_symbols[@mode][@step]}".intern
     else
-      "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
+      "#{mod_string}#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
     end
   end
   
@@ -90,31 +86,27 @@ class Chord
   # @private
   # 
   def initialize(chord_symbol)
-    chord_part, mod_part = Chord.extract_chords(chord_symbol)
-    
-    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
-    @step = @@chord_symbols[@mode].index(chord_part)
-    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
-  end
-  
-  # Helper method to extract the chord and modulation from a given chord symbol.  Also serves the
-  # role of validation.
-  #
-  # @param [Symbol] chord_symbol
-  #   Symbol of the chord symbol to be parsed.
-  # @return [Array(Symbol,Symbol)]
-  #   An array containing first the chord part, then the modulation part.
-  # 
-  def Chord.extract_chords(chord_symbol)
     chord_string = chord_symbol.to_s
     chord_string += "/I" unless chord_string.include?("/")
     
-    chord_part, mod_part = chord_string.split("/").map { |c| c.intern }
+    chord_part_str, mod_part_str = chord_string.split("/")
+    mod_part = mod_part_str.intern
+    
+    if chord_part_str[0] == "b"
+      @sub = true
+      chord_part = chord_part_str[1..-1].intern
+    else
+      @sub = false
+      chord_part = chord_part_str.intern
+    end
     
     raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
     raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
     
-    return [chord_part, mod_part]
+    
+    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
+    @step = @@chord_symbols[@mode].index(chord_part)
+    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
   end
   
 end
