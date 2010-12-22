@@ -17,7 +17,14 @@ class Chord
   # @private
   @@chord_symbols = { :major => @@roman_numerals.map { |c| c.intern },
                       :minor => @@roman_numerals.map { |c| c.downcase.intern } }
+  
+  # All valid chord symbols
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
+  
+  # TODO: Find a way to represent slash chords.
+  
+  # Special tags avialable to modify chords.  Go along "for the ride".
+  CHORD_MODIFIERS = ["*","+","sus","sus2","2","5","6","7","M7"]
   
   # @private
   @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
@@ -90,7 +97,8 @@ class Chord
     @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
   end
   
-  # Helper method to extract the chord and modulation from a given chord symbol.  Also validates.
+  # Helper method to extract the chord and modulation from a given chord symbol.  Also serves the
+  # role of validation.
   #
   # @param [Symbol] chord_symbol
   #   Symbol of the chord symbol to be parsed.
