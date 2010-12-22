@@ -94,4 +94,15 @@ class SongKey
     @scales[color_scheme.color_for(self)]
   end
   
+  # Returns the result of transposing this key by the given number of steps.
+  #
+  # @param [Integer] steps
+  #   The number of steps to transpose by.  Can be positive or negative.
+  # @return [SongKey]
+  #   SongKey that is `steps` steps above this SongKey.
+  #
+  def transpose(steps)
+    SongKey.first_or_create(:key_id => (@key_id + steps) % 12)
+  end
+  
 end
