@@ -24,8 +24,8 @@ class ChordProgression
   #   Array of absolute_chord symbols corresponding to the stored progression
   #   rendered to the given SongKey and given ColorScheme.
   # 
-  def render(song_key,color_scheme = ColorScheme.get('default'))
-    chords_array.map { |c| c.render(key,color_scheme) }
+  def render_into(song_key,color_scheme = ColorScheme.get('default'))
+    chords_array.map { |c| c.render_into(song_key,color_scheme) }
   end
   
   private

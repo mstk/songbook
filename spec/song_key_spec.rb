@@ -5,7 +5,7 @@ describe 'song_key' do
     @key = SongKey.KEY(:Bb)
   end
   
-  specify 'key should be a SongKey resource' do
+  specify 'SongKey::KEY should be a SongKey resource' do
     @key.class.should == SongKey
   end
 

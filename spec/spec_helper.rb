@@ -20,6 +20,15 @@ Rspec.configure do |config|
   config.before(:each) do
     DataMapper.auto_migrate!
     require "#{File.dirname(__FILE__)}/../db/seed"
-    puts ColorScheme.all.inspect
+    
+    { :default  => [nil,:flat ,nil,nil,:sharp,nil,:flat ,nil,nil,:sharp,nil,:flat ],
+      :keyboard => [nil,:flat ,nil,nil,:flat ,nil,:flat ,nil,nil,:sharp,nil,:flat ],
+      :string   => [nil,:sharp,nil,nil,:sharp,nil,:sharp,nil,nil,:sharp,nil,:sharp],
+      :flats    => [nil,:flat ,nil,nil,:flat ,nil,:flat ,nil,nil,:flat ,nil,:flat ], 
+      :sharps   => [nil,:sharp,nil,nil,:sharp,nil,:sharp,nil,nil,:sharp,nil,:sharp] }.each do |name,scheme|  
+        new_color_scheme = ColorScheme.first_or_create(:name => name.to_s, :scheme => scheme )
+        new_color_scheme.save
+      end
+    
   end
 end

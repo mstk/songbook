@@ -63,7 +63,7 @@ class ColorScheme
   #   `:flat`.
   #
   def full_scheme
-    @full_scheme = (0..11).map { |n| (@scheme[n] || @@natural_key_colors[n]) } unless @full_scheme
+    @full_scheme = (0..11).map { |n| (scheme[n] || @@natural_key_colors[n]) } unless @full_scheme
     @full_scheme
   end
   
@@ -75,7 +75,7 @@ class ColorScheme
   #   `:sharp` or `:flat` -- symbol for the requested color.
   # 
   def color_for(song_key)
-      full_scheme[render_key.key_id]
+    full_scheme[song_key.key_id]
   end
   
 end

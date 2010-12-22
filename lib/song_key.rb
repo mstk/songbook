@@ -74,7 +74,7 @@ class SongKey
   #   A symbol representing the key.
   # 
   def symbol(color_scheme = ColorScheme.get('default'))
-    KEY_SET[color_scheme.color_for(@key_id)][@key_id]
+    KEY_SET[color_scheme.color_for(self)][@key_id]
   end
   
   # Gets the major scale for the key, within a given color scheme.  Caches result based on color.
@@ -87,8 +87,8 @@ class SongKey
   # 
   def scale(color_scheme = ColorScheme.get('default'))
     unless @scales
-      @scale_sets = { :flat  => KeyScale::KEY_SCALES[self][:flat],
-                      :sharp => KeyScale::KEY_SCALES[self][:sharp] }
+      @scales = { :flat  => ScaleGenerator::generate_scale(self,:flat),
+                  :sharp => ScaleGenerator::generate_scale(self,:sharp) }
     end
     
     @scales[color_scheme.color_for(self)]
