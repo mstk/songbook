@@ -32,26 +32,6 @@ class Chord
   # @private
   @@mode_render = { :major => "", :minor => "m" }
   
-  # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be
-  # done by `@@CHORD_INDEX` hash lambda, to maintain singleton pattern.
-  #
-  # @param [Symbol] chord_symbol
-  #   Symbol of the chord to convert.
-  # 
-  # @private
-  # 
-  def initialize(chord_symbol)
-    chord_part, mod_part = chord_symbol.to_s.split("/")[0].intern
-    mod_part ||= :I
-    
-    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
-    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
-    
-    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
-    @step = @@chord_symbols[@mode].index(chord_part)
-    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
-  end
-  
   # Renders the chord to the given key, with the given color scheme.
   # 
   # @param [SongKey] song_key
@@ -75,11 +55,8 @@ class Chord
   #   SongKey corresponding to that chord symbol
   #
   def Chord.CHORD(chord_symbol)
-    chord_part, mod_part = chord_symbol.to_s.split("/")[0].intern
-    mod_part ||= :I
-    
-    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
-    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
+    # validation
+    Chord.extract_chords(chord_symbol)
     
     @@CHORD_INDEX[chord_symbol]
   end
@@ -95,6 +72,41 @@ class Chord
     else
       "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
     end
+  end
+  
+  # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be
+  # done by `@@CHORD_INDEX` hash lambda, to maintain singleton pattern.
+  #
+  # @param [Symbol] chord_symbol
+  #   Symbol of the chord to convert.
+  # 
+  # @private
+  # 
+  def initialize(chord_symbol)
+    chord_part, mod_part = Chord.extract_chords(chord_symbol)
+    
+    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
+    @step = @@chord_symbols[@mode].index(chord_part)
+    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
+  end
+  
+  # Helper method to extract the chord and modulation from a given chord symbol.  Also validates.
+  #
+  # @param [Symbol] chord_symbol
+  #   Symbol of the chord symbol to be parsed.
+  # @return [Array(Symbol,Symbol)]
+  #   An array containing first the chord part, then the modulation part.
+  # 
+  def Chord.extract_chords(chord_symbol)
+    chord_string = chord_symbol.to_s
+    chord_string += "/I" unless chord_string.include?("/")
+    
+    chord_part, mod_part = chord_string.split("/").map { |c| c.intern }
+    
+    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
+    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
+    
+    return [chord_part, mod_part]
   end
   
 end
