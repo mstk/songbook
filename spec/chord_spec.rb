@@ -12,6 +12,10 @@ describe 'chord' do
     @major_chord.class.should == Chord
   end
   
+  specify 'bad chords should be scolded' do
+    lambda { @bad_chord = Chord.CHORD(:VIII) }.should raise_error
+  end
+  
   specify 'major chord should have a symbol of :IV' do
     @major_chord.symbol.should == :IV
   end

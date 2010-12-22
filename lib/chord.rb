@@ -47,8 +47,8 @@ class Chord
     raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
     raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
     
-    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_symbol}
-    @step = @@chord_symbols[@mode].index(chord_symbol)
+    @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
+    @step = @@chord_symbols[@mode].index(chord_part)
     @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
   end
   
@@ -64,7 +64,7 @@ class Chord
   #   ColorScheme.
   # 
   def render_into(song_key,color_scheme = ColorScheme.get('default'))
-    "#{song_key.render_step(@step,color_scheme)}#{@@mode_render[@mode]}".intern
+    "#{song_key.transpose(@modulation).render_step(@step,color_scheme)}#{@@mode_render[@mode]}".intern
   end
   
   # Retrieve the Chord instance for a given chord_symbol.
@@ -88,11 +88,12 @@ class Chord
   #
   # @return [Symbol]
   #   The symbol representing the roman-numeral relative value of the chord
+  #
   def symbol
     if @modulation == 0
       @@chord_symbols[@mode][@step]
     else
-      "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}"
+      "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
     end
   end
   
