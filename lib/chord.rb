@@ -20,6 +20,11 @@ class Chord
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
   
   # @private
+  @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
+  # @private
+  @@step_symbols = [:I,nil,:ii,nil,:iii,:IV,nil,:V,nil,:vi,nil,:vii]
+  
+  # @private
   @@CHORD_INDEX = Hash.new do |h,c|
     new(c)
   end
@@ -36,10 +41,15 @@ class Chord
   # @private
   # 
   def initialize(chord_symbol)
-    raise ArgumentError unless CHORD_SYMBOLS.include?(chord_symbol)
+    chord_part, mod_part = chord_symbol.to_s.split("/")[0].intern
+    mod_part ||= :I
+    
+    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
+    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
     
     @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_symbol}
     @step = @@chord_symbols[@mode].index(chord_symbol)
+    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
   end
   
   # Renders the chord to the given key, with the given color scheme.
@@ -65,7 +75,11 @@ class Chord
   #   SongKey corresponding to that chord symbol
   #
   def Chord.CHORD(chord_symbol)
-    raise ArgumentError unless CHORD_SYMBOLS.include?(chord_symbol)
+    chord_part, mod_part = chord_symbol.to_s.split("/")[0].intern
+    mod_part ||= :I
+    
+    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
+    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
     
     @@CHORD_INDEX[chord_symbol]
   end
@@ -75,7 +89,11 @@ class Chord
   # @return [Symbol]
   #   The symbol representing the roman-numeral relative value of the chord
   def symbol
-    @@chord_symbols[@mode][@step]
+    if @modulation == 0
+      @@chord_symbols[@mode][@step]
+    else
+      "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}"
+    end
   end
   
 end
