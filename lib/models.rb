@@ -12,17 +12,17 @@ class Song
   
   has n, :sections
   
-  has n, :tags, :through => Resource
+  # has n, :tags, :through => Resource
 end
 
-class Tag
-  include DataMapper::Resource
+# class Tag
+  # include DataMapper::Resource
   
-  property :id,     Serial
-  property :name,   String, :required => true
+  # property :id,     Serial
+  # property :name,   String, :required => true
   
-  has n, :songs, :through => Resource
-end
+  # has n, :songs, :through => Resource
+# end
 
 class SongKey
   include DataMapper::Resource
@@ -39,12 +39,27 @@ class Section
   
   property :id,         Serial
   property :type,       String, :default => "CHORUS"
-  property :count,      Integer, :default => 1
-  property :transpose,  Integer, :default => 0
+  property :variation,  String, :default => ""
+  property :prog_order, Yaml, :lazy => true
+  # property :lyric_order,Yaml, :lazy => true, :default => [0]
   
   belongs_to :song
   
   has n, :chord_progressions, :through => Resource
+  has n, :lyrics,             :through => Resource
+end
+
+class Lyric
+  include DataMapper::Resource
+  
+  property :id,         Serial
+  
+  # the number of the variation of the section (first verse lyrics, second verse lyrics, etc.)
+  property :count,      Integer, :default => 0
+  
+  property :text,       Text
+  
+  belongs_to :section
 end
 
 class ChordProgression
@@ -52,6 +67,8 @@ class ChordProgression
   
   property :id,           Serial
   property :progression,  Yaml, :required => true, :lazy => true
+  
+  # not necessary because chords will only ever be compared to those of the same resolution for now
   # property :resolution,   Integer, :default => 1
   
   validates_uniqueness_of :progression
