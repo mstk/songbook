@@ -1,6 +1,8 @@
 # Helper module to manipulate absolute note/chord symbols.  Mostly dealing with enharmonic 
 # conversions.
-#
+# 
+# @author Justin Le
+# 
 module Note
   
   # Set of all note symbols, categorized by color/accidental.

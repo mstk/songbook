@@ -6,6 +6,19 @@
 # currently), in a sort of singleton pattern.  In a way, they represent constants and are 
 # immutable.  To access the Chord instance for a given chord, use Chord::CHORD(chord symbol)
 # 
+# Chord symbols are in the form `:"I-mod1-mod2..._inversion"`, where modifiers are arbitrary 
+# strings like "7" and "sus".  Inversions are integers representing the scale degree that is the 
+# bass note.  This is different from figured bass convention, but seems more natural to me.
+# 
+# @note
+#   Please avoid modifiers and inversions whenever possible, unless they significantly change the
+#   character of the chord progression.
+#
+# @note
+#   Modifiers don't actually "do" anything at the moment.  They're just dumb strings for the most
+#   part.  The one exception is "\*" (diminished), which changes the scale used when finding 
+#   inversion notes.  "+" (augmented) is dumb for now.  Please don't use it with inversions.
+# 
 # @author Justin Le
 # 
 class Chord
@@ -20,14 +33,6 @@ class Chord
   
   # All valid chord symbols
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
-  
-  # Special tags avialable to modify chords.  Go along "for the ride".
-  CHORD_MODIFIERS = ["*","+","sus","sus2","2","5","6","7","M7"]
-  
-  # @private
-  # @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
-  # @private
-  # @@step_symbols = [:I,nil,:ii,nil,:iii,:IV,nil,:V,nil,:vi,nil,:vii]
   
   # @private
   @@CHORD_INDEX = Hash.new do |h,c|
@@ -60,18 +65,33 @@ class Chord
   #   ColorScheme.
   # 
   def render_into(song_key,color_scheme = ColorScheme.get('default'))
-    # @todo there has to be a better way of doing this
     if @sub
       render_color = color_scheme.color_for(song_key)
-      rendered_chord_note_raw = song_key.transpose(-1).render_step(@step,color_scheme)
+      render_key = song_key.transpose(-1)
+      rendered_chord_note_raw = render_key.render_step(@step,color_scheme)
       rendered_chord_note = Note::get_enharmonic_in_color(rendered_chord_note_raw,render_color)
     else
       rendered_chord_note = song_key.render_step(@step,color_scheme)
     end
     
-    mode_string = @@mode_render[@mode]
+    mode_str = @@mode_render[@mode]
     
-    "#{rendered_chord_note}#{mode_string}".intern
+    modifiers_str = @modifiers * ""
+    
+    if @inversion > 1
+      
+      scale_mode = @mode
+      scale_mode = :locrian if @modifiers.include? "*"
+      # @todo implement augmented. lol ya right. nvm.
+      
+      chord_scale = ScaleGenerator::generate_scale( SongKey.KEY(rendered_chord_note) , color_scheme.color_for(song_key) , scale_mode )
+      
+      inversion_str = "/#{chord_scale[8-@inversion]}"
+    else
+      inversion_str = ""
+    end
+    
+    "#{rendered_chord_note}#{mode_str}#{modifiers_str}#{inversion_str}".intern
   end
   
   # Retrieve the chord symbol for this Chord instance.
@@ -80,7 +100,12 @@ class Chord
   #   The symbol representing the roman-numeral relative value of the chord
   # 
   def symbol
-    "#{@sub ? "b" : ""}#{@@chord_symbols[@mode][@step]}".intern
+    sub_str       = @sub ? "b" : ""
+    chord_str     = @@chord_symbols[@mode][@step]
+    modifiers_str = @modifiers.empty? ? "" : "-#{@modifiers * "-"}"
+    inversion_str = @inversion > 1 ? "_#{@inversion}" : ""
+    
+    "#{sub_str}#{chord_str}#{modifiers_str}#{inversion_str}".intern
   end
   
   # Whether or not the chord is a sub chord. (modulation one half-step down)
@@ -101,17 +126,31 @@ class Chord
   # @private
   # 
   def initialize(chord_symbol)
-    chord_string = chord_symbol.to_s
     
-    if chord_string[0] == "b"
+    chord_symbol_str = chord_symbol.to_s
+    chord_symbol_str += "_1" unless chord_symbol_str.include? "_"
+    
+    chord_with_mods,inversion_str = chord_symbol_str.split("_")
+    
+    chord_part_str,*@modifiers = chord_with_mods.to_s.split("-")
+    
+    if chord_part_str[0] == "b"
       @sub = true
-      chord_part = chord_string[1..-1].intern
+      chord_part = chord_part_str[1..-1].intern
     else
       @sub = false
-      chord_part = chord_string.intern
+      chord_part = chord_part_str.intern
     end
     
     raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
+    
+    inversion_number = inversion_str.to_i
+    
+    # validate for valid inversion
+    raise ArgumentError unless inversion_number > 0
+    
+    # some math to "reduce" the inversion to its lowest equivalent
+    @inversion = (inversion_number - 1) % 7 + 1
     
     @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
     @step = @@chord_symbols[@mode].index(chord_part)
