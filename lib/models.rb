@@ -39,8 +39,10 @@ class Section
   
   property :id,         Serial
   property :type,       String, :default => "CHORUS"
-  property :variation,  String, :default => ""
+  property :variation,  Integer, :default => 0
   property :prog_order, Yaml, :lazy => true
+  
+  # will be covered by @order in Song
   # property :lyric_order,Yaml, :lazy => true, :default => [0]
   
   belongs_to :song
@@ -55,9 +57,9 @@ class Lyric
   property :id,         Serial
   
   # the number of the variation of the section (first verse lyrics, second verse lyrics, etc.)
-  property :count,      Integer, :default => 0
+  property :variation,  Integer, :default => 0
   
-  property :text,       Text
+  property :text_tree,  Yaml, :lazy => true
   
   belongs_to :section
 end
