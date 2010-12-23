@@ -1,4 +1,5 @@
-# Helper module to manipulate absolute note/chord symbols.
+# Helper module to manipulate absolute note/chord symbols.  Mostly dealing with enharmonic 
+# conversions.
 #
 module Note
   
@@ -25,9 +26,9 @@ module Note
   
   # Finds the color/accidental of the given note symbol.
   #
-  # @param[Symbol] note_symbol
+  # @param [Symbol] note_symbol
   #   Note symbol in question.
-  # @return[Symbol]
+  # @return [Symbol]
   #   `:sharp` or `:flat`.  If natural, will return `:flat` just for kicks (and as a default).
   #
   def Note.get_color_of(note_symbol)
@@ -37,11 +38,11 @@ module Note
   # Finds gets the enharmonic equivalent of the note in the given color/accidental.  If note is
   # natural, returns itself.
   #
-  # @param[Symbol] note_symbol
+  # @param [Symbol] note_symbol
   #   Note symbol to convert.
-  # @param[Symbol] color
+  # @param [Symbol] color
   #   `:sharp` or `:flat`.
-  # @return[Symbol]
+  # @return [Symbol]
   #   The enharmonic equivalent note in the given color/accidental, or the same note if the note is
   #   natural.
   #
@@ -52,9 +53,9 @@ module Note
   # Toggles the note between its enharmonically equivalent notes by colors/accidentals.  If note is
   # natural, returns itself.
   # 
-  # @param[Symbol] note_symbol
+  # @param [Symbol] note_symbol
   #   Note symbol to convert.
-  # @return[Symbol]
+  # @return [Symbol]
   #   The enharmonic equivalent note in the opposite color/accidental, or the same note if the note 
   #   is natural.
   #
