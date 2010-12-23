@@ -25,9 +25,9 @@ class Chord
   CHORD_MODIFIERS = ["*","+","sus","sus2","2","5","6","7","M7"]
   
   # @private
-  @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
+  # @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
   # @private
-  @@step_symbols = [:I,nil,:ii,nil,:iii,:IV,nil,:V,nil,:vi,nil,:vii]
+  # @@step_symbols = [:I,nil,:ii,nil,:iii,:IV,nil,:V,nil,:vi,nil,:vii]
   
   # @private
   @@CHORD_INDEX = Hash.new do |h,c|
@@ -36,6 +36,17 @@ class Chord
   
   # @private
   @@mode_render = { :major => "", :minor => "m" }
+  
+  # Retrieve the Chord instance for a given chord_symbol.
+  #
+  # @param [Symbol] chord_symbol
+  #   A chord symbol from Chord::CHORD_SYMBOLS.
+  # @return [Chord]
+  #   SongKey corresponding to that chord symbol
+  #
+  def Chord.CHORD(chord_symbol)
+    @@CHORD_INDEX[chord_symbol]
+  end
   
   # Renders the chord to the given key, with the given color scheme.
   # 
@@ -49,32 +60,36 @@ class Chord
   #   ColorScheme.
   # 
   def render_into(song_key,color_scheme = ColorScheme.get('default'))
-    "#{song_key.transpose(@modulation).render_step(@step,color_scheme)}#{@@mode_render[@mode]}".intern
-  end
-  
-  # Retrieve the Chord instance for a given chord_symbol.
-  #
-  # @param [Symbol] chord_symbol
-  #   A chord symbol from Chord::CHORD_SYMBOLS.
-  # @return [Chord]
-  #   SongKey corresponding to that chord symbol
-  #
-  def Chord.CHORD(chord_symbol)
-    @@CHORD_INDEX[chord_symbol]
+    # @todo there has to be a better way of doing this
+    if @sub
+      render_color = color_scheme.color_for(song_key)
+      rendered_chord_note_raw = song_key.transpose(-1).render_step(@step,color_scheme)
+      rendered_chord_note = Note::get_enharmonic_in_color(rendered_chord_note_raw,render_color)
+    else
+      rendered_chord_note = song_key.render_step(@step,color_scheme)
+    end
+    
+    mode_string = @@mode_render[@mode]
+    
+    "#{rendered_chord_note}#{mode_string}".intern
   end
   
   # Retrieve the chord symbol for this Chord instance.
   #
   # @return [Symbol]
   #   The symbol representing the roman-numeral relative value of the chord
-  #
+  # 
   def symbol
-    mod_string = @sub ? "b" : ""
-    if @modulation == 0
-      "#{mod_string}#{@@chord_symbols[@mode][@step]}".intern
-    else
-      "#{mod_string}#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
-    end
+    "#{@sub ? "b" : ""}#{@@chord_symbols[@mode][@step]}".intern
+  end
+  
+  # Whether or not the chord is a sub chord. (modulation one half-step down)
+  #
+  # @return [Boolean]
+  #   true if it is, false if it is not.
+  # 
+  def is_sub?
+    @sub
   end
   
   # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be
@@ -87,26 +102,19 @@ class Chord
   # 
   def initialize(chord_symbol)
     chord_string = chord_symbol.to_s
-    chord_string += "/I" unless chord_string.include?("/")
     
-    chord_part_str, mod_part_str = chord_string.split("/")
-    mod_part = mod_part_str.intern
-    
-    if chord_part_str[0] == "b"
+    if chord_string[0] == "b"
       @sub = true
-      chord_part = chord_part_str[1..-1].intern
+      chord_part = chord_string[1..-1].intern
     else
       @sub = false
-      chord_part = chord_part_str.intern
+      chord_part = chord_string.intern
     end
     
     raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
-    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
-    
     
     @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
     @step = @@chord_symbols[@mode].index(chord_part)
-    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
   end
   
 end
