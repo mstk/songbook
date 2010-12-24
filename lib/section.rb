@@ -18,9 +18,11 @@ class Section
     
     chords = render_chords(modulation)
     
-    lyric = lyrics.all.find { |l| l.variation == lyric_variation }.render_lines
+    lyric = lyrics.all.find { |l| l.variation == lyric_variation }
     
-    (0..chords.length-1).map { |n| { :chords => chords[n], :lyrics => lyric[n] } }
+    lyric_lines = lyric ? lyric.render_lines : line_lengths.map { |l| Array.new(l) {''} }
+    
+    (0..chords.length-1).map { |n| { :chords => chords[n], :lyrics => lyric_lines[n] } }
   end
   
   def line_count

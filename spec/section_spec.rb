@@ -70,4 +70,14 @@ describe 'section' do
     lines[1][:lyrics].should == ['Fi-','na-','ly','here']
   end
   
+  specify 'chorus chords with lyrics should render properly modulated downwards 3, with an unknown variation' do
+    lines = @hiok_chorus.render_lines(:modulation => -3, :variation => 1)
+    lines.size.should == 2
+    
+    lines[0][:chords].should == [ :E, :'E/G#', :A , :A ]
+    lines[0][:lyrics].should == ['','','','']
+    lines[1][:chords].should == [ :E, :'E/G#', :A , :A ]
+    lines[1][:lyrics].should == ['','','','']
+  end
+  
 end
