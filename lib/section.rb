@@ -7,6 +7,40 @@
 # 
 class Section
   
+  def Section.build(properties)
+    properties[:type] ||= "CHORUS"
+    properties[:variation] ||= 0
+    
+    raise ArgumentError unless properties[:progressions]
+    raise ARgumentError unless properties[:song]
+    
+    prog_order = properties[:progressions].map { |prog| prog.id }
+    
+    section = Section.create( :type => properties[:type],
+                              :song => properties[:song],
+                              :variation => properties[:variation],
+                              :prog_order => prog_order )
+    
+    properties[:progressions].each do |prog|
+      section.chord_progressions << prog
+      prog.save
+    end
+    
+    section.save
+    section
+  end
+  
+  
+    property :type,       String, :default => "CHORUS"
+  property :variation,  Integer, :default => 0
+  property :prog_order, Yaml, :lazy => true
+  
+  # will be covered by @order in Song
+  # property :lyric_order,Yaml, :lazy => true, :default => [0]
+  
+  belongs_to :song
+  
+  
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
   # and returns them as an array of lines of absolute chords.
   #

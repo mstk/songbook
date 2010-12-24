@@ -14,7 +14,7 @@ class Lyric
   
   # Parses a string of lyrics, with its section and variation #, into a Lyric resource.
   # 
-  # @param [String] text
+  # @param [String,Array<Array<String>>] text
   #   Text formatted with
   #   - One newline after every chord change
   #   - Two newlines in a row between every line
@@ -36,7 +36,9 @@ class Lyric
   #       He is the one
   #       He is Je-
   #       sus
-  #
+  #   
+  #   However, if an actual pre-parsed lyric tree is passed (an array of array of strings), this 
+  #   will just use that instead.
   # @param [Section] section
   #   The song section that this lyric is attached to.
   # @param [Integer] variation
@@ -44,12 +46,17 @@ class Lyric
   #   See class overview.
   # @return [Lyric]
   #   A parsed Lyric resource.
-  #
-  def Lyric.parse(text,section,variation=0)
+  # 
+  def Lyric.build(text,section,variation=0)
     lines = text.split("\n\n")
     bars = lines.map { |l| l.split("\n") }
     
-    Lyric.create(:text_tree => bars, :section => section, :variation => variation)
+    lyric = Lyric.create(:text_tree => bars, :section => section, :variation => variation)
+    
+    section.lyrics << lyric
+    section.save
+    
+    lyric
   end
   
   # Renders the lines of texts into an array of lines.  Lines are represented by an array of 
