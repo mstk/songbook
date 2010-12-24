@@ -2,6 +2,9 @@
 # progressions that make up the section.  In charge of rendering the progressions into the 
 # appropriate key, as given by the song it is in and the modulation of the call.  Sections are 
 # never shared across songs.  Lyrics are also managed here.
+#
+# It can be possible to have two completely different chorus or verse sections by having different
+# `variation` properties.  Please do not set a type as "CHORUS_2".
 # 
 # @author Justin Le
 # 
@@ -9,7 +12,7 @@ class Section
   
   def Section.build(properties)
     properties[:type] ||= "CHORUS"
-    properties[:variation] ||= 0
+    properties[:variation] ||= 1
     
     raise ArgumentError unless properties[:progressions]
     raise ARgumentError unless properties[:song]
@@ -29,17 +32,6 @@ class Section
     section.save
     section
   end
-  
-  
-    property :type,       String, :default => "CHORUS"
-  property :variation,  Integer, :default => 0
-  property :prog_order, Yaml, :lazy => true
-  
-  # will be covered by @order in Song
-  # property :lyric_order,Yaml, :lazy => true, :default => [0]
-  
-  belongs_to :song
-  
   
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
   # and returns them as an array of lines of absolute chords.
@@ -64,8 +56,8 @@ class Section
   # @option options [Integer] :modulation (0)
   #   Optional modulation parameter to modulate the song's key for rendering this particular 
   #   section.
-  # @option options [Integer] :variation (0)
-  #   Variation of the lyrics for the section to use.  Defaults to 0.  If the variation is not
+  # @option options [Integer] :variation (1)
+  #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
   # @return [Array<Hash{Symbol,Array<Symbol,String>}>]
   #   An array with a hash for each line.
@@ -75,7 +67,7 @@ class Section
   # 
   def render_lines(options)
     modulation = options[:modulation] || 0
-    lyric_variation = options[:variation] || 0
+    lyric_variation = options[:variation] || 1
     
     chords = render_chords(modulation)
     
@@ -93,8 +85,8 @@ class Section
   # @option options [Integer] :modulation (0)
   #   Optional modulation parameter to modulate the song's key for rendering this particular 
   #   section.
-  # @option options [Integer] :variation (0)
-  #   Variation of the lyrics for the section to use.  Defaults to 0.  If the variation is not
+  # @option options [Integer] :variation (1)
+  #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
   # @return [Hash{Symbol,Array<Symbol,String>}]
   #   A hash representing the line, with two key/value pairs -- `:chords`, for the absolute chords 
@@ -121,6 +113,14 @@ class Section
   # 
   def line_lengths
     @prog_order.map { |prog_id| ChordProgression.get(prog_id) }.map { |p| p.length }
+  end
+  
+  def title
+    if @song.count_sections(@type) == 1
+      @type
+    else
+      "#{@type} #{(@variation + 9).to_s(36).upcase}"
+    end
   end
   
 end

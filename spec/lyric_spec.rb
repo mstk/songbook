@@ -17,8 +17,8 @@ describe 'lyric' do
     bridge_lyric_text = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly"
     bridge_lyric_text_2 = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly\nhere"
     
-    @chorus_lyric   = Lyric.build( chorus_lyric_text, @hiok_chorus,0)
-    @bridge_lyric   = Lyric.build( bridge_lyric_text, @hiok_bridge,0)
+    @chorus_lyric   = Lyric.build( chorus_lyric_text, @hiok_chorus,1)
+    @bridge_lyric   = Lyric.build( bridge_lyric_text, @hiok_bridge,1)
     
   end
   

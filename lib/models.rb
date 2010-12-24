@@ -7,6 +7,7 @@ class Song
   property :time_signature, String, :default => "4/4"
   property :comment,        Text
   property :created_on,     Date
+  property :structure,      Yaml
   
   belongs_to :song_key
   
@@ -39,7 +40,7 @@ class Section
   
   property :id,         Serial
   property :type,       String, :default => "CHORUS"
-  property :variation,  Integer, :default => 0
+  property :variation,  Integer, :default => 1
   property :prog_order, Yaml, :lazy => true
   
   # will be covered by @order in Song
@@ -57,7 +58,7 @@ class Lyric
   property :id,         Serial
   
   # the number of the variation of the section (first verse lyrics, second verse lyrics, etc.)
-  property :variation,  Integer, :default => 0
+  property :variation,  Integer, :default => 1
   
   property :text_tree,  Yaml, :lazy => true
   

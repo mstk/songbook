@@ -1,7 +1,7 @@
 # Represents a block of lyrics for one section of a song.
 # 
 # Stores an integer `variation`, describing the variation of the section the lyric is for.  For
-# example, the lyrics for Verse 1 could have variation `0`, and Verse 2 could have variation `1`.
+# example, the lyrics for Verse 1 could have variation `1`, and Verse 2 could have variation `2`.
 #
 # In charge of parsing raw lyrics into the nested yaml format it is stored as, and then un-packing
 # it for rendering with `Section`.
@@ -47,7 +47,7 @@ class Lyric
   # @return [Lyric]
   #   A parsed Lyric resource.
   # 
-  def Lyric.build(text,section,variation=0)
+  def Lyric.build(text,section,variation=1)
     lines = text.split("\n\n")
     bars = lines.map { |l| l.split("\n") }
     
