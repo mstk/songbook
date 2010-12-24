@@ -43,7 +43,7 @@ class Section
   #   An array of lines (arrays) of absolute chords, in symbols.
   # 
   def render_chords(modulation = 0)
-    progressions = @prog_order.map { |prog_id| ChordProgression.get(prog_id) }
+    progressions = prog_order.map { |prog_id| ChordProgression.get(prog_id) }
     progressions.map { |prog| prog.render_into ( @song.song_key.transpose(modulation) ) }
   end
   
