@@ -16,10 +16,10 @@ describe 'section' do
     @hiok_bridge.chord_progressions << prog_2
     @hiok_bridge.chord_progressions << prog_3
     
-    chorus_lyric_text = "Here is our King\nHere is our Love\nHere is our God whose come\nto bring us back to Him\n\n"
-    chorus_lyric_text += "He is the one\nHe is Jesus"
-    bridge_lyric_text = "Ma-\njes-\nty\n\nFi-\nna-\nly"
-    bridge_lyric_text_2 = "Ma-\njes-\nty\n\nFi-\nna-\nly\nhere"
+    chorus_lyric_text = "Here is our\nKing, here is our\nLove, here is our\nGod who's come to\nbring us back to him\n\n"
+    chorus_lyric_text += " \nHe is the one\nHe is Je-\nsus"
+    bridge_lyric_text = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly"
+    bridge_lyric_text_2 = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly\nhere"
     
     @chorus_lyric   = Lyric.parse( chorus_lyric_text, @hiok_chorus,0)
     @bridge_lyric   = Lyric.parse( bridge_lyric_text, @hiok_bridge,0)
@@ -55,9 +55,9 @@ describe 'section' do
     lines.size.should == 2
     
     lines[0][:chords].should == [ :F, :'F/A', :Bb , :Bb ]
-    lines[0][:lyrics].should == ['Here is our King','Here is our Love','Here is our God whose come','to bring us back to Him']
+    lines[0][:lyrics].should == ["Here is our","King, here is our","Love, here is our","God who's come to","bring us back to him"]
     lines[1][:chords].should == [ :F, :'F/A', :Bb , :Bb ]
-    lines[1][:lyrics].should == ['He is the one','He is Jesus','','']
+    lines[1][:lyrics].should == [" ","He is the one","He is Je-","sus"," "]
   end
   
   specify 'bridge chords with lyrics should render properly modulated up 4, second variation' do
@@ -65,9 +65,9 @@ describe 'section' do
     lines.size.should == 2
     
     lines[0][:chords].should == [ :'G#m', :'F#/A#', :B , :B ]
-    lines[0][:lyrics].should == ['Ma-','jes-','ty','']
+    lines[0][:lyrics].should == [' ','Ma-','jes-','ty',' ']
     lines[1][:chords].should == [ :'C#m7', :'B/D#', :E , :E ]
-    lines[1][:lyrics].should == ['Fi-','na-','ly','here']
+    lines[1][:lyrics].should == [' ','Fi-','na-','ly','here']
   end
   
   specify 'chorus chords with lyrics should render properly modulated downwards 3, with an unknown variation' do
@@ -75,9 +75,9 @@ describe 'section' do
     lines.size.should == 2
     
     lines[0][:chords].should == [ :E, :'E/G#', :A , :A ]
-    lines[0][:lyrics].should == ['','','','']
+    lines[0][:lyrics].should == [' ',' ',' ',' ',' ']
     lines[1][:chords].should == [ :E, :'E/G#', :A , :A ]
-    lines[1][:lyrics].should == ['','','','']
+    lines[1][:lyrics].should == [' ',' ',' ',' ',' ']
   end
   
 end
