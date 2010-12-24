@@ -47,6 +47,7 @@ end
 
 get '/songs/:id' do
   @song = Song.get(params[:id])
+  @rendered_sections = @song.render_sections
   if @song
     haml :show
   else

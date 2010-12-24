@@ -1,5 +1,7 @@
 %h2 Submit Song
 
+= Song.all.inspect
+
 %form{:action => '/new_song', :method => 'POST'}
   %p Song Title
   %input{:type => 'text', :name => 'title'}/
