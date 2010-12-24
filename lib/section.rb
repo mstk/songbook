@@ -10,6 +10,22 @@
 # 
 class Section
   
+  # Builds and saves section given `:progressions`, a list of progressions, and `:song`, the song 
+  # the section is in.
+  # 
+  # @param [Hash] properties
+  #   The properties of the Section to build.
+  # @option properties [Song] :song
+  #   The required song that the section is a part of.
+  # @option properties [Array<ChordProgression>] :progressions
+  #   Required list of chord progressions that make up the song, in order, by line.
+  # @option properties [String] :type ('CHORUS')
+  #   The type of section.
+  # @option properties [Integer] :variation (1)
+  #   If multiple sections of the same type in one song, use this to differentiate them.
+  # @return [Section]
+  #   The built section.
+  #
   def Section.build(properties)
     properties[:type] ||= "CHORUS"
     properties[:variation] ||= 1

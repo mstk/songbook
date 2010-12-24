@@ -11,6 +11,8 @@
 #
 # @author Justin Le
 #
+# @todo add ability to only render certain sections of the song
+#
 class Song
   
   # Interprets one section in the `structure` array.  Basically fills out and extrapolates missing
@@ -68,7 +70,7 @@ class Song
       render_key = song_key
     end
     
-    expanded_structure = @structure.map { |s| Song.structure_interpreter(s) }
+    expanded_structure = structure.map { |s| Song.structure_interpreter(s) }
     
     return expanded_structure.map do |sec|
       

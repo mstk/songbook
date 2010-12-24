@@ -5,7 +5,7 @@
   .artist= @song.artist
   .song_key
     Key of
-    %span= @song.song_key
+    %span= @song.song_key.symbol
 
   .time_signature
     Time Signature
@@ -13,9 +13,9 @@
   
 
 #song_chords
-  - @song.sections.each do |section|
+  - @rendered_sections.each do |section|
     .song_section
-      %span.section_type= section.type
-      - section.chord_progressions.each do |progression|
-        .chord_progression
-          = YAML.load(progression.progression) * ", "
+      %span.section_title= section[:title]
+      - section[:lines].each do |line|
+        %span.chord_line= line[:chords] * " "
+        %span.lyric_line= line[:lyrics] * " "
