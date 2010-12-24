@@ -115,6 +115,13 @@ class Section
     @prog_order.map { |prog_id| ChordProgression.get(prog_id) }.map { |p| p.length }
   end
   
+  # The title of the section.  This will usually just be the type.  However, if there are more than
+  # one variations of the section within the song, it will be be appanded with a letter 
+  # representing its variation.
+  #
+  # @return [String]
+  #   The title of the section
+  #
   def title
     if @song.count_sections(@type) == 1
       @type

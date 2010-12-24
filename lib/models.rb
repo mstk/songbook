@@ -3,11 +3,11 @@ class Song
   
   property :id,             Serial
   property :title,          String, :required => true
-  property :artist,         String, :default => "(no artist)"
+  property :structure,      Yaml, :required => true
+  property :artist,         String
   property :time_signature, String, :default => "4/4"
   property :comment,        Text
   property :created_on,     Date
-  property :structure,      Yaml
   
   belongs_to :song_key
   

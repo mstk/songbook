@@ -35,6 +35,7 @@ module ScaleGenerator
   
   NATURALS.freeze
   
+  # The shift from the tonic each mode is
   MODE_SHIFT = { :major       =>   0,
                  :minor       =>  -9,
                  :ionian      =>   0,
