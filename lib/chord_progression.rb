@@ -30,7 +30,7 @@ class ChordProgression
   
   # The length, in chords, of the chord progression.
   #
-  # @return[Integer]
+  # @return [Integer]
   #   The length of the chord progression.
   # 
   def length

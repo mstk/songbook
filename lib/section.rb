@@ -39,12 +39,31 @@ class Section
   # @param [Integer] modulation
   #   An optional modulation parameter to modulate the song's key for this rendering particular 
   #   section.
+  # @param [Boolean] render_repeats
+  #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
+  #   symbol.
   # @return [Array<Array<Symbol>>]
   #   An array of lines (arrays) of absolute chords, in symbols.
   # 
-  def render_chords(modulation = 0)
+  def render_chords(modulation = 0,render_repeats = false)
     progressions = prog_order.map { |prog_id| ChordProgression.get(prog_id) }
-    progressions.map { |prog| prog.render_into ( @song.song_key.transpose(modulation) ) }
+    rendered_chords = progressions.map { |prog| prog.render_into ( @song.song_key.transpose(modulation) ) }
+    
+    unless render_repeats
+      rendered_chords.each do |line|
+        curr_chord = nil
+        line.length.times do |n|
+          if line[n] == curr_chord
+            line[n] = :''
+          else
+            curr_chord = line[n]
+          end
+        end
+      end
+    end
+    
+    rendered_chords
+    
   end
   
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
@@ -59,6 +78,9 @@ class Section
   # @option options [Integer] :variation (1)
   #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
+  # @option options [Boolean] :render_repeats (false)
+  #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
+  #   symbol.
   # @return [Array<Hash{Symbol,Array<Symbol,String>}>]
   #   An array with a hash for each line.
   #   
@@ -68,8 +90,9 @@ class Section
   def render_lines(options)
     modulation = options[:modulation] || 0
     lyric_variation = options[:variation] || 1
+    render_repeats = options[:render_repeats] || false
     
-    chords = render_chords(modulation)
+    chords = render_chords(modulation,render_repeats)
     
     lyric = lyrics.all.find { |l| l.variation == lyric_variation }
     
@@ -88,6 +111,9 @@ class Section
   # @option options [Integer] :variation (1)
   #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
+  # @option options [Boolean] :render_repeats (false)
+  #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
+  #   symbol.
   # @return [Hash{Symbol,Array<Symbol,String>}]
   #   A hash representing the line, with two key/value pairs -- `:chords`, for the absolute chords 
   #   of the line in an array, and `:lyrics`, for the lyrics for the line split up at each chord 
@@ -103,7 +129,7 @@ class Section
   #   The number of lines in this section.
   #
   def line_count
-    @prog_order.length
+    prog_order.length
   end
   
   # An array containing the lengths, in bars/chord changes, of each line in this section.
@@ -112,7 +138,7 @@ class Section
   #   Array of lengths of each line/chord progression, in bars/chord changes.
   # 
   def line_lengths
-    @prog_order.map { |prog_id| ChordProgression.get(prog_id) }.map { |p| p.length }
+    prog_order.map { |prog_id| ChordProgression.get(prog_id) }.map { |p| p.length }
   end
   
   # The title of the section.  This will usually just be the type.  However, if there are more than
@@ -123,10 +149,10 @@ class Section
   #   The title of the section
   #
   def title
-    if @song.count_sections(@type) == 1
-      @type
+    if song.count_sections(type) <= 1
+      type
     else
-      "#{@type} #{(@variation + 9).to_s(36).upcase}"
+      "#{type} #{(variation + 9).to_s(36).upcase}"
     end
   end
   

@@ -23,8 +23,8 @@ describe 'section' do
     
   end
   
-  specify 'chorus chords should render properly in the song' do
-    chord_progs = @hiok_chorus.render_chords
+  specify 'chorus chords should render properly in the song with rendered repeats' do
+    chord_progs = @hiok_chorus.render_chords(0,true)
     chord_progs.size.should == 2
     
     chord_progs[0].should == [ :G, :'G/B', :C , :C ]
@@ -35,24 +35,24 @@ describe 'section' do
     chord_progs = @hiok_bridge.render_chords(2)
     chord_progs.size.should == 2
     
-    chord_progs[0].should == [ :'F#m', :'E/G#', :A , :A ]
-    chord_progs[1].should == [ :'Bm7', :'A/C#', :D , :D ]
+    chord_progs[0].should == [ :'F#m', :'E/G#', :A , :'' ]
+    chord_progs[1].should == [ :'Bm7', :'A/C#', :D , :'' ]
   end
   
   specify 'chorus chords with lyrics should render properly modulated downards 2' do
     lines = @hiok_chorus.render_lines(:modulation => -2)
     lines.size.should == 2
     
-    lines[0][:chords].should == [ :F, :'F/A', :Bb , :Bb ]
+    lines[0][:chords].should == [ :F, :'F/A', :Bb , :'' ]
     lines[0][:lyrics].should == ["Here is our","King, here is our","Love, here is our","God who's come to","bring us back to him"]
-    lines[1][:chords].should == [ :F, :'F/A', :Bb , :Bb ]
+    lines[1][:chords].should == [ :F, :'F/A', :Bb , :'' ]
     lines[1][:lyrics].should == [" ","He is the one","He is Je-","sus"," "]
   end
   
   specify 'bridge chords with lyrics should render properly modulated up 4, second variation, as an iterator' do
     
-    result_lines = [ { :chords => [ :'G#m', :'F#/A#', :B , :B ], :lyrics => [' ','Ma-','jes-','ty',' '] },
-                     { :chords => [ :'C#m7', :'B/D#', :E , :E ], :lyrics => [' ','Fi-','na-','ly','here'] } ]
+    result_lines = [ { :chords => [ :'G#m', :'F#/A#', :B , :'' ], :lyrics => [' ','Ma-','jes-','ty',' '] },
+                     { :chords => [ :'C#m7', :'B/D#', :E , :'' ], :lyrics => [' ','Fi-','na-','ly','here'] } ]
     
     i = 0
     @hiok_bridge.each_rendered_line(:modulation => 4, :variation => 2) do |line|
@@ -66,9 +66,9 @@ describe 'section' do
     lines = @hiok_chorus.render_lines(:modulation => -3, :variation => 2)
     lines.size.should == 2
     
-    lines[0][:chords].should == [ :E, :'E/G#', :A , :A ]
+    lines[0][:chords].should == [ :E, :'E/G#', :A , :'' ]
     lines[0][:lyrics].should == [' ',' ',' ',' ',' ']
-    lines[1][:chords].should == [ :E, :'E/G#', :A , :A ]
+    lines[1][:chords].should == [ :E, :'E/G#', :A , :'' ]
     lines[1][:lyrics].should == [' ',' ',' ',' ',' ']
   end
   

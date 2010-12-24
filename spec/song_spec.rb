@@ -42,7 +42,7 @@ describe 'song' do
     
     rendered[:title].should == "VERSE 1"
     rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb,:'']
   end
   
   specify 'prechorus 1 renders properly' do
@@ -58,7 +58,7 @@ describe 'song' do
     
     rendered[:title].should == "CHORUS"
     rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:Bb,:F,:F,:Gm,:F,:Eb,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:'',:F,:'',:Gm,:F,:Eb,:'']
   end
   
   specify 'verse 2 renders properly' do
@@ -66,7 +66,7 @@ describe 'song' do
     
     rendered[:title].should == "VERSE 2"
     rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb,:'']
   end
   
   specify 'prechorus 2 renders properly' do
@@ -82,9 +82,9 @@ describe 'song' do
     
     rendered[:title].should == "CHORUS"
     rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:Bb,:F,:F,:Gm,:F,:Eb,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:'',:F,:'',:Gm,:F,:Eb,:'']
     rendered[:lines][2][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][3][:chords].should == [:Bb,:Bb,:F,:F,:Gm,:F,:Eb,:Eb]
+    rendered[:lines][3][:chords].should == [:Bb,:'',:F,:'',:Gm,:F,:Eb,:'']
   end
   
   specify 'bridge renders properly' do
@@ -104,9 +104,9 @@ describe 'song' do
     
     rendered[:title].should == "CHORUS"
     rendered[:lines][0][:chords].should == [:C,:G,:Am,:F]
-    rendered[:lines][1][:chords].should == [:C,:C,:G,:G,:Am,:G,:F,:F]
+    rendered[:lines][1][:chords].should == [:C,:'',:G,:'',:Am,:G,:F,:'']
     rendered[:lines][2][:chords].should == [:C,:G,:Am,:F]
-    rendered[:lines][3][:chords].should == [:C,:C,:G,:G,:Am,:G,:F,:F]
+    rendered[:lines][3][:chords].should == [:C,:'',:G,:'',:Am,:G,:F,:'']
   end
   
 end
