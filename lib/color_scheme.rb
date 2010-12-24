@@ -33,7 +33,8 @@ class ColorScheme
   #
   # @private
   #
-  @@natural_key_colors = [:sharp,nil,:sharp,:flat,nil,:sharp,nil,:flat,nil,:sharp]
+  @@natural_key_colors = [:sharp,nil,:sharp,:flat,nil,:sharp,nil,:sharp,:flat,nil,:sharp,nil]
+  #                        A     Bb   B      C    C#   D     Eb   E      F    F#   G     Ab
   
   validates_with_block :scheme do
     @scheme.all? { |c| c.nil? or c == :sharp or c == :flat }
@@ -56,17 +57,6 @@ class ColorScheme
     end
   end
   
-  # Gives the full color scheme for this scheme, naturals and accidentals included.
-  # 
-  # @return [Array<Symbol>]
-  #   Array containing the symbol of colors in the scheme, `:sharp` or 
-  #   `:flat`.
-  #
-  def full_scheme
-    @full_scheme = (0..11).map { |n| (scheme[n] || @@natural_key_colors[n]) } unless @full_scheme
-    @full_scheme
-  end
-  
   # Gives the color stored in this scheme for the given SongKey.
   # 
   # @param [SongKey] song_key
@@ -76,6 +66,17 @@ class ColorScheme
   # 
   def color_for(song_key)
     full_scheme[song_key.key_id]
+  end
+  
+  # Gives the full color scheme for this scheme, naturals and accidentals included.
+  # 
+  # @return [Array<Symbol>]
+  #   Array containing the symbol of colors in the scheme, `:sharp` or 
+  #   `:flat`.
+  #
+  def full_scheme
+    @full_scheme = (0..11).map { |n| (scheme[n] || @@natural_key_colors[n]) } unless @full_scheme
+    @full_scheme
   end
   
 end

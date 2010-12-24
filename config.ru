@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'song_database')
-
 set :run, false
 set :environment, :production
 

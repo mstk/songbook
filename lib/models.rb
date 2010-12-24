@@ -3,7 +3,8 @@ class Song
   
   property :id,             Serial
   property :title,          String, :required => true
-  property :artist,         String, :default => "(no artist)"
+  property :structure,      Yaml, :required => true
+  property :artist,         String
   property :time_signature, String, :default => "4/4"
   property :comment,        Text
   property :created_on,     Date
@@ -12,17 +13,17 @@ class Song
   
   has n, :sections
   
-  has n, :tags, :through => Resource
+  # has n, :tags, :through => Resource
 end
 
-class Tag
-  include DataMapper::Resource
+# class Tag
+  # include DataMapper::Resource
   
-  property :id,     Serial
-  property :name,   String, :required => true
+  # property :id,     Serial
+  # property :name,   String, :required => true
   
-  has n, :songs, :through => Resource
-end
+  # has n, :songs, :through => Resource
+# end
 
 class SongKey
   include DataMapper::Resource
@@ -39,12 +40,29 @@ class Section
   
   property :id,         Serial
   property :type,       String, :default => "CHORUS"
-  property :count,      Integer, :default => 1
-  property :transpose,  Integer, :default => 0
+  property :variation,  Integer, :default => 1
+  property :prog_order, Yaml, :lazy => true
+  
+  # will be covered by @order in Song
+  # property :lyric_order,Yaml, :lazy => true, :default => [0]
   
   belongs_to :song
   
   has n, :chord_progressions, :through => Resource
+  has n, :lyrics,             :through => Resource
+end
+
+class Lyric
+  include DataMapper::Resource
+  
+  property :id,         Serial
+  
+  # the number of the variation of the section (first verse lyrics, second verse lyrics, etc.)
+  property :variation,  Integer, :default => 1
+  
+  property :text_tree,  Yaml, :lazy => true
+  
+  belongs_to :section
 end
 
 class ChordProgression
@@ -52,6 +70,8 @@ class ChordProgression
   
   property :id,           Serial
   property :progression,  Yaml, :required => true, :lazy => true
+  
+  # not necessary because chords will only ever be compared to those of the same resolution for now
   # property :resolution,   Integer, :default => 1
   
   validates_uniqueness_of :progression

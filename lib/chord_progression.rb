@@ -28,6 +28,15 @@ class ChordProgression
     chords_array.map { |c| c.render_into(song_key,color_scheme) }
   end
   
+  # The length, in chords, of the chord progression.
+  #
+  # @return [Integer]
+  #   The length of the chord progression.
+  # 
+  def length
+    progression.length
+  end
+  
   private
   
   # Access the array of Chord instances corresponding with the array of chord_symbols stored in the

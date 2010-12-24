@@ -20,8 +20,11 @@
 # 
 class SongKey
   
+  # The set of all valid key symbols, split by color.
   KEY_SET = { :flat   => %w[ A Bb B C Db D Eb E F Gb G Ab ].map { |k| k.intern },
               :sharp  => %w[ A A# B C C# D D# E F F# G G# ].map { |k| k.intern } }
+  
+  # An array containing all valid key symbols.
   KEYS = (KEY_SET.values.flatten.uniq)
   
   KEY_SET.values.each { |ks| ks.freeze }

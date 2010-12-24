@@ -6,6 +6,19 @@
 # currently), in a sort of singleton pattern.  In a way, they represent constants and are 
 # immutable.  To access the Chord instance for a given chord, use Chord::CHORD(chord symbol)
 # 
+# Chord symbols are in the form `:"I-mod1-mod2..._inversion"`, where modifiers are arbitrary 
+# strings like "7" and "sus".  Inversions are integers representing the scale degree that is the 
+# bass note.  This is different from figured bass convention, but seems more natural to me.
+# 
+# @note
+#   Please avoid modifiers and inversions whenever possible, unless they significantly change the
+#   character of the chord progression.
+#
+# @note
+#   Modifiers don't actually "do" anything at the moment.  They're just dumb strings for the most
+#   part.  The one exception is "\*" (diminished), which changes the scale used when finding 
+#   inversion notes.  "+" (augmented) is dumb for now.  Please don't use it with inversions.
+# 
 # @author Justin Le
 # 
 class Chord
@@ -17,20 +30,28 @@ class Chord
   # @private
   @@chord_symbols = { :major => @@roman_numerals.map { |c| c.intern },
                       :minor => @@roman_numerals.map { |c| c.downcase.intern } }
+  
+  # All valid chord symbols
   CHORD_SYMBOLS = @@chord_symbols.values.flatten
   
   # @private
-  @@symbol_steps = { :I => 0, :II => 2, :III => 4, :IV => 5, :V => 7, :VI => 9, :VII => 11 }
-  # @private
-  @@step_symbols = [:I,nil,:ii,nil,:iii,:IV,nil,:V,nil,:vi,nil,:vii]
-  
-  # @private
   @@CHORD_INDEX = Hash.new do |h,c|
-    new(c)
+    h[c] = new(c)
   end
   
   # @private
   @@mode_render = { :major => "", :minor => "m" }
+  
+  # Retrieve the Chord instance for a given chord_symbol.
+  #
+  # @param [Symbol] chord_symbol
+  #   A chord symbol from Chord::CHORD_SYMBOLS.
+  # @return [Chord]
+  #   SongKey corresponding to that chord symbol
+  #
+  def Chord.CHORD(chord_symbol)
+    @@CHORD_INDEX[chord_symbol]
+  end
   
   # Renders the chord to the given key, with the given color scheme.
   # 
@@ -44,34 +65,56 @@ class Chord
   #   ColorScheme.
   # 
   def render_into(song_key,color_scheme = ColorScheme.get('default'))
-    "#{song_key.transpose(@modulation).render_step(@step,color_scheme)}#{@@mode_render[@mode]}".intern
-  end
-  
-  # Retrieve the Chord instance for a given chord_symbol.
-  #
-  # @param [Symbol] chord_symbol
-  #   A chord symbol from Chord::CHORD_SYMBOLS.
-  # @return [Chord]
-  #   SongKey corresponding to that chord symbol
-  #
-  def Chord.CHORD(chord_symbol)
-    # validation
-    Chord.extract_chords(chord_symbol)
+    if @sub
+      render_color = color_scheme.color_for(song_key)
+      render_key = song_key.transpose(-1)
+      rendered_chord_note_raw = render_key.render_step(@step,color_scheme)
+      rendered_chord_note = Note::get_enharmonic_in_color(rendered_chord_note_raw,render_color)
+    else
+      rendered_chord_note = song_key.render_step(@step,color_scheme)
+    end
     
-    @@CHORD_INDEX[chord_symbol]
+    mode_str = @@mode_render[@mode]
+    
+    modifiers_str = @modifiers * ""
+    
+    if @inversion > 1
+      
+      scale_mode = @mode
+      scale_mode = :locrian if @modifiers.include? "*"
+      # @todo implement augmented. lol ya right. nvm.
+      
+      chord_scale = ScaleGenerator::generate_scale( SongKey.KEY(rendered_chord_note) , color_scheme.color_for(song_key) , scale_mode )
+      
+      inversion_str = "/#{chord_scale[@inversion-1]}"
+    else
+      inversion_str = ""
+    end
+    
+    "#{rendered_chord_note}#{mode_str}#{modifiers_str}#{inversion_str}".intern
   end
   
   # Retrieve the chord symbol for this Chord instance.
   #
   # @return [Symbol]
   #   The symbol representing the roman-numeral relative value of the chord
-  #
+  # 
   def symbol
-    if @modulation == 0
-      @@chord_symbols[@mode][@step]
-    else
-      "#{@@chord_symbols[@mode][@step]}/#{@@step_symbols[@modulation]}".intern
-    end
+    sub_str       = @sub ? "b" : ""
+    chord_str     = @@chord_symbols[@mode][@step]
+    modifiers_str = @modifiers.empty? ? "" : "-#{@modifiers * "-"}"
+    inversion_str = @inversion > 1 ? "_#{@inversion}" : ""
+    
+    "#{sub_str}#{chord_str}#{modifiers_str}#{inversion_str}".intern
+  end
+  
+  # Whether or not the chord is a sub chord. (modulation one half-step down)
+  #
+  # @return [Boolean]
+  #   true if it is, false if it is not.
+  # 
+  def is_sub?
+    @sub
   end
   
   # Initialize a new Chord instance with a given chord_symbol.  Private method, and should only be
@@ -83,30 +126,34 @@ class Chord
   # @private
   # 
   def initialize(chord_symbol)
-    chord_part, mod_part = Chord.extract_chords(chord_symbol)
+    
+    chord_symbol_str = chord_symbol.to_s
+    chord_symbol_str += "_1" unless chord_symbol_str.include? "_"
+    
+    chord_with_mods,inversion_str = chord_symbol_str.split("_")
+    
+    chord_part_str,*@modifiers = chord_with_mods.to_s.split("-")
+    
+    if chord_part_str[0] == "b"
+      @sub = true
+      chord_part = chord_part_str[1..-1].intern
+    else
+      @sub = false
+      chord_part = chord_part_str.intern
+    end
+    
+    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
+    
+    inversion_number = inversion_str.to_i
+    
+    # validate for valid inversion
+    raise ArgumentError unless inversion_number > 0
+    
+    # some math to "reduce" the inversion to its lowest equivalent
+    @inversion = (inversion_number - 1) % 7 + 1
     
     @mode = [:major,:minor].find { |mode| @@chord_symbols[mode].include? chord_part }
     @step = @@chord_symbols[@mode].index(chord_part)
-    @modulation = @@symbol_steps[mod_part.to_s.upcase.intern]
-  end
-  
-  # Helper method to extract the chord and modulation from a given chord symbol.  Also validates.
-  #
-  # @param [Symbol] chord_symbol
-  #   Symbol of the chord symbol to be parsed.
-  # @return [Array(Symbol,Symbol)]
-  #   An array containing first the chord part, then the modulation part.
-  # 
-  def Chord.extract_chords(chord_symbol)
-    chord_string = chord_symbol.to_s
-    chord_string += "/I" unless chord_string.include?("/")
-    
-    chord_part, mod_part = chord_string.split("/").map { |c| c.intern }
-    
-    raise ArgumentError unless CHORD_SYMBOLS.include? chord_part
-    raise ArgumentError unless CHORD_SYMBOLS.include? mod_part
-    
-    return [chord_part, mod_part]
   end
   
 end
