@@ -86,7 +86,7 @@ class Chord
       
       chord_scale = ScaleGenerator::generate_scale( SongKey.KEY(rendered_chord_note) , color_scheme.color_for(song_key) , scale_mode )
       
-      inversion_str = "/#{chord_scale[8-@inversion]}"
+      inversion_str = "/#{chord_scale[@inversion-1]}"
     else
       inversion_str = ""
     end

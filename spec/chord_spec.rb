@@ -7,7 +7,7 @@ describe 'chord' do
     @minor_chord = Chord.CHORD(:vi)
     @hey_jude_chord = Chord.CHORD(:bVII)
     @suspended_chord = Chord.CHORD(:'V-sus')
-    @inverted_chord = Chord.CHORD(:'I-M7_6')
+    @inverted_chord = Chord.CHORD(:'I-M7_3')
   end
   
   specify 'Chord::CHORD should return a Chord instance' do
@@ -23,7 +23,7 @@ describe 'chord' do
     @minor_chord.symbol.should == :vi
     @hey_jude_chord.symbol.should == :bVII
     @suspended_chord.symbol.should == :'V-sus'
-    @inverted_chord.symbol.should == :'I-M7_6'
+    @inverted_chord.symbol.should == :'I-M7_3'
   end
   
   specify 'chords should render into keys properly' do

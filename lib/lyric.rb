@@ -10,6 +10,35 @@
 # 
 class Lyric
   
+  def Lyric.parse(text,section,variation=0)
+    lines = text.split("\n\n")
+    bars = lines.map { |l| l.split("\n") }
+    
+    Lyric.create(:text_tree => bars, :section => section, :variation => variation)
+  end
   
+  def render_lines
+    
+    total_lines = @section.line_count
+    line_lengths = @section.line_lengths
+    
+    output_lines = @text_tree.map { |line| line.clone }
+    
+    until output_lines.length >= total_lines
+      output_lines += ['']
+    end
+    
+    output_lines.length.times do |n|
+      next unless line_lengths[n]
+      
+      until output_lines[n].length >= line_lengths[n]
+        output_lines[n] += ['']
+      end
+      
+    end
+    
+    output_lines
+    
+  end
   
 end
