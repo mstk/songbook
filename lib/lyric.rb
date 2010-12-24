@@ -84,4 +84,14 @@ class Lyric
     
   end
   
+  # Iterates through the rendered lines of this lyrical block.
+  # 
+  # @return [Array<String>]
+  #   Lyrical lines, which are themselves arrays split by chord changes.  Blank chord changes and
+  #   lines included.
+  # 
+  def each_rendered_line
+    render_lines.each { |l| yield l }
+  end
+  
 end

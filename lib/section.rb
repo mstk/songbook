@@ -38,7 +38,7 @@ class Section
   #   
   #   Each hash has two key/value pairs -- `:chords`, for the absolute chords of the line in an 
   #   array, and `:lyrics`, for the lyrics for the line split up at each chord change, in an array.
-  #
+  # 
   def render_lines(options)
     modulation = options[:modulation] || 0
     lyric_variation = options[:variation] || 0
@@ -50,6 +50,25 @@ class Section
     lyric_lines = lyric ? lyric.render_lines : line_lengths.map { |l| Array.new(l+1) {' '} }
     
     (0..chords.length-1).map { |n| { :chords => chords[n], :lyrics => lyric_lines[n] } }
+  end
+  
+  # Iterates through the lines in this section.
+  #
+  # @param [Hash] options
+  #   Options for rendering the lines.
+  # @option options [Integer] :modulation (0)
+  #   Optional modulation parameter to modulate the song's key for rendering this particular 
+  #   section.
+  # @option options [Integer] :variation (0)
+  #   Variation of the lyrics for the section to use.  Defaults to 0.  If the variation is not
+  #   found, will return blank strings for lyrical lines.
+  # @return [Hash{Symbol,Array<Symbol,String>}]
+  #   A hash representing the line, with two key/value pairs -- `:chords`, for the absolute chords 
+  #   of the line in an array, and `:lyrics`, for the lyrics for the line split up at each chord 
+  #   change, in an array.
+  # 
+  def each_rendered_line(options)
+    render_lines(options).each { |l| yield l }
   end
   
   # The number of lines/chord progressions in this section.
