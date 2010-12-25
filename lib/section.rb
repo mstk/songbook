@@ -118,7 +118,7 @@ class Section
     else
       return (0..chords.length-1).map do |n|
         
-        has_pickup = lyric_lines[n][0].length > 0
+        has_pickup = lyric_lines[n][0].length > 0 && lyric_lines[n][0] != ' '
         
         full_lyrics = Array.new
         

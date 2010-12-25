@@ -45,14 +45,14 @@ describe 'section' do
     
     lines[0][:chords].should == [ :'', :F, :'F/A', :Bb]
     lines[0][:lyrics].should == ["Here is our ","King, here is our ","Love, here is our ","God who's come to bring us back to him"]
-    lines[1][:chords].should == [ :'', :F, :'F/A', :Bb]
-    lines[1][:lyrics].should == [" ","He is the one ","He is Je-","sus" ]
+    lines[1][:chords].should == [ :F, :'F/A', :Bb]
+    lines[1][:lyrics].should == [ "He is the one ","He is Je-","sus" ]
   end
   
   specify 'bridge chords with lyrics should render properly modulated up 4, second variation, as an iterator' do
     
-    result_lines = [ { :chords => [ :'', :'G#m', :'F#/A#', :B ], :lyrics => [' ','Ma-','jes-','ty'] },
-                     { :chords => [ :'', :'C#m7', :'B/D#', :E ], :lyrics => [' ','Fi-','na-','ly here'] } ]
+    result_lines = [ { :chords => [ :'G#m', :'F#/A#', :B ], :lyrics => ['Ma-','jes-','ty'] },
+                     { :chords => [ :'C#m7', :'B/D#', :E ], :lyrics => ['Fi-','na-','ly here'] } ]
     
     i = 0
     @hiok_bridge.each_rendered_line(:modulation => 4, :variation => 2) do |line|
@@ -66,10 +66,10 @@ describe 'section' do
     lines = @hiok_chorus.render_lines(:modulation => -3, :variation => 2)
     lines.size.should == 2
     
-    lines[0][:chords].should == [ :'', :E, :'E/G#', :A ]
-    lines[0][:lyrics].should == [' ',' ',' ',' ' ]
-    lines[1][:chords].should == [ :'', :E, :'E/G#', :A ]
-    lines[1][:lyrics].should == [' ',' ',' ',' ' ]
+    lines[0][:chords].should == [ :E, :'E/G#', :A ]
+    lines[0][:lyrics].should == [' ',' ',' ' ]
+    lines[1][:chords].should == [ :E, :'E/G#', :A ]
+    lines[1][:lyrics].should == [' ',' ',' ' ]
   end
   
   specify 'should render title properly' do

@@ -87,6 +87,7 @@ class Lyric
         next b if b == ''
         next b if b[-1] == "-"
         next (b + " ") if b[-1] != ' '
+        next '' if b == ' '
         next b
       end
       

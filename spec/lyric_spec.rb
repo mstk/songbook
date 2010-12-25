@@ -27,15 +27,15 @@ describe 'lyric' do
     lines.size.should == 2
     
     lines[0].should == ["Here is our ","King, here is our ","Love, here is our ","God who's come to ","bring us back to him"]
-    lines[1].should == [" ","He is the one ","He is Je-","sus",""]
+    lines[1].should == ["","He is the one ","He is Je-","sus",""]
   end
   
   specify 'bridge lyrics should render properly' do
     lines = @bridge_lyric.render_lines
     lines.size.should == 2
     
-    lines[0].should == [' ','Ma-','jes-','ty','']
-    lines[1].should == [' ','Fi-','na-','ly','']
+    lines[0].should == ['','Ma-','jes-','ty','']
+    lines[1].should == ['','Fi-','na-','ly','']
   end
   
 end

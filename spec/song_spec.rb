@@ -33,7 +33,7 @@ describe 'song' do
     rendered = @rendered_sections[0]
     
     rendered[:title].should == "INTRO"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
     
   end
   
@@ -41,72 +41,88 @@ describe 'song' do
     rendered = @rendered_sections[1]
     
     rendered[:title].should == "VERSE 1"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb]
   end
   
   specify 'prechorus 1 renders properly' do
     rendered = @rendered_sections[2]
     
     rendered[:title].should == "PRECHORUS"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:Eb]
   end
   
   specify 'chorus 1 renders properly' do
     rendered = @rendered_sections[3]
     
     rendered[:title].should == "CHORUS"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
   end
   
   specify 'verse 2 renders properly' do
     rendered = @rendered_sections[4]
     
     rendered[:title].should == "VERSE 2"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb]
   end
   
   specify 'prechorus 2 renders properly' do
     rendered = @rendered_sections[5]
     
     rendered[:title].should == "PRECHORUS"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:Eb]
   end
   
   specify 'chorus 2 renders properly' do
     rendered = @rendered_sections[6]
     
     rendered[:title].should == "CHORUS"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
-    rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    # rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][2][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][3][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
   end
   
   specify 'bridge renders properly' do
     rendered = @rendered_sections[7]
     
     rendered[:title].should == "BRIDGE"
-    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][4][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][5][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][4][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    # rendered[:lines][5][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][2][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][3][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][4][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][5][:chords].should == [:Bb,:F,:Gm,:Eb]
   end
   
   specify 'chorus 3 renders properly' do
     rendered = @rendered_sections[8]
     
     rendered[:title].should == "CHORUS"
-    rendered[:lines][0][:chords].should == [:'',:C,:G,:Am,:F]
-    rendered[:lines][1][:chords].should == [:'',:C,:G,:Am,:G,:F]
-    rendered[:lines][2][:chords].should == [:'',:C,:G,:Am,:F]
-    rendered[:lines][3][:chords].should == [:'',:C,:G,:Am,:G,:F]
+    # rendered[:lines][0][:chords].should == [:'',:C,:G,:Am,:F]
+    # rendered[:lines][1][:chords].should == [:'',:C,:G,:Am,:G,:F]
+    # rendered[:lines][2][:chords].should == [:'',:C,:G,:Am,:F]
+    # rendered[:lines][3][:chords].should == [:'',:C,:G,:Am,:G,:F]
+    rendered[:lines][0][:chords].should == [:C,:G,:Am,:F]
+    rendered[:lines][1][:chords].should == [:C,:G,:Am,:G,:F]
+    rendered[:lines][2][:chords].should == [:C,:G,:Am,:F]
+    rendered[:lines][3][:chords].should == [:C,:G,:Am,:G,:F]
   end
   
 end
