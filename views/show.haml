@@ -18,10 +18,10 @@
       .song_section
         %span.section_title= section[:title]
         - section[:lines].each do |line|
-          .line
+          %div{:class => (line[:lyrics].any?{ |l| l != '' && l != ' ' }) ? ['line'] : ['line','instrumental_line'] }
             .chord_line
               - line[:chords].map { |c| c.to_s.length == 0 ? '&nbsp;' : c.to_s }.each do |chord|
                 %span.chord_block= chord
             .lyric_line
-              - line[:lyrics].map { |l| (l.length == 0 or l == ' ') ?  '&nbsp;' : c.to_s }.each do |lyric|
-                %span.lyric_block= lyric
+              - line[:lyrics].map { |l| l.length == 0 ?  '&nbsp;' : l.gsub(' ','&nbsp;') }.each do |lyric|
+                %span.lyric_block= (lyric[-1] == '-') ? lyric[0..-2] : lyric

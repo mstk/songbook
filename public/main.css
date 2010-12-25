@@ -55,32 +55,41 @@ a:hover {
 --------------------------------------------------------------------------------- */
 
 #song_info {
-   margin: 10px;
-   padding: 10px;
-   overflow: hidden;
+    margin: 5px;
+    padding: 15px;
+    overflow: hidden;
 }
 
-div.line {
-     display:table;   
+.song_section {
+    padding: 1em 0px;
 }
 
-div.line > div {
-     display:table-row;   
+.line {
+    display:table;   
+    padding: 0.5em 5px;
 }
 
-div.line > div span {
-     display:table-cell;
-     vertical-align:middle;   
+.instrumental_line { 
+    padding: 1px 5px;
+}
+
+.line > div {
+    display:table-row;   
+}
+
+.line > div span {
+    display:table-cell;
+    vertical-align:middle;   
 }
 
 /*just for looks*/
 
-div.line > div:first-child {
-  font-weight:bold;
-  color:#252525;
-  font-size:0.8em;
+.line > :first-child {
+    font-weight:bold;
+    color:#252525;
+    font-size:0.9em;
 }
 
-div.line > div span {
- padding:1px 2px;   
+.line > div span {
+    padding: 1px 2px;
 }

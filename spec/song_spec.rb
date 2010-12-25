@@ -26,6 +26,40 @@ describe 'song' do
     @chorus     = Section.build( :type => "CHORUS", :progressions => [prog_1,prog_3], :song => @bbyn )
     @bridge     = Section.build( :type => "BRIDGE", :progressions => [prog_1,prog_1], :song => @bbyn )
     
+    chorus_text = <<CHORUS
+Blessed be the
+name of the
+Lord, Blessed be your
+name
+
+Blessed be the
+name
+of the
+Lord,
+Blessed be your
+Glo-
+rious
+name
+CHORUS
+    
+    bridge_text = <<BRIDGE
+You
+give and take a-
+way, you
+give and take a-
+way
+
+My
+heart will choose to
+say, "Lord,
+blessed be your
+name"
+BRIDGE
+    
+    
+    Lyric.build( chorus_text, @chorus )
+    Lyric.build( bridge_text, @bridge )
+    
     @rendered_sections = @bbyn.render_sections
   end
   
@@ -57,10 +91,8 @@ describe 'song' do
     rendered = @rendered_sections[3]
     
     rendered[:title].should == "CHORUS"
-    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
-    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
   end
   
   specify 'verse 2 renders properly' do
@@ -83,46 +115,32 @@ describe 'song' do
     rendered = @rendered_sections[6]
     
     rendered[:title].should == "CHORUS"
-    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
-    # rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
-    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
-    rendered[:lines][2][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][3][:chords].should == [:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
+    rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:F,:Eb]
   end
   
   specify 'bridge renders properly' do
     rendered = @rendered_sections[7]
     
     rendered[:title].should == "BRIDGE"
-    # rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][4][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    # rendered[:lines][5][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
-    rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][1][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][2][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][3][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][4][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][5][:chords].should == [:Bb,:F,:Gm,:Eb]
+    rendered[:lines][0][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][1][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][2][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][3][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][4][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
+    rendered[:lines][5][:chords].should == [:'',:Bb,:F,:Gm,:Eb]
   end
   
   specify 'chorus 3 renders properly' do
     rendered = @rendered_sections[8]
     
     rendered[:title].should == "CHORUS"
-    # rendered[:lines][0][:chords].should == [:'',:C,:G,:Am,:F]
-    # rendered[:lines][1][:chords].should == [:'',:C,:G,:Am,:G,:F]
-    # rendered[:lines][2][:chords].should == [:'',:C,:G,:Am,:F]
-    # rendered[:lines][3][:chords].should == [:'',:C,:G,:Am,:G,:F]
-    rendered[:lines][0][:chords].should == [:C,:G,:Am,:F]
-    rendered[:lines][1][:chords].should == [:C,:G,:Am,:G,:F]
-    rendered[:lines][2][:chords].should == [:C,:G,:Am,:F]
-    rendered[:lines][3][:chords].should == [:C,:G,:Am,:G,:F]
+    rendered[:lines][0][:chords].should == [:'',:C,:G,:Am,:F]
+    rendered[:lines][1][:chords].should == [:'',:C,:G,:Am,:G,:F]
+    rendered[:lines][2][:chords].should == [:'',:C,:G,:Am,:F]
+    rendered[:lines][3][:chords].should == [:'',:C,:G,:Am,:G,:F]
   end
   
 end
