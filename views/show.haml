@@ -1,21 +1,27 @@
-%h2= @song.title
+#song_container
+  %h2= @song.title
 
-#song_info
+  #song_info
 
-  .artist= @song.artist
-  .song_key
-    Key of
-    %span= @song.song_key.symbol
+    .artist= @song.artist
+    .song_key
+      Key of
+      %span= @song.song_key.symbol
 
-  .time_signature
-    Time Signature
-    %span= @song.time_signature
-  
+    .time_signature
+      Time Signature
+      %span= @song.time_signature
+    
 
-#song_chords
-  - @rendered_sections.each do |section|
-    .song_section
-      %span.section_title= section[:title]
-      - section[:lines].each do |line|
-        %span.chord_line= line[:chords] * " "
-        %span.lyric_line= line[:lyrics] * " "
+  #song_chords
+    - @rendered_sections.each do |section|
+      .song_section
+        %span.section_title= section[:title]
+        - section[:lines].each do |line|
+          .line
+            .chord_line
+              - ([:''] + line[:chords]).each do |chord|
+                %span.chord_block= chord
+            .lyric_line
+              - line[:lyrics].each do |lyric|
+                %span.lyric_block= lyric

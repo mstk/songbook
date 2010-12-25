@@ -79,7 +79,6 @@ class Section
     end
     
     rendered_chords
-    
   end
   
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
@@ -114,7 +113,7 @@ class Section
     
     lyric_lines = lyric ? lyric.render_lines : line_lengths.map { |l| Array.new(l+1) {' '} }
     
-    (0..chords.length-1).map { |n| { :chords => chords[n], :lyrics => lyric_lines[n] } }
+    (0..chords.length-1).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n] } }
   end
   
   # Iterates through the lines in this section.

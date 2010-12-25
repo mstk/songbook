@@ -50,3 +50,37 @@ a:hover {
 #logo a:hover {
   text-decoration: none;
 }
+
+/* ------------------------------------------------------------------------------
+--------------------------------------------------------------------------------- */
+
+#song_info {
+   margin: 10px;
+   padding: 10px;
+   overflow: hidden;
+}
+
+div.line {
+     display:table;   
+}
+
+div.line > div {
+     display:table-row;   
+}
+
+div.line > div span {
+     display:table-cell;
+     vertical-align:middle;   
+}
+
+/*just for looks*/
+
+div.line > div:first-child {
+  font-weight:bold;
+  color:#252525;
+  font-size:0.8em;
+}
+
+div.line > div span {
+ padding:1px 2px;   
+}
