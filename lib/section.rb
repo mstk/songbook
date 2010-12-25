@@ -105,15 +105,44 @@ class Section
   def render_lines(options)
     modulation = options[:modulation] || 0
     lyric_variation = options[:variation] || 1
-    render_repeats = options[:render_repeats] || false
+    render_full = options[:full] || false
     
-    chords = render_chords(modulation,render_repeats)
+    chords = render_chords(modulation,render_full)
     
     lyric = lyrics.all.find { |l| l.variation == lyric_variation }
     
     lyric_lines = lyric ? lyric.render_lines : line_lengths.map { |l| Array.new(l+1) {' '} }
     
-    (0..chords.length-1).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n] } }
+    if render_full
+      return (0..chords.length-1).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n] } }
+    else
+      return (0..chords.length-1).map do |n|
+        
+        has_pickup = lyric_lines[n][0].length > 0
+        
+        full_lyrics = Array.new
+        
+        full_lyrics << lyric_lines[n][0] if has_pickup
+        
+        chords[n].length.times do |i|
+          
+          curr_line = lyric_lines[n][i+1]
+          
+          if chords[n][i] == :''
+            full_lyrics[-1] += curr_line unless curr_line == ' '
+          else
+            full_lyrics << curr_line
+          end
+        end
+        
+        stripped_chords = chords[n].reject { |c| c == :'' }
+        
+        stripped_chords.unshift(:'') if has_pickup
+        
+        next { :chords => stripped_chords, :lyrics => full_lyrics }
+        
+      end
+    end
   end
   
   # Iterates through the lines in this section.

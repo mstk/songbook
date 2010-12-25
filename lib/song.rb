@@ -57,18 +57,21 @@ class Song
   #   - `:chords`, a list of chords on that line.
   #   - `:lyrics`, an array containing the lyrics for that line, split by chord change.
   #
-  def render_sections(key_modifier = nil)
+  def render_sections(options = {})
     
     # find render key
-    if key_modifier
-      if key_modifier.class == SongKey
-        render_key = key_modifier
+    render_key = song_key
+    render_key = song_key.transpose(options[:modulation]) if options[:modulation]
+    if options[:alt_key]
+      if options[:alt_key].class == SongKey
+        render_key = options[:alt_key]
       else
-        render_key = song_key.transpose(key_modifier)
+        render_key = SongKey.KEY( options[:alt_key] )
       end
-    else
-      render_key = song_key
     end
+    
+    # should be rendered fully?
+    render_full = options[:full] || false
     
     expanded_structure = structure.map { |s| Song.structure_interpreter(s) }
     
@@ -84,7 +87,9 @@ class Song
       section_lines = Array.new
       
       sec[:repeat].times do |n|
-        section_lines += section.render_lines( :variation  => sec[:lyric_variation], :modulation => sec[:modulation] )
+        section_lines += section.render_lines(  :variation  => sec[:lyric_variation],
+                                                :modulation => sec[:modulation],
+                                                :full => render_full )
       end
       
       next { :title => title, :lines => section_lines }

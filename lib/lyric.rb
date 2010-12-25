@@ -74,15 +74,30 @@ class Lyric
     
     output_lines = @text_tree.map { |line| line.clone }
     
+    # pad new lines to match the number of chord progressions
     until output_lines.length >= total_lines
-      output_lines += [[" "]]
+      output_lines += [['']]
     end
     
     output_lines.length.times do |n|
       next unless line_lengths[n]
       
+      # make sure all lyric blocks have a space at the end
+      output_lines[n].map! do |b|
+        next b if b == ''
+        next b if b[-1] == "-"
+        next (b + " ") if b[-1] != ' '
+        next b
+      end
+      
+      # make sure the last section block does not have a space at the end
+      if output_lines[n][-1][-1] == ' '
+        output_lines[n][-1] = output_lines[n][-1].squeeze(" ")[0..-2]
+      end
+      
+      # fill line to match the number of chord changes
       until output_lines[n].length >= line_lengths[n]+1
-        output_lines[n] += [" "]
+        output_lines[n] += ['']
       end
       
     end

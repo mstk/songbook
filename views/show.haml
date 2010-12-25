@@ -20,8 +20,8 @@
         - section[:lines].each do |line|
           .line
             .chord_line
-              - ([:''] + line[:chords]).each do |chord|
+              - line[:chords].map { |c| "#{c} ".squeeze(" ") }.each do |chord|
                 %span.chord_block= chord
             .lyric_line
-              - line[:lyrics].each do |lyric|
+              - line[:lyrics].map { |l| "#{l} ".squeeze(" ") }.each do |lyric|
                 %span.lyric_block= lyric
