@@ -82,14 +82,15 @@ fering, blessed be
 Your name
 VERSE
 
-prechorus_text = <<PRECHORUS 
-Every blessing
+prechorus_text = <<PRECHORUS
+ 
+ Every blessing
 you pour out I'll
  turn back to
 praise
 
  
-When the darkness
+ When the darkness
 closes in, Lord,
  still I will say
 PRECHORUS

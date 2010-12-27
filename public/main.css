@@ -61,7 +61,14 @@ a:hover {
 }
 
 .song_section {
-    padding: 1em 0px;
+    padding: 0.2em 1px;
+    margin: 0.3em;
+    background-color: #ffffcc;
+}
+
+span.section_title {
+    font-weight:bold;
+    padding: 1px;
 }
 
 .line {
