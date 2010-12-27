@@ -73,6 +73,9 @@ class Song
     # should be rendered fully?
     render_full = options[:full] || false
     
+    # should lyrics be forced?
+    force_lyrics = options[:force_Lyrics] || false
+    
     expanded_structure = structure.map { |s| Song.structure_interpreter(s) }
     
     return expanded_structure.map do |sec|
@@ -89,10 +92,11 @@ class Song
       sec[:repeat].times do |n|
         section_lines += section.render_lines(  :variation  => sec[:lyric_variation],
                                                 :modulation => sec[:modulation],
-                                                :full => render_full )
+                                                :full => render_full,
+                                                :force_lyrics => force_lyrics )
       end
       
-      next { :title => title, :lines => section_lines }
+      next { :title => title, :lines => section_lines, :instrumental => section_lines[-1][:instrumental] }
       
     end
     

@@ -64,16 +64,23 @@ describe 'section' do
   
   specify 'chorus chords with lyrics should render properly modulated downwards 3, with an unknown variation' do
     lines = @hiok_chorus.render_lines(:modulation => -3, :variation => 2)
-    lines.size.should == 2
+    lines.size.should == 1
     
-    lines[0][:chords].should == [ :E, :'E/G#', :A ]
-    lines[0][:lyrics].should == [' ',' ',' ' ]
-    lines[1][:chords].should == [ :E, :'E/G#', :A ]
-    lines[1][:lyrics].should == [' ',' ',' ' ]
+    lines[0][:chords].should == [ :E, :'E/G#', :A, :'' ]
+    lines[0][:repeat].should == 2
   end
   
   specify 'should render title properly' do
     @hiok_chorus.title.should == "CHORUS"
+  end
+  
+  specify 'should render chords summary properly' do
+    chords_summary = @hiok_chorus.render_chords_summary
+    chords_summary.size.should == 1
+    
+    chords_summary[0][:chords].should == [:G,:'G/B',:C,:'']
+    chords_summary[0][:repeat].should == 2
+    
   end
   
 end

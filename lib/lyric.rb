@@ -122,4 +122,8 @@ class Lyric
     render_lines.each { |l| yield l }
   end
   
+  def is_empty?
+    !text_tree.any? { |line| line.any? { |block| block.length > 0 && block.squeeze(' ') != ' ' } }
+  end
+  
 end
