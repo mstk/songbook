@@ -50,3 +50,57 @@ a:hover {
 #logo a:hover {
   text-decoration: none;
 }
+
+/* ------------------------------------------------------------------------------
+--------------------------------------------------------------------------------- */
+
+#song_info {
+    margin: 5px;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.song_section {
+    padding: 0.2em 1px;
+    margin: 0.3em;
+    background-color: #ffffcc;
+}
+
+span.section_title {
+    font-weight:bold;
+    padding: 1px;
+}
+
+span.section_repeat, span.line_repeat {
+  font-style: italic;
+}
+
+.line, .instrumental_line {
+    padding: 0.5em 5px;
+}
+
+.line {
+    display:table;   
+    padding: 0.5em 5px;
+}
+
+.line > div {
+    display:table-row;   
+}
+
+.line > div span {
+    display:table-cell;
+    vertical-align:middle;   
+}
+
+/*just for looks*/
+
+.chord_block {
+    font-weight:bold;
+    color:#252525;
+    font-size:0.9em;
+}
+
+.line > div span {
+    padding: 1px 2px;
+}

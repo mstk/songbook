@@ -57,38 +57,75 @@ class Song
   #   - `:chords`, a list of chords on that line.
   #   - `:lyrics`, an array containing the lyrics for that line, split by chord change.
   #
-  def render_sections(key_modifier = nil)
+  def render_sections(options = {})
     
     # find render key
-    if key_modifier
-      if key_modifier.class == SongKey
-        render_key = key_modifier
+    render_key = song_key
+    render_key = song_key.transpose(options[:modulation]) if options[:modulation]
+    if options[:alt_key]
+      if options[:alt_key].class == SongKey
+        render_key = options[:alt_key]
       else
-        render_key = song_key.transpose(key_modifier)
+        render_key = SongKey.KEY( options[:alt_key] )
       end
-    else
-      render_key = song_key
     end
+    
+    # should be rendered fully?
+    render_full = options[:full] || false
+    
+    # should all sections be rendered
+    render_all_sections = options[:render_all_sections] || false
+    
+    # should lyrics be forced?
+    force_lyrics = options[:force_Lyrics] || false
     
     expanded_structure = structure.map { |s| Song.structure_interpreter(s) }
     
+    sections_so_far = Hash.new
+    
     return expanded_structure.map do |sec|
       
-      section = sections.all.select { |s| s.type == sec[:type] }.find { |s| s.variation == sec[:variation] }
-      
-      raise "There is no section #{sec[:type]} with variation #{sec[:variation]} in this song." unless section
-      
-      section_tag = sec[:render_section_number] ? " #{sec[:lyric_variation]}" : ""
-      title = "#{section.title}#{section_tag}"
-      
-      section_lines = Array.new
-      
-      sec[:repeat].times do |n|
-        section_lines += section.render_lines( :variation  => sec[:lyric_variation], :modulation => sec[:modulation] )
+      section_fingerprint = { :type => sec[:type],
+                              :variation => sec[:variation],
+                              :modulation => sec[:modulation],
+                              :lyric_variation => sec[:lyric_variation] }
+                              
+      if render_all_sections || !sections_so_far.keys.include?(section_fingerprint)
+        
+        section = sections.all.select { |s| s.type == sec[:type] }.find { |s| s.variation == sec[:variation] }
+        
+        raise "There is no section #{sec[:type]} with variation #{sec[:variation]} in this song." unless section
+        
+        section_tag = sec[:render_section_number] ? " #{sec[:lyric_variation]}" : ""
+        title = "#{section.title}#{section_tag}"
+        
+        section_lines = Array.new
+        
+        section_lines += section.render_lines(  :variation  => sec[:lyric_variation],
+                                                :modulation => sec[:modulation],
+                                                :full => render_full,
+                                                :force_lyrics => force_lyrics )
+        
+        section_data = { :title => title,
+                         :lines => section_lines,
+                         :instrumental => section_lines[-1][:instrumental],
+                         :repeats => sec[:repeat],
+                         :is_repeat => false }
+        
+        sections_so_far[section_fingerprint] = section_data
+        
+        next section_data
+        
+      else
+        
+        prev_repeat = sections_so_far[section_fingerprint]
+        
+        next { :title => prev_repeat[:title],
+               :instrumental => prev_repeat[:instrumental],
+               :repeats => sec[:repeat],
+               :is_repeat => true }
+        
       end
-      
-      next { :title => title, :lines => section_lines }
-      
     end
     
   end

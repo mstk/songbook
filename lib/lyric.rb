@@ -51,6 +51,25 @@ class Lyric
     lines = text.split("\n\n")
     bars = lines.map { |l| l.split("\n") }
     
+    bars.length.times do |n|
+      
+      # make sure all lyric blocks have a space at the end, except for hyphenated ones,
+      # and that blank blocks are blank strings
+      bars[n].map! do |b|
+        next b if b == ''
+        next b if b[-1] == "-"
+        next (b + " ") if b[-1] != ' '
+        next '' if b == ' '
+        next b
+      end
+      
+      # make sure the last section block does not have a space at the end
+      if bars[n][-1][-1] == ' '
+        bars[n][-1] = bars[n][-1].squeeze(" ")[0..-2]
+      end
+      
+    end
+    
     lyric = Lyric.create(:text_tree => bars, :section => section, :variation => variation)
     
     section.lyrics << lyric
@@ -69,20 +88,22 @@ class Lyric
   #
   def render_lines
     
-    total_lines = @section.line_count
-    line_lengths = @section.line_lengths
+    total_lines = section.line_count
+    line_lengths = section.line_lengths
     
-    output_lines = @text_tree.map { |line| line.clone }
+    output_lines = text_tree.map { |line| line.clone }
     
+    # pad new lines to match the number of chord progressions
     until output_lines.length >= total_lines
-      output_lines += [[" "]]
+      output_lines << ''
     end
     
     output_lines.length.times do |n|
       next unless line_lengths[n]
       
+      # fill line to match the number of chord changes
       until output_lines[n].length >= line_lengths[n]+1
-        output_lines[n] += [" "]
+        output_lines[n] << ''
       end
       
     end
@@ -99,6 +120,10 @@ class Lyric
   # 
   def each_rendered_line
     render_lines.each { |l| yield l }
+  end
+  
+  def is_empty?
+    !text_tree.any? { |line| line.any? { |block| block.length > 0 && block.squeeze(' ') != ' ' } }
   end
   
 end

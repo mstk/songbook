@@ -79,7 +79,6 @@ class Section
     end
     
     rendered_chords
-    
   end
   
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
@@ -94,9 +93,12 @@ class Section
   # @option options [Integer] :variation (1)
   #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
-  # @option options [Boolean] :render_repeats (false)
+  # @option options [Boolean] :render_full (false)
   #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
   #   symbol.
+  # @option options [Boolnea] :force_lyrics (false)
+  #   Disallows Section to automatically switch to Instrumental summary output if there are no
+  #   lyrics present.
   # @return [Array<Hash{Symbol,Array<Symbol,String>}>]
   #   An array with a hash for each line.
   #   
@@ -106,15 +108,50 @@ class Section
   def render_lines(options)
     modulation = options[:modulation] || 0
     lyric_variation = options[:variation] || 1
-    render_repeats = options[:render_repeats] || false
-    
-    chords = render_chords(modulation,render_repeats)
+    render_full = options[:full] || false
+    force_lyrics = options[:force_lyrics] || false
     
     lyric = lyrics.all.find { |l| l.variation == lyric_variation }
     
-    lyric_lines = lyric ? lyric.render_lines : line_lengths.map { |l| Array.new(l+1) {' '} }
+    if force_lyrics or (lyric && !lyric.is_empty?)
     
-    (0..chords.length-1).map { |n| { :chords => chords[n], :lyrics => lyric_lines[n] } }
+      chords = render_chords(modulation,render_full)
+    
+      lyric_lines = lyric.render_lines
+      
+      if render_full
+        return (0..chords.length-1).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n], :instrumental => false, :repeat => 1 } }
+      else
+        return (0..chords.length-1).map do |n|
+          
+          has_pickup = lyric_lines[n][0].length > 0 && lyric_lines[n][0] != ' '
+          
+          full_lyrics = Array.new
+          
+          full_lyrics << lyric_lines[n][0] if has_pickup
+          
+          chords[n].length.times do |i|
+            
+            curr_line = lyric_lines[n][i+1]
+            
+            if chords[n][i] == :''
+              full_lyrics[-1] += curr_line unless curr_line == ' '
+            else
+              full_lyrics << curr_line
+            end
+          end
+          
+          stripped_chords = chords[n].reject { |c| c == :'' }
+          
+          stripped_chords.unshift(:'') if has_pickup
+          
+          next { :chords => stripped_chords, :lyrics => full_lyrics, :instrumental => false, :repeat => 1 }
+          
+        end
+      end
+    else
+      return render_chords_summary(modulation,render_full)
+    end
   end
   
   # Iterates through the lines in this section.
@@ -137,6 +174,31 @@ class Section
   # 
   def each_rendered_line(options)
     render_lines(options).each { |l| yield l }
+  end
+  
+  def render_chords_summary(modulation = 0,render_repeats = false)
+    rendered_chords = render_chords(modulation,render_repeats)
+    
+    chords_summary = Array.new
+    
+    curr_progression = rendered_chords[0]
+    curr_repeat = 0
+    
+    (rendered_chords + [nil]).each do |progression|
+      if progression == curr_progression
+        curr_repeat += 1
+      else
+        
+        stripped_progression = curr_progression.reject { |c| c == :'' }
+        
+        chords_summary << {:chords => stripped_progression, :repeat => curr_repeat, :instrumental => true, :lyrics => [' '] * curr_progression.length }
+        
+        curr_progression = progression
+        curr_repeat = 1
+      end
+    end
+    
+    chords_summary
   end
   
   # The number of lines/chord progressions in this section.
