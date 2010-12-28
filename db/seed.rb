@@ -27,7 +27,7 @@ prog_1 = ChordProgression.first_or_create(:progression => [:I,:V,:vi,:IV] )
 prog_2 = ChordProgression.first_or_create(:progression => [:I,:V,:IV,:IV] )
 prog_3 = ChordProgression.first_or_create(:progression => [:I,:I,:V,:V,:vi,:V,:IV,:IV] )
 
-intro      = Section.build( :type => "INTRO", :progressions => [prog_1], :song => bbyn )
+intro      = Section.build( :type => "INTRO", :progressions => [prog_1,prog_1,prog_1,prog_2], :song => bbyn )
 verse      = Section.build( :type => "VERSE", :progressions => [prog_1,prog_2] * 2, :song => bbyn )
 prechorus  = Section.build( :type => "PRECHORUS", :progressions => [prog_1,prog_1], :song => bbyn )
 chorus     = Section.build( :type => "CHORUS", :progressions => [prog_1,prog_3], :song => bbyn )

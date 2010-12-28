@@ -20,7 +20,7 @@ describe 'song' do
     prog_2 = ChordProgression.first_or_create(:progression => [:I,:V,:IV,:IV] )
     prog_3 = ChordProgression.first_or_create(:progression => [:I,:I,:V,:V,:vi,:V,:IV,:IV] )
     
-    @intro      = Section.build( :type => "INTRO", :progressions => [prog_1], :song => @bbyn )
+    @intro      = Section.build( :type => "INTRO", :progressions => [prog_1,prog_1,prog_1,prog_2], :song => @bbyn )
     @verse      = Section.build( :type => "VERSE", :progressions => [prog_1,prog_2] * 2, :song => @bbyn )
     @prechorus  = Section.build( :type => "PRECHORUS", :progressions => [prog_1,prog_1], :song => @bbyn )
     @chorus     = Section.build( :type => "CHORUS", :progressions => [prog_1,prog_3], :song => @bbyn )
@@ -133,8 +133,9 @@ BRIDGE
     rendered[:title].should == "INTRO"
     rendered[:instrumental].should == true
     rendered[:lines][0][:chords].should == [:Bb,:F,:Gm,:Eb]
-    rendered[:lines][0][:repeat].should == 1
-    
+    rendered[:lines][0][:repeat].should == 3
+    rendered[:lines][1][:chords].should == [:Bb,:F,:Eb]
+    rendered[:lines][1][:repeat].should == 1
   end
   
   specify 'verse 1 renders properly' do

@@ -66,7 +66,7 @@ describe 'section' do
     lines = @hiok_chorus.render_lines(:modulation => -3, :variation => 2)
     lines.size.should == 1
     
-    lines[0][:chords].should == [ :E, :'E/G#', :A, :'' ]
+    lines[0][:chords].should == [ :E, :'E/G#', :A ]
     lines[0][:repeat].should == 2
   end
   
@@ -78,7 +78,7 @@ describe 'section' do
     chords_summary = @hiok_chorus.render_chords_summary
     chords_summary.size.should == 1
     
-    chords_summary[0][:chords].should == [:G,:'G/B',:C,:'']
+    chords_summary[0][:chords].should == [:G,:'G/B',:C]
     chords_summary[0][:repeat].should == 2
     
   end

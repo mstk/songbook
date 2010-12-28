@@ -188,10 +188,13 @@ class Section
       if progression == curr_progression
         curr_repeat += 1
       else
-        chords_summary << {:chords => curr_progression, :repeat => curr_repeat, :instrumental => true, :lyrics => [' '] * curr_progression.length }
+        
+        stripped_progression = curr_progression.reject { |c| c == :'' }
+        
+        chords_summary << {:chords => stripped_progression, :repeat => curr_repeat, :instrumental => true, :lyrics => [' '] * curr_progression.length }
         
         curr_progression = progression
-        curr_repeat = 0        
+        curr_repeat = 1
       end
     end
     
