@@ -16,19 +16,29 @@
   #song_chords
     - @rendered_sections.each do |section|
       .song_section
-        %span.section_title= section[:title]
-        - section[:lines].each do |line|
-          .line
-            .chord_line
-              - if line[:instrumental]
-                [
-              - line[:chords].map { |c| c.to_s.length == 0 ? '&nbsp;' : c.to_s }.each do |chord|
-                %span.chord_block= chord
-              - if line[:instrumental]
-                ]
-              - if line[:repeat] > 1
-                %span.repeat= "x#{line[:repeat]}"
-            - unless line[:instrumental]
-              .lyric_line
-                - line[:lyrics].map { |l| l.length == 0 ?  '&nbsp;' : l.gsub(' ','&nbsp;') }.each do |lyric|
-                  %span.lyric_block= (lyric[-1] == '-') ? lyric[0..-2] : lyric
+        .section_header
+          %span.section_title= section[:title]
+          - if section[:repeats] > 1
+            %span.section_repeat
+              x#{section[:repeats]}
+        - unless section[:is_repeat]
+          - if section[:instrumental]
+            - section[:lines].each do |line|
+              .instrumental_line
+                - if line[:repeat] > 1
+                  [
+                - line[:chords].map { |c| c.to_s.length == 0 ? '&nbsp;' : c.to_s }.each do |chord|
+                  %span.chord_block= chord
+                - if line[:repeat] > 1
+                  ]
+                  %span.line_repeat
+                    x#{line[:repeat]}
+          - else
+            - section[:lines].each do |line|
+              .line
+                .chord_line
+                  - line[:chords].map { |c| c.to_s.length == 0 ? '&nbsp;' : c.to_s }.each do |chord|
+                    %span.chord_block= chord
+                .lyric_line
+                  - line[:lyrics].map { |l| l.length == 0 ?  '&nbsp;' : l.gsub(' ','&nbsp;') }.each do |lyric|
+                    %span.lyric_block= (lyric[-1] == '-') ? lyric[0..-2] : lyric

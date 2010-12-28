@@ -65,8 +65,8 @@ verse_2_text = <<VERSE
 sun's shining down
 on me
 
-When the world's
-"all as it
+When the
+world's "all as it
 should be", blessed be
 Your name
 

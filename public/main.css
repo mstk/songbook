@@ -71,13 +71,17 @@ span.section_title {
     padding: 1px;
 }
 
-.line {
-    display:table;   
+span.section_repeat, span.line_repeat {
+  font-style: italic;
+}
+
+.line, .instrumental_line {
     padding: 0.5em 5px;
 }
 
-.instrumental_line { 
-    padding: 1px 5px;
+.line {
+    display:table;   
+    padding: 0.5em 5px;
 }
 
 .line > div {
@@ -91,7 +95,7 @@ span.section_title {
 
 /*just for looks*/
 
-.line > :first-child {
+.chord_block {
     font-weight:bold;
     color:#252525;
     font-size:0.9em;
