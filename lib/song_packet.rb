@@ -4,17 +4,20 @@ class SongPacket
   
   attr_reader :title, :song_key, :artist, :time_signature
   
-  @structure = Array.new
-  @sections = Array.new
-  @lyrics = Array.new
-  
-  def initialize(title,song_key,artist='',time_signature='')
-    @title = title
-    @song_key = song_key
-    @artist = artist
-    @time_signature = time_signature
+  def initialize(params)
+    
+    raise ArgumentError unless params[:title]
+    @title = params[:title]
+    
+    @song_key = params[:song_key] || 'C'
+    @artist = params[:artist] || ''
+    @time_signature = params[:time_signature] || '4/4'
     
     @edited = true
+    
+    @structure = Array.new
+    @sections = Array.new
+    @lyrics = Array.new
   end
   
   def build!
@@ -30,22 +33,22 @@ class SongPacket
     @song.delete if @song
     
     @song = Song.create(  :title => @title,
-                          :song_key => SongKey.KEY( :Bb ),
+                          :song_key => SongKey.KEY( @song_key.intern ),
                           :artist   => @artist,
                           :time_signature => @time_signature,
                           :structure => @structure )
     
     @sections.each do |section_data|
       
-      progression_array = section_data[:progresssions].map do |progression|
+      progression_array = section_data[:progressions].map do |progression|
         # make less naive
-        ChordProgression.first_or_create(:progression => [progression] )
+        ChordProgression.first_or_create(:progression => progression )
       end
       
-      section = section.build { :type         => section_data[:type],
-                                :progressions => progression_array,
-                                :variation    => section_data[:variation],
-                                :song         => @song                    }
+      section = Section.build(:type         => section_data[:type],
+                              :progressions => progression_array,
+                              :variation    => section_data[:variation],
+                              :song         => @song                    )
       
       
       added_lyric_variations = Array.new
@@ -53,7 +56,7 @@ class SongPacket
       @lyrics.select { |l| l[:section_type] == section_data[:type] && l[:section_variation] == section_data[:variation] }.each do |lyric|
         next if added_lyric_variations.include? lyric[:lyric_variation]
         
-        Lyric.build( l[:lyric], section, lyric[:lyric_variation] )
+        Lyric.build( lyric[:lyric], section, lyric[:lyric_variation] )
         
         added_lyric_variations << lyric[:lyric_variation]
       end
@@ -64,8 +67,7 @@ class SongPacket
     @song
   end
   
-  def add_section(type,progression_chords,varation=1)
-    
+  def add_section(type,progression_chords,variation=1)
     @sections << { :type => type, :progressions => progression_chords, :variation => variation }
     
     @edited = true
@@ -85,7 +87,7 @@ class SongPacket
   end
   
   def set_structure(structure)
-    @structure = structure
+    @structure = structure.map { |s| s.clone }
     @edited = true
   end
   

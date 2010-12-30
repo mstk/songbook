@@ -21,18 +21,14 @@ structure = [ { :type => "INTRO" },
               { :type => "BRIDGE", :repeat => 3 },
               { :type => "CHORUS", :repeat => 2, :modulation => 2 } ]
 
-bbyn = Song.create( :title => 'Blessed Be Your Name', :song_key => SongKey.KEY( :Bb ), :structure => structure )
+bbyn = SongPacket.new(:title => 'Blessed Be Your Name', :artist => 'Matt Redman', :song_key => 'Bb')
+bbyn.set_structure(structure)
 
-prog_1 = ChordProgression.first_or_create(:progression => [:I,:V,:vi,:IV] )
-prog_2 = ChordProgression.first_or_create(:progression => [:I,:V,:IV,:IV] )
-prog_3 = ChordProgression.first_or_create(:progression => [:I,:I,:V,:V,:vi,:V,:IV,:IV] )
-
-intro      = Section.build( :type => "INTRO", :progressions => [prog_1,prog_1,prog_1,prog_2], :song => bbyn )
-verse      = Section.build( :type => "VERSE", :progressions => [prog_1,prog_2] * 2, :song => bbyn )
-prechorus  = Section.build( :type => "PRECHORUS", :progressions => [prog_1,prog_1], :song => bbyn )
-chorus     = Section.build( :type => "CHORUS", :progressions => [prog_1,prog_3], :song => bbyn )
-bridge     = Section.build( :type => "BRIDGE", :progressions => [prog_1,prog_1], :song => bbyn )
-
+bbyn.add_section('INTRO', [[:I,:V,:vi,:IV]] * 3 + [[:I,:V,:IV,:IV]] )
+bbyn.add_section('VERSE', [[:I,:V,:IV,:IV],[:I,:V,:IV,:IV]] * 2 )
+bbyn.add_section('PRECHORUS', [[:I,:V,:vi,:IV]] * 2 )
+bbyn.add_section('CHORUS', [[:I,:V,:vi,:IV],[:I,:I,:V,:V,:vi,:V,:IV,:IV]] )
+bbyn.add_section('BRIDGE', [[:I,:V,:vi,:IV]] * 2 )
 
 verse_1_text = <<VERSE
  
@@ -125,10 +121,12 @@ blessed be your
 name"
 BRIDGE
 
-Lyric.build( verse_1_text, verse, 1 )
-Lyric.build( verse_2_text, verse, 2 )
-Lyric.build( prechorus_text, prechorus )
-Lyric.build( chorus_text, chorus )
-Lyric.build( bridge_text, bridge )
+bbyn.add_lyric(verse_1_text,'VERSE',1)
+bbyn.add_lyric(verse_2_text,'VERSE',2)
+bbyn.add_lyric(prechorus_text,'PRECHORUS')
+bbyn.add_lyric(chorus_text,'CHORUS')
+bbyn.add_lyric(bridge_text,'BRIDGE')
+
+bbyn.build!
 
 puts "All is properly seeded!"
