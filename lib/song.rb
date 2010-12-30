@@ -28,8 +28,9 @@ class Song
     variation             = params[:variation] || 1
     modulation            = params[:modulation] || 0
     lyric_variation       = params[:lyric_variation] || 1
-    render_section_number = params[:lyric_variation] ? true : false
     repeat                = params[:repeat] || 1
+    
+    render_section_number = params[:lyric_variation] ? true : false
     
     { :type                   => type,
       :variation              => variation,
@@ -145,6 +146,11 @@ class Song
     else
       sections.size
     end
+  end
+  
+  def delete
+    sections.each { |section| section.delete }
+    super
   end
   
 end

@@ -234,4 +234,9 @@ class Section
     end
   end
   
+  def delete
+    lyrics.each { |lyric| lyric.delete }
+    super
+  end
+  
 end
