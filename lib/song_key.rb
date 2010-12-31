@@ -108,4 +108,8 @@ class SongKey
     SongKey.first_or_create(:key_id => (@key_id + steps) % 12)
   end
   
+  def difference(other_key)
+    other_key.key_id - key_id
+  end
+  
 end

@@ -53,6 +53,46 @@ class Chord
     @@CHORD_INDEX[chord_symbol]
   end
   
+  # @todo implement mods
+  def Chord.RELATIVE(absolute_chord_symbol,song_key)
+    chord_string = absolute_chord_symbol.to_s
+    
+    note_end = (chord_string[1] == 'b' || chord_string[1] == '#') ? 1 : 0
+    mode_end = note_end + ((chord_string[note_end+1] == 'm') ? 1 : 0)
+    
+    note = chord_string[0..note_end]
+    mode = chord_string[mode_end] == 'm' ? :minor : :major
+    tail = chord_string[mode_end+1..-1]
+    tail += "/#{note}" unless tail.include? '/'
+    mod_string,inversion = tail.split('/')
+    mods = mod_string.split('-')
+    
+    difference = song_key.difference(SongKey.KEY(note.intern))
+    
+    chord_symbol = %w[ I II II III III IV V V VI VI VII VII][difference]
+    sub = [false,true,false,true,false,false,true,false,true,false,true,false][difference]
+    
+    chord_symbol.downcase! if mode == :minor
+    
+    if inversion != note
+      scale_mode = mode
+      
+      chord_scale_flat = ScaleGenerator::generate_scale( SongKey.KEY(note.intern) , :flat , mode )
+      chord_scale_sharp = ScaleGenerator::generate_scale( SongKey.KEY(note.intern) , :sharp , mode )
+      
+      # ignore inversions not in scale
+      inversion_num = chord_scale_flat.index(inversion.intern) || chord_scale_sharp.index(inversion.intern) || 0
+      
+      inversion_string = "_#{inversion_num+1}"
+    else
+      inversion_string = ''
+    end
+    
+    mod_string = mods.empty? ? '' : "-#{mods * "-"}"
+    
+    return Chord.CHORD("#{sub ? 'b' : ''}#{chord_symbol}#{mod_string}#{inversion_string}".intern)
+  end
+  
   # Renders the chord to the given key, with the given color scheme.
   # 
   # @param [SongKey] song_key
@@ -76,7 +116,7 @@ class Chord
     
     mode_str = @@mode_render[@mode]
     
-    modifiers_str = @modifiers * ""
+    modifiers_str = @modifiers * '-'
     
     if @inversion > 1
       

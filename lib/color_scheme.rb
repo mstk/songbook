@@ -47,7 +47,7 @@ class ColorScheme
   # @return [ColorScheme]
   #   The ColorScheme "sharps" or "flats", depending on what is requested.
   #
-  def self.get_scheme_all(color)
+  def ColorScheme.get_scheme_all(color)
     if color == :flat
       return ColorScheme.get('flats')
     elsif color == :sharp
