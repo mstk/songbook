@@ -53,7 +53,6 @@ class Chord
     @@CHORD_INDEX[chord_symbol]
   end
   
-  # @todo implement mods
   def Chord.RELATIVE(absolute_chord_symbol,song_key)
     chord_string = absolute_chord_symbol.to_s
     

@@ -42,7 +42,17 @@ class SongPacket
       
       progression_array = section_data[:progressions].map do |progression|
         # make less naive
-        ChordProgression.first_or_create(:progression => progression )
+        
+        progression_symbols = progression.map do |chord|
+          chord_string = chord.to_s
+          if ['I','V','i','v','b'].include? chord[0]
+            next chord.intern
+          else
+            next Chord.RELATIVE(chord.intern,@song.song_key).symbol
+          end
+        end
+        
+        ChordProgression.first_or_create(:progression => progression_symbols )
       end
       
       section = Section.build(:type         => section_data[:type],

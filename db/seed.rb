@@ -24,7 +24,7 @@ structure = [ { :type => "INTRO" },
 bbyn = SongPacket.new(:title => 'Blessed Be Your Name', :artist => 'Matt Redman', :song_key => 'Bb')
 bbyn.set_structure(structure)
 
-bbyn.add_section('INTRO', [[:I,:V,:vi,:IV]] * 3 + [[:I,:V,:IV,:IV]] )
+bbyn.add_section('INTRO', [['Bb','F','Gm','Eb']] * 3 + [['Bb','F','Eb','Eb']] )
 bbyn.add_section('VERSE', [[:I,:V,:IV,:IV],[:I,:V,:IV,:IV]] * 2 )
 bbyn.add_section('PRECHORUS', [[:I,:V,:vi,:IV]] * 2 )
 bbyn.add_section('CHORUS', [[:I,:V,:vi,:IV],[:I,:I,:V,:V,:vi,:V,:IV,:IV]] )
