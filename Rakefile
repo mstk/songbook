@@ -24,7 +24,6 @@ namespace :db do
   desc 'Auto-upgrade the database (preserves data)'
   task :upgrade => :environment do
     DataMapper.auto_upgrade!
-    Rake::Task[:seed].execute
   end
 end
 

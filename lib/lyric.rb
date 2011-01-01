@@ -47,7 +47,7 @@ class Lyric
   # @return [Lyric]
   #   A parsed Lyric resource.
   # 
-  def Lyric.build(text,section,variation=1)
+  def Lyric.build(text,section,variation=1,includes_invisible = false)
     lines = text.split("\n\n")
     bars = lines.map { |l| l.split("\n") }
     
@@ -66,6 +66,35 @@ class Lyric
       # make sure the last section block does not have a space at the end
       if bars[n][-1][-1] == ' '
         bars[n][-1] = bars[n][-1].squeeze(" ")[0..-2]
+      end
+      
+    end
+    
+    unless includes_invisible
+      
+      chords_summary = section.render_chords
+      
+      curr_line = 0
+      
+      bars.map! do |line|
+        
+        curr_block = 1
+        line_out = [line[0]]
+        
+        summary_line = chords_summary[curr_line]
+        
+        summary_line.each do |b|
+          if b == :''
+            line_out << ''
+          else
+            line_out << (line[curr_block] || '')
+            curr_block += 1
+          end
+        end
+        
+        curr_line += 1
+        
+        next line_out
       end
       
     end

@@ -35,8 +35,7 @@ plentiful
 
 Where Your
 streams of a-
-bundance flow, blessed be
-Your name
+bundance flow, blessed be Your name
 
  
  Blessed be
@@ -46,8 +45,7 @@ sert place
 
 Though I
 walk through the wild-
-erness, blessed be
-Your name
+erness, blessed be Your name
 VERSE
 
     verse_2_text = <<VERSE
@@ -59,8 +57,7 @@ on me
 
 When the world's
 "all as it
-should be", blessed be
-Your name
+should be", blessed be Your name
 
  
  Blessed be
@@ -70,8 +67,7 @@ fering
 
 Though there's pain
 in the of-
-fering, blessed be
-Your name
+fering, blessed be Your name
 VERSE
 
     prechorus_text = <<PRECHORUS
@@ -94,10 +90,8 @@ Lord, Blessed be your
 name
 
 Blessed be the
-name
-of the
-Lord,
-Blessed be your
+name of the
+Lord, Blessed be your
 Glo-
 rious
 name

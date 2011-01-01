@@ -105,7 +105,7 @@ class Section
   #   Each hash has two key/value pairs -- `:chords`, for the absolute chords of the line in an 
   #   array, and `:lyrics`, for the lyrics for the line split up at each chord change, in an array.
   # 
-  def render_lines(options)
+  def render_lines(options={})
     modulation = options[:modulation] || 0
     lyric_variation = options[:variation] || 1
     render_full = options[:full] || false

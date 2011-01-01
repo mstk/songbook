@@ -66,7 +66,7 @@ class SongPacket
       @lyrics.select { |l| l[:section_type] == section_data[:type] && l[:section_variation] == section_data[:variation] }.each do |lyric|
         next if added_lyric_variations.include? lyric[:lyric_variation]
         
-        Lyric.build( lyric[:lyric], section, lyric[:lyric_variation] )
+        Lyric.build( lyric[:lyric], section, lyric[:lyric_variation], lyric[:includes_invisible] )
         
         added_lyric_variations << lyric[:lyric_variation]
       end
@@ -83,10 +83,11 @@ class SongPacket
     @edited = true
   end
   
-  def add_lyric(lyric,section_type,lyric_variation=1,section_variation=1)
+  def add_lyric(lyric,section_type,lyric_variation=1,section_variation=1,includes_invisible=false)
     @lyrics << {  :section_type       => section_type,
                   :lyric_variation    => lyric_variation,
                   :section_variation  => section_variation,
+                  :includes_invisible => includes_invisible,
                   :lyric              => lyric              }
     
     @edited = true

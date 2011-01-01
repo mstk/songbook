@@ -25,7 +25,7 @@ bbyn = SongPacket.new(:title => 'Blessed Be Your Name', :artist => 'Matt Redman'
 bbyn.set_structure(structure)
 
 bbyn.add_section('INTRO', [['Bb','F','Gm','Eb']] * 3 + [['Bb','F','Eb','Eb']] )
-bbyn.add_section('VERSE', [[:I,:V,:IV,:IV],[:I,:V,:IV,:IV]] * 2 )
+bbyn.add_section('VERSE', [[:I,:V,:vi,:IV],[:I,:V,:IV,:IV]] * 2 )
 bbyn.add_section('PRECHORUS', [[:I,:V,:vi,:IV]] * 2 )
 bbyn.add_section('CHORUS', [[:I,:V,:vi,:IV],[:I,:I,:V,:V,:vi,:V,:IV,:IV]] )
 bbyn.add_section('BRIDGE', [[:I,:V,:vi,:IV]] * 2 )
@@ -98,10 +98,8 @@ Lord, Blessed be your
 name
 
 Blessed be the
-name
-of the
-Lord,
-Blessed be your
+name of the
+Lord, Blessed be your
 Glo-
 rious
 name
