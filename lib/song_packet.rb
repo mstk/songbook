@@ -1,7 +1,7 @@
 # Packet of information that can be assembled into a Song object.  Used for building up information
 # piece-by-piece, and handles most of the boilerplate safely.
 #
-# @todo Make a default song structure.
+# @author Justin Le
 #
 class SongPacket
   
@@ -200,7 +200,7 @@ class SongPacket
   # 
   # @param [Symbol] field
   #   `:title`, `:song_key`, `:artist`, or `:time_signature`.
-  # @param [String]
+  # @param [String] new_value
   #   New value for the given field
   # 
   def change(field,new_value)

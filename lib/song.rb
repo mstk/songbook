@@ -30,13 +30,10 @@ class Song
     lyric_variation       = params[:lyric_variation] || 1
     repeat                = params[:repeat] || 1
     
-    render_section_number = params[:lyric_variation] ? true : false
-    
     { :type                   => type,
       :variation              => variation,
       :modulation             => modulation,
       :lyric_variation        => lyric_variation,
-      :render_section_number  => render_section_number,
       :repeat                 => repeat }
   end
   
@@ -80,7 +77,9 @@ class Song
     # should lyrics be forced?
     force_lyrics = options[:force_Lyrics] || false
     
-    expanded_structure = structure.map { |s| Song.structure_interpreter(s) }
+    loaded_structure = structure.empty? ? default_structure : structure
+    
+    expanded_structure = loaded_structure.map { |s| Song.structure_interpreter(s) }
     
     sections_so_far = Hash.new
     
@@ -97,7 +96,9 @@ class Song
         
         raise "There is no section #{sec[:type]} with variation #{sec[:variation]} in this song." unless section
         
-        section_tag = sec[:render_section_number] ? " #{sec[:lyric_variation]}" : ""
+        render_section_number = section.lyrics.size > 1
+        
+        section_tag = render_section_number ? " #{sec[:lyric_variation]}" : ""
         title = "#{section.title}#{section_tag}"
         
         section_lines = Array.new
@@ -131,7 +132,7 @@ class Song
     
   end
   
-  # Counts the nnumber of variations of sections of the given type.  If no type given, counts all
+  # Counts the number of variations of sections of the given type.  If no type given, counts all
   # variations of all sections.
   #
   # @param [String] type
@@ -153,6 +154,70 @@ class Song
   def delete
     sections.each { |section| section.delete }
     super
+  end
+  
+  private
+  
+  def default_structure
+    
+    intro = sections.any? { |section| section.type == 'INTRO' }
+    preverse = sections.any? { |section| section.type == 'PREVERSE' }
+    verse = sections.any? { |section| section.type == 'VERSE' }
+    prechorus = sections.any? { |section| section.type == 'PRECHORUS' }
+    chorus = sections.any? { |section| section.type == 'CHORUS' }
+    postchorus = sections.any? { |section| section.type == 'POSTCHORUS' }
+    bridge = sections.any? { |section| section.type == 'BRIDGE' }
+    outro = sections.any? { |section| section.type == 'OUTRO' }
+    
+    out = Array.new
+    
+    special_structures = ['INTRO','SOLO','INSTRUMENTAL','BRIDGE','OUTRO'].map do |section_type|
+      
+      section_structure = Array.new
+      
+      matching_sections = sections.select { |section| section.type == section_type }
+      
+      matching_sections.each do |section_variation|
+        var_count = section_variation.lyrics.size
+        
+        var_count = 1 if var_count == 0
+        
+        var_count.times do |n|
+          section_structure << { :type => section_type, :variation => section_variation.variation, :lyric_variation => n+1 }
+        end
+      end
+      
+      next section_structure
+    end
+    
+    # add intros
+    special_structures[0].each { |intro| out << intro }
+    
+    if verse
+      first_verse = sections.find { |section| section.type == 'VERSE' && section.variation == 1 }
+      verse_count = first_verse.lyrics.size
+      
+      out << { :type => 'PREVERSE' } if preverse
+      
+      verse_count.times do |n|
+        out << { :type => 'VERSE', :lyric_variation => n+1 }
+        if n == 0
+          out << { :type => 'PRECHORUS' } if prechorus
+          out << { :type => 'CHORUS' } if chorus
+          out << { :type => 'POSTCHORUS' } if postchorus
+        end
+      end
+    else
+      out << { :type => 'PRECHORUS' } if prechorus
+      out << { :type => 'CHORUS' } if chorus
+      out << { :type => 'POSTCHORUS' } if postchorus
+    end
+    
+    # add solos, instrumentals, bridges, outros
+    special_structures[1..-1].each { |s| s.each { |s_var| out << s_var } }
+    
+    return out
+    
   end
   
 end

@@ -6,7 +6,7 @@
 # currently), in a sort of singleton pattern.  In a way, they represent constants and are 
 # immutable.  To access the Chord instance for a given chord, use Chord::CHORD(chord symbol)
 # 
-# Chord symbols are in the form `:"I-mod1-mod2..._inversion"`, where modifiers are arbitrary 
+# Chord symbols are in the form `:"Imod1-mod2..._inversion"`, where modifiers are arbitrary 
 # strings like "7" and "sus".  Inversions are integers representing the scale degree that is the 
 # bass note.  This is different from figured bass convention, but seems more natural to me.
 # 
