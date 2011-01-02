@@ -53,6 +53,16 @@ class Chord
     @@CHORD_INDEX[chord_symbol]
   end
   
+  # "Backwards renders" a chord.  Given an absolute chord and a SongKey, will return the Chord 
+  # object representing the relative chord in that key.
+  # 
+  # @param [Symbol] absolute_chord_symbol
+  #   The absolute chord symbol to relativize.
+  # @param [SongKey] song_key
+  #   The key the absolute chord symbol is in.
+  # @return [Chord]
+  #   The Chord object which will render into the given absolute chord symbol in the given key.
+  # 
   def Chord.RELATIVE(absolute_chord_symbol,song_key)
     chord_string = absolute_chord_symbol.to_s
     

@@ -93,17 +93,21 @@ class Section
   # @option options [Integer] :variation (1)
   #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
-  # @option options [Boolean] :render_full (false)
-  #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
+  # @option options [Boolean] :full (false)
+  #   Whether or not to render a chord if it is a repeat of the last, replacing it with a blank
   #   symbol.
-  # @option options [Boolnea] :force_lyrics (false)
+  # @option options [Boolean] :force_lyrics (false)
   #   Disallows Section to automatically switch to Instrumental summary output if there are no
   #   lyrics present.
   # @return [Array<Hash{Symbol,Array<Symbol,String>}>]
   #   An array with a hash for each line.
   #   
-  #   Each hash has two key/value pairs -- `:chords`, for the absolute chords of the line in an 
-  #   array, and `:lyrics`, for the lyrics for the line split up at each chord change, in an array.
+  #   - `:chords`, the rendered chord progression
+  #   - `:repeat`, the number of times this chord progression is repeated in a row.  Will always be
+  #       1, as this particular method never merges consecutive chord progressions.  See 
+  #       render_progression_summary.
+  #   - `:instrumental`, which is always false (see render_progression_summary)
+  #   - `:lyrics`, the lyrics for the line, organized in an array, split at every chord change.
   # 
   def render_lines(options={})
     modulation = options[:modulation] || 0
@@ -151,7 +155,7 @@ class Section
         end
       end
     else
-      return render_chords_summary(modulation,render_full)
+      return render_progression_summary(modulation,render_full)
     end
   end
   
@@ -165,19 +169,47 @@ class Section
   # @option options [Integer] :variation (1)
   #   Variation of the lyrics for the section to use.  Defaults to 1.  If the variation is not
   #   found, will return blank strings for lyrical lines.
-  # @option options [Boolean] :render_repeats (false)
-  #   Whether or not to render the chord if it is a repeat of the last, replacing it with a blank
+  # @option options [Boolean] :full (false)
+  #   Whether or not to render a chord if it is a repeat of the last, replacing it with a blank
   #   symbol.
+  # @option options [Boolean] :force_lyrics (false)
+  #   Disallows Section to automatically switch to Instrumental summary output if there are no
+  #   lyrics present.
   # @return [Hash{Symbol,Array<Symbol,String>}]
-  #   A hash representing the line, with two key/value pairs -- `:chords`, for the absolute chords 
-  #   of the line in an array, and `:lyrics`, for the lyrics for the line split up at each chord 
-  #   change, in an array.
+  #   A hash representing the line:
+  #
+  #   - `:chords`, the rendered chord progression
+  #   - `:repeat`, the number of times this chord progression is repeated in a row.  Will always be
+  #       1, as this particular method never merges consecutive chord progressions.  See 
+  #       render_progression_summary.
+  #   - `:instrumental`, which is always false (see render_progression_summary)
+  #   - `:lyrics`, the lyrics for the line, organized in an array, split at every chord change.
   # 
-  def each_rendered_line(options)
+  def each_rendered_line(options={})
     render_lines(options).each { |l| yield l }
   end
   
-  def render_chords_summary(modulation = 0,render_repeats = false)
+  # Summary of the chord progressions in this section.  Lists chord progressions and the number of
+  # times they are repeated.  Returns blank lyrics as a placeholder.  Basically, the "instrumental"
+  # render.
+  #
+  # @param [Integer] modulation
+  #   The modulation from the song's key to render this particular section in.
+  # @param [Boolean] render_repeats
+  #   Whether or not to render a chord if it is a repeat of the last in a progression, replacing it 
+  #   with a blank symbol.
+  # @return [Array<Hash{Symbol,Array<Symbol,String>}>]
+  #   An array with a hash for each line/summary.
+  #   
+  #   Each hash has:
+  #
+  #   - `:chords`, the rendered chord progression
+  #   - `:repeat`, the number of times this chord progression is repeated in a row.
+  #   - `:instrumental`, which is always true (this method renders the instrumental version of a 
+  #       section)
+  #   - `:lyrics`, an array of blank placeholder strings corresponding to every chord.
+  #
+  def render_progression_summary(modulation = 0,render_repeats = false)
     rendered_chords = render_chords(modulation,render_repeats)
     
     chords_summary = Array.new
@@ -235,6 +267,8 @@ class Section
     end
   end
   
+  # Deletes section resource from the database, as well as all associated Lyric resources.
+  #
   def delete
     lyrics.each { |lyric| lyric.delete }
     super

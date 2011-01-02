@@ -75,7 +75,7 @@ describe 'section' do
   end
   
   specify 'should render chords summary properly' do
-    chords_summary = @hiok_chorus.render_chords_summary
+    chords_summary = @hiok_chorus.render_progression_summary
     chords_summary.size.should == 1
     
     chords_summary[0][:chords].should == [:G,:'G/B',:C]

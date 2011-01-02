@@ -108,8 +108,28 @@ class SongKey
     SongKey.first_or_create(:key_id => (@key_id + steps) % 12)
   end
   
+  # Finds the signed difference, in chromatic steps, between this key and the other.  Will be 
+  # positive if the other is higher than this on the chromatic scale starting on A.
+  #
+  # @param [SongKey] other_key
+  #   The other SongKey to compare.
+  # @return [Integer]
+  #   The signed difference, in a range from -11 to 11.
+  #
   def difference(other_key)
     other_key.key_id - key_id
+  end
+  
+  # Finds the absolute/always-positive difference, in chromatic steps, between this key and the 
+  # other.
+  #
+  # @param [SongKey] other_key
+  #   The other SongKey to compare.
+  # @return [Integer]
+  #   The absolute difference, in a range from 0 to 11.
+  #
+  def absolute_difference(other_key)
+    difference  % 12
   end
   
 end

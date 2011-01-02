@@ -148,6 +148,8 @@ class Song
     end
   end
   
+  # Deletes this Song resource from the database, as well as the associated Section resources.
+  #
   def delete
     sections.each { |section| section.delete }
     super

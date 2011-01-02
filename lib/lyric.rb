@@ -5,8 +5,6 @@
 #
 # In charge of parsing raw lyrics into the nested yaml format it is stored as, and then un-packing
 # it for rendering with `Section`.
-# 
-# @todo find a better scheme to parse lyrics from.
 #
 # @author Justin Le
 # 
