@@ -161,13 +161,17 @@ class Song
   def default_structure
     
     intro = sections.any? { |section| section.type == 'INTRO' }
-    preverse = sections.any? { |section| section.type == 'PREVERSE' }
-    verse = sections.any? { |section| section.type == 'VERSE' }
-    prechorus = sections.any? { |section| section.type == 'PRECHORUS' }
-    chorus = sections.any? { |section| section.type == 'CHORUS' }
-    postchorus = sections.any? { |section| section.type == 'POSTCHORUS' }
+    preverse = sections.any? { |section| section.type == 'PREVERSE' && section.variation == 1 }
+    verse = sections.any? { |section| section.type == 'VERSE' && section.variation == 1 }
+    prechorus = sections.any? { |section| section.type == 'PRECHORUS' && section.variation == 1 }
+    chorus = sections.any? { |section| section.type == 'CHORUS' && section.variation == 1 }
+    postchorus = sections.any? { |section| section.type == 'POSTCHORUS' && section.variation == 1 }
     bridge = sections.any? { |section| section.type == 'BRIDGE' }
     outro = sections.any? { |section| section.type == 'OUTRO' }
+    
+    # those that don't fit
+    others = sections.reject { |section| ['INTRO','SOLO','INSTRUMENTAL','BRIDGE','OUTRO'].include? section.type }
+    others.reject! { |section| ['PREVERSE','VERSE','PRECHORUS','CHORUS','POSTCHORUS'].include?(section.type) && section.variation == 1 }
     
     out = Array.new
     
@@ -215,6 +219,17 @@ class Song
     
     # add solos, instrumentals, bridges, outros
     special_structures[1..-1].each { |s| s.each { |s_var| out << s_var } }
+    
+    # add others
+    others.each do |other|
+      var_count = other.lyrics.size
+        
+      var_count = 1 if var_count == 0
+      
+      var_count.times do |n|
+        out << { :type => other.type, :variation => other.variation, :lyric_variation => n+1 }
+      end
+    end
     
     return out
     
