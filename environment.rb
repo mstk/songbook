@@ -3,7 +3,7 @@ require 'dm-core'
 require 'dm-validations'
 require 'dm-timestamps'
 require 'dm-migrations'
-require 'dm-types'z
+require 'dm-types'
 require 'ostruct'
 
 require 'sinatra' unless defined?(Sinatra)
