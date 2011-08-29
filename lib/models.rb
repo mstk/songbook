@@ -3,7 +3,7 @@ class Song
   
   property :id,             Serial
   property :title,          String, :required => true
-  property :structure,      Yaml, :default => lambda { Array.new }
+  property :structure,      Yaml, :default => lambda { |r,p| Array.new }
   property :artist,         String
   property :time_signature, String, :default => "4/4"
   property :comment,        Text

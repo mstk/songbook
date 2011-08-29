@@ -14,7 +14,7 @@ class Lyric
   # 
   # @param [String,Array<Array<String>>] text
   #   Text formatted with
-  #   - One newline after every chord change
+  #   - One newline after every chord change (NOT every measure, or half note, or other unit)
   #   - Two newlines in a row between every line
   #   - "Empty" chord changes should have a space between each newline to disambiguate from line
   #     changes.
@@ -27,8 +27,7 @@ class Lyric
   #       Here is our
   #       King, here is our
   #       Love, here is our
-  #       God who's come to
-  #       bring us back to him
+  #       God who's come to bring us back to him
   #       
   #       (one space on this line)
   #       He is the one

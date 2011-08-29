@@ -12,10 +12,10 @@ describe 'section' do
     @hiok_chorus = Section.build( :type => "CHORUS", :progressions => [prog_1,prog_1], :song => @hiok)
     @hiok_bridge = Section.build( :type => "BRIDGE", :progressions => [prog_2,prog_3], :song => @hiok)
     
-    chorus_lyric_text = "Here is our\nKing, here is our\nLove, here is our\nGod who's come to\nbring us back to him\n\n"
+    chorus_lyric_text = "Here is our\nKing, here is our\nLove, here is our\nGod who's come to bring us back to him\n\n"
     chorus_lyric_text += " \nHe is the one\nHe is Je-\nsus"
     bridge_lyric_text = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly"
-    bridge_lyric_text_2 = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly\nhere"
+    bridge_lyric_text_2 = " \nMa-\njes-\nty\n\n \nFi-\nna-\nly here"
     
     Lyric.build( chorus_lyric_text, @hiok_chorus,1)
     Lyric.build( bridge_lyric_text, @hiok_bridge,1)

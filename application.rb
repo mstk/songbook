@@ -26,7 +26,9 @@ get '/new_song' do
 end
 
 post '/new_song' do
-  chord_progression = ChordProgression.first_or_create(:progression => YAML.load(params[:chord_progression].to_yaml))
+  # chord_progression = ChordProgression.first_or_create(:progression => YAML.load(params[:chord_progression].to_yaml))
+  
+  chord_progression = ChordProgression.first_or_create(:progression => YAML.load(params[:chord_progression]).map { |c| c.intern } )
   
   song_section = Section.create(:chord_progressions => [ chord_progression ])
   
