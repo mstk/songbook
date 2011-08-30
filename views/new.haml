@@ -1,19 +1,44 @@
+%script{:type => 'text/javascript', :src => '/js/plugins/jquery.interface.js'}
+%script{:type => 'text/javascript', :src => '/js/scripts/song_creator.js'}
+
 %h2 Submit Song
 
-= Song.all.inspect
+
 
 %form{:action => '/new_song', :method => 'POST'}
-  %p Song Title
-  %input{:type => 'text', :name => 'title'}/
-  %br/
   
-  %p Chord Progression
-  %input{:type => 'text', :name => 'chord_progression'}/
-  %br/
+  #entry_info
+    %p Song Title
+    %input{:type => 'text', :name => 'title'}/
+    %br/
+    
+    %p Artist
+    %input{:type => 'text', :name => 'artist'}/
+    %br/
   
-  %p Tags
-  %input{:type => 'text', :name => 'tags'}/
-  %br/
+  #entry_info
+    %p Key
+    %input{:type => 'text', :name => 'key'}/
+    
+    %p Time Signature
+    %input{:type => 'text', :name => 'time_signature'}/
+  
+  #entry_misc
+    %p Comments
+    %input{:type => 'text', :name => 'comments'}/
+    
+    %p Tags
+    %input{:type => 'text', :name => 'tags'}/
+  
+  #entry_sections
+    
+    #sections_entry_container
+      %ul#sections_entry_list
+    
+    %a{:href => 'javascript:add_section();'} Add Section
+    
+  #entry_structure
+    
   
   %input{:type => 'submit', :value => 'Save'}/
   

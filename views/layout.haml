@@ -2,13 +2,18 @@
 %html
   %head
     %title= @title || SiteConfig.title
-    %link{:href => '/main.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/reset.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/text.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/960.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/song_style.css', :rel => 'stylesheet', :type => 'text/css'}
+    
+    %script{:type => 'text/javascript', :src => '/js/lib/jquery.min.js'}
   %body
-    #container
-      #header
-        #logo
-          %h1
-            %a{:href => '/'}= SiteConfig.title
-      #content= yield
-      #footer
+    .container_12
+      .grid_12#title
+        %h1
+          %a{:href => '/'}= SiteConfig.title
+      .grid_12#content
+        =yield
+      .grid_12#footer
         %p#legal= "&mdash; &copy; #{Time.now.strftime('%Y')} #{SiteConfig.author} &mdash;"

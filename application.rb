@@ -1,6 +1,7 @@
 require 'sinatra'
 require_relative 'environment'
 
+
 configure do
   set :views, "#{File.dirname(__FILE__)}/views"
 end
@@ -18,7 +19,7 @@ end
 # root page
 
 get '/' do
-  haml :root
+  haml :index
 end
 
 get '/new_song' do
@@ -28,7 +29,7 @@ end
 post '/new_song' do
   # chord_progression = ChordProgression.first_or_create(:progression => YAML.load(params[:chord_progression].to_yaml))
   
-  chord_progression = ChordProgression.first_or_create(:progression => YAML.load(params[:chord_progression]).map { |c| c.intern } )
+  chord_progression = ChordProgression.first_or_create(:progression => [YAML.load(params[:chord_progression]).map { |c| c.intern }] )
   
   song_section = Section.create(:chord_progressions => [ chord_progression ])
   

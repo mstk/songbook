@@ -22,7 +22,7 @@ configure do
   DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/db/songdb.sqlite3")
   # DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
   
-  require "#{File.dirname(__FILE__)}/lib/models"
+  require "#{File.dirname(__FILE__)}/models"
   
   DataMapper.finalize
   
