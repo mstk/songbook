@@ -1,3 +1,5 @@
 - migrate seed.rb to external YAML file
 - add support for giving songs "alternative keys" for sometimes playing
 - multiple time signatures within song?
+- make requiring .js files a helper
+- reorganize to be better lol

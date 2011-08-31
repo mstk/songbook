@@ -1,44 +1,53 @@
-%script{:type => 'text/javascript', :src => '/js/plugins/jquery.interface.js'}
-%script{:type => 'text/javascript', :src => '/js/scripts/song_creator.js'}
+%link{:href => '/css/pages/new_song.css', :rel => 'stylesheet', :type => 'text/css'}
 
-%h2 Submit Song
+- %w[ core widget mouse position autocomplete ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/jquery.ui.#{dep}.min.js"}
 
+- %w[ jquery.autogrow jquery.defaultvalue ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/#{dep}.js"}
 
+- %w[ song_creator ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/scripts/#{dep}.js"}
 
-%form{:action => '/new_song', :method => 'POST'}
+.grid_12#subtitle
+
+  %h2 Submit Song
   
-  #entry_info
-    %p Song Title
-    %input{:type => 'text', :name => 'title'}/
-    %br/
-    
-    %p Artist
-    %input{:type => 'text', :name => 'artist'}/
-    %br/
+.grid_12#content
   
-  #entry_info
-    %p Key
-    %input{:type => 'text', :name => 'key'}/
+  %form{}
     
-    %p Time Signature
-    %input{:type => 'text', :name => 'time_signature'}/
-  
-  #entry_misc
-    %p Comments
-    %input{:type => 'text', :name => 'comments'}/
+    #ns-info
+      %p Song Title
+      %input{:type => 'text', :name => 'title'}/
+      %br/
+      
+      %p Artist
+      %input{:type => 'text', :name => 'artist'}/
+      %br/
     
-    %p Tags
-    %input{:type => 'text', :name => 'tags'}/
-  
-  #entry_sections
+    #ns-settings
+      %p Key
+      %input{:type => 'text', :name => 'key'}/
+      
+      %p Time Signature
+      %input{:type => 'text', :name => 'time_signature'}/
     
-    #sections_entry_container
-      %ul#sections_entry_list
+    #ns-misc
+      %p Comments
+      %input{:type => 'text', :name => 'comments'}/
+      
+      %p Tags
+      %input{:type => 'text', :name => 'tags'}/
     
-    %a{:href => 'javascript:add_section();'} Add Section
+    #ns-sections
+      
+      %ul#ns-sections_ul
+      
+      %a{:href => 'javascript:;', :id => 'ns-add_section_link'} Add Section
+      
+    #ns-structure
+      
     
-  #entry_structure
-    
-  
-  %input{:type => 'submit', :value => 'Save'}/
+    %a{:href => 'javascript:;', :id => 'ns-submit_song_link'} Submit
   

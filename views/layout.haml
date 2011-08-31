@@ -5,7 +5,8 @@
     %link{:href => '/css/reset.css', :rel => 'stylesheet', :type => 'text/css'}
     %link{:href => '/css/text.css', :rel => 'stylesheet', :type => 'text/css'}
     %link{:href => '/css/960.css', :rel => 'stylesheet', :type => 'text/css'}
-    %link{:href => '/css/song_style.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/main.css', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:href => '/css/jquery.ui/jquery-ui-1.8.16.custom.css', :rel => 'stylesheet', :type => 'text/css'}
     
     %script{:type => 'text/javascript', :src => '/js/lib/jquery.min.js'}
   %body
@@ -13,7 +14,7 @@
       .grid_12#title
         %h1
           %a{:href => '/'}= SiteConfig.title
-      .grid_12#content
+      #content_wrapper
         =yield
       .grid_12#footer
         %p#legal= "&mdash; &copy; #{Time.now.strftime('%Y')} #{SiteConfig.author} &mdash;"
