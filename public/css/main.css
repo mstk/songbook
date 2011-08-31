@@ -1,0 +1,1 @@
+/* GENERAL FOR THE SITE */#title,#footer {  text-align: center;}#content {}p {  margin-bottom: 1em;  line-height: 1.3;}a {  color: #095EAE;  font-weight: bold;  text-decoration: none;}a:hover {  text-decoration: underline;}#title a:hover {  text-decoration: none;}.form .input.empty { color: #aaa; }
