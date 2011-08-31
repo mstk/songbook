@@ -3,3 +3,5 @@
 - multiple time signatures within song?
 - make requiring .js files a helper
 - reorganize to be better lol
+- internal lyric variations are kinda crazy.  fix this.  maybe make it an array, and keys and lyrics
+  don't have to be database objects what the heck.

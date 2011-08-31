@@ -1,0 +1,373 @@
+[
+  {
+    "title": "INTRO",
+    "lines": [
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "repeat": 3,
+        "instrumental": true,
+        "lyrics": [
+          " ",
+          " ",
+          " ",
+          " "
+        ]
+      },
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Eb"
+        ],
+        "repeat": 1,
+        "instrumental": true,
+        "lyrics": [
+          " ",
+          " ",
+          " ",
+          " "
+        ]
+      }
+    ],
+    "instrumental": true,
+    "repeats": 1,
+    "is_repeat": false
+  },
+  {
+    "title": "VERSE 1",
+    "lines": [
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " Blessed be ",
+          " Your name, in the ",
+          "land that is ",
+          "plentiful"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Eb"
+        ],
+        "lyrics": [
+          "Where Your ",
+          "streams of a-",
+          "bundance flow, blessed be ",
+          "Your name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " Blessed be ",
+          " Your name, when I'm ",
+          "found in the de-",
+          "sert place"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Eb"
+        ],
+        "lyrics": [
+          "Though I ",
+          "walk through the wild-",
+          "erness, blessed be ",
+          "Your name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 1,
+    "is_repeat": false
+  },
+  {
+    "title": "PRECHORUS",
+    "lines": [
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " Every blessing ",
+          "you pour out I'll ",
+          " turn back to ",
+          "praise"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " When the darkness ",
+          "closes in, Lord, ",
+          " still I will say",
+          ""
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 1,
+    "is_repeat": false
+  },
+  {
+    "title": "CHORUS",
+    "lines": [
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          "Blessed be the ",
+          "name of the ",
+          "Lord, Blessed be your ",
+          "name",
+          ""
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Gm",
+          "F",
+          "Eb"
+        ],
+        "lyrics": [
+          "Blessed be the ",
+          "name of the ",
+          "Lord, Blessed be your ",
+          "Glo-",
+          "rious ",
+          "name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 1,
+    "is_repeat": false
+  },
+  {
+    "title": "VERSE 2",
+    "lines": [
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " Blessed be ",
+          " Your name, when the ",
+          "sun's shining down ",
+          "on me"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Eb"
+        ],
+        "lyrics": [
+          "When the ",
+          "world's \"all as it ",
+          "should be\", blessed be ",
+          "Your name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          " Blessed be ",
+          " Your name, on the ",
+          "road marked with suf-",
+          "fering"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Eb"
+        ],
+        "lyrics": [
+          "Though there's pain ",
+          "in the of-",
+          "fering, blessed be ",
+          "Your name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 1,
+    "is_repeat": false
+  },
+  {
+    "title": "PRECHORUS",
+    "instrumental": false,
+    "repeats": 1,
+    "is_repeat": true
+  },
+  {
+    "title": "CHORUS",
+    "instrumental": false,
+    "repeats": 2,
+    "is_repeat": true
+  },
+  {
+    "title": "BRIDGE",
+    "lines": [
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          "You ",
+          "give and take a-",
+          "way, you ",
+          "give and take a-",
+          "way"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "Bb",
+          "F",
+          "Gm",
+          "Eb"
+        ],
+        "lyrics": [
+          "My ",
+          "heart will choose to ",
+          "say, \"Lord, ",
+          "blessed be your ",
+          "name\""
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 3,
+    "is_repeat": false
+  },
+  {
+    "title": "CHORUS",
+    "lines": [
+      {
+        "chords": [
+          "",
+          "C",
+          "G",
+          "Am",
+          "F"
+        ],
+        "lyrics": [
+          "Blessed be the ",
+          "name of the ",
+          "Lord, Blessed be your ",
+          "name",
+          ""
+        ],
+        "instrumental": false,
+        "repeat": 1
+      },
+      {
+        "chords": [
+          "",
+          "C",
+          "G",
+          "Am",
+          "G",
+          "F"
+        ],
+        "lyrics": [
+          "Blessed be the ",
+          "name of the ",
+          "Lord, Blessed be your ",
+          "Glo-",
+          "rious ",
+          "name"
+        ],
+        "instrumental": false,
+        "repeat": 1
+      }
+    ],
+    "instrumental": false,
+    "repeats": 2,
+    "is_repeat": false
+  }
+]

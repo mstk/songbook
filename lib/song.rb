@@ -37,6 +37,73 @@ class Song
       :repeat                 => repeat }
   end
   
+  # Returns a hash of the basic information for the song.
+  # 
+  # @return [Hash{Symbol => String, Array<String>}]
+  #   A hash containing the basic information for the song, including:
+  #   
+  #     - `:title`, the title of the song
+  #     - `:artist`, the artist of the song
+  #     - `:key`, the key of the song, as a string
+  #     - `:time_signature`, the time signature of the song, as a string
+  #     - `:comments`, the comments on the song
+  #     - `:tags`, the tags attached to the song, as an array of strings
+  #
+  #
+  def info
+    
+    return  { :title          => title,
+              :artist         => artist,
+              :key            => song_key.symbol.to_s,
+              :time_signature => time_signature,
+              :comments       => comments,
+              :tags           => tags.map { |t| t.text } }
+    
+  end
+  
+  # Returns a hash of the song's data, including info and rendered sections.
+  #
+  # @param [Array<Symbol>] to_render
+  #   What the output hash should include.  Options are:
+  #     - `:info`
+  #     - `:sections`
+  #     - `:structure`
+  #
+  def render_data(to_render = [:info,:sections,:structure])
+    
+    out = {}
+    
+    if to_render.include? :info
+      out[:info] = info
+    end
+    
+    if to_render.include? :sections
+      out[:sections] = sections.all.map do |section|
+        section_data =  { :title  => section.title }
+        
+        rendered_lines = section.lyric_variation_nums.map { |v| section.render_lines( :variation  => v ) }
+        repeat_structures = section.repeat_structures
+        
+        section_data[:lines] = (0...section.line_count).map do |n|
+          { :chords           => rendered_lines[n][:chords],
+            :repeat_structure => repeat_structures[n],
+            :lyrics           => rendered_lines.map { |l| l[n][:lyrics] } }
+        end
+      end
+    end
+    
+    if to_render.include? :structure
+      loaded_structure = structure.empty? ? default_structure : structure
+      expanded_structure = loaded_structure.map { |s| Song.structure_interpreter(s) }
+      
+      out[:structure] = expanded_structure
+    end
+    
+    
+    return out
+    
+  end
+  
   # Returns an array based on the `structure` array giving each section with its title and its
   # lines.
   #

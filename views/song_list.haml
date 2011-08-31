@@ -1,0 +1,19 @@
+%link{:href => '/css/pages/song_list.css', :rel => 'stylesheet', :type => 'text/css'}
+%script{:type => 'text/javascript', :src => "/js/scripts/song_list.js"}
+
+.grid_12#subtitle
+
+  %h2 Song List
+
+#content
+
+  .grid_12
+    
+    %ul#sl-song_ul
+    
+      - Song.all.each do |song|
+        %li.sl-song_li
+          %a.sl-song_link{:href => "/songs/#{song.id}" }/
+          %span.sl-song_arist= song.artist
+          \-
+          %span.sl-song_title= song.title

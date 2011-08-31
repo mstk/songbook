@@ -1,6 +1,7 @@
 $(document).ready(function(){
   
-  var sections_list = { build: $.noop() };
+  // find a way to get around this global variable thing.
+  sections_list = { build: $.noop() };
   
   // segment class
   var new_segment = function(line,position,chord,lyrics) {
@@ -24,22 +25,22 @@ $(document).ready(function(){
       },
       build: function(variation) {
         
-        var segment_div = $('<div/>').attr('class','ns-segment');
+        var segment_div = $('<div/>').attr('class','es-segment');
         
-        var chord_div = $('<div/>').attr('class','ns-chord');
-        var lyrics_div = $('<div/>').attr('class','ns-lyrics');
-        var options_div = $('<div/>').attr('class','ns-segment_opts');
+        var chord_div = $('<div/>').attr('class','es-chord');
+        var lyrics_div = $('<div/>').attr('class','es-lyrics');
+        var options_div = $('<div/>').attr('class','es-segment_opts');
         
-        var lyrics_inp = $('<input/>').attr('class','ns-lyrics_inp').val(this.lyrics[variation]);
+        var lyrics_inp = $('<input/>').attr('class','es-lyrics_inp').val(this.lyrics[variation]);
         
         segment_div.append(chord_div,lyrics_div,options_div);
         lyrics_div.append(lyrics_inp);
         
         if (this.pickup) {
-          var pickup_text = $('<span/>').attr('class','ns-pickup_indicator').html("(pickup)");
+          var pickup_text = $('<span/>').attr('class','es-pickup_indicator').html("(pickup)");
           chord_div.append(pickup_text);
         } else {
-          var chord_inp = $('<input/>').attr('class','ns-chord_inp').val(this.chord);
+          var chord_inp = $('<input/>').attr('class','es-chord_inp').val(this.chord);
           chord_div.append(chord_inp);
           
           if (variation > 1) {
@@ -47,7 +48,7 @@ $(document).ready(function(){
           } else {
             chord_inp.change(function() { segment.change_chord(chord_inp.val(),chord_inp); });
             
-            var split_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'ns-split_segment_link' }).html('Split').click(function() {
+            var split_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-split_segment_link' }).html('Split').click(function() {
               segment.line.split_segment(segment);
               sections_list.build();
             });
@@ -108,11 +109,11 @@ $(document).ready(function(){
         });
       },
       build: function(variation) {
-        var line_div = $('<div/>').attr('class','ns-line');
-        var segments_list = $('<ul/>').attr( {'class': 'ns-segments_ul'} );
+        var line_div = $('<div/>').attr('class','es-line');
+        var segments_list = $('<ul/>').attr( {'class': 'es-segments_ul'} );
         
         this.segments.forEach(function(segment) {
-          var list_item = $('<li/>').attr({ 'class':'ns-segment_li' });
+          var list_item = $('<li/>').attr({ 'class':'es-segment_li' });
           var segment_div = segment.build(variation);
           
           list_item.append(segment_div);
@@ -121,14 +122,14 @@ $(document).ready(function(){
         
         line_div.append(segments_list);
         
-        var options_div = $('<div/>').attr('class','ns-line_opts');
+        var options_div = $('<div/>').attr('class','es-line_opts');
         var this_line = this;
         
         
         if (this.section.lines.length > 1) {
           if (variation == 1)
           {
-            var delete_line_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'ns-delete_line_link' }).html('Delete Line').click(function() {
+            var delete_line_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-delete_line_link' }).html('Delete Line').click(function() {
               this_line.section.delete_line(line);
               sections_list.build();
             });
@@ -181,18 +182,18 @@ $(document).ready(function(){
         }
       },
       build_variation: function(variation) {
-        var variation_div = $('<div/>').attr('class','ns-variation');
+        var variation_div = $('<div/>').attr('class','es-variation');
         
-        var title_div = $('<div/>').attr('class','ns-variation_title');
-        var title_span = $('<span/>').attr('class','ns-variation_title_span').html(this.title + " " + (variation));
+        var title_div = $('<div/>').attr('class','es-variation_title');
+        var title_span = $('<span/>').attr('class','es-variation_title_span').html(this.title + " " + (variation));
         
         title_div.append(title_span);
         variation_div.append(title_div);
         
-        var lines_list = $('<ul/>').attr( {'class': 'ns-lines-ul'} );
+        var lines_list = $('<ul/>').attr( {'class': 'es-lines-ul'} );
         
         this.lines.forEach(function(line) {
-          var list_item = $('<li/>').attr({ 'class':'ns-line_li' });
+          var list_item = $('<li/>').attr({ 'class':'es-line_li' });
           var line_div = line.build(variation);
           
           list_item.append(line_div);
@@ -201,11 +202,11 @@ $(document).ready(function(){
         
         variation_div.append(lines_list);
         
-        var options_div = $('<div/>').attr('class','ns-variation_opts');
+        var options_div = $('<div/>').attr('class','es-variation_opts');
         
         if (variation==1) {
           
-          var add_line_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'ns-add_line_link' }).html('Add Line').click(function() {
+          var add_line_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-add_line_link' }).html('Add Line').click(function() {
             section.add_line();
             sections_list.build();
           });
@@ -216,7 +217,7 @@ $(document).ready(function(){
           title_span.css('display','none');
         } else {
           
-          var delete_variation_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'ns-delete_variation_link' }).html('Delete Variation').click(function() {
+          var delete_variation_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-delete_variation_link' }).html('Delete Variation').click(function() {
             section.delete_variation(variation);
             sections_list.build();
           });
@@ -230,12 +231,12 @@ $(document).ready(function(){
         return variation_div;
       },
       build: function() {
-        var section_div = $('<div/>').attr('class','ns-section');
+        var section_div = $('<div/>').attr('class','es-section');
         
-        var title_div = $('<div/>').attr('class','ns-section_title');
-        // var title_span = $('<span/>').attr('class','ns-section_title_span').html(this.title);
+        var title_div = $('<div/>').attr('class','es-section_title');
+        // var title_span = $('<span/>').attr('class','es-section_title_span').html(this.title);
         
-        var title_inp = $('<input/>').attr({'class':'ns-section_title_inp', 'placeholder':'New Title'});
+        var title_inp = $('<input/>').attr({'class':'es-section_title_inp', 'placeholder':'New Title'});
         title_inp.defaultValue();
         
         title_inp.val(this.title);
@@ -246,11 +247,11 @@ $(document).ready(function(){
         title_inp.change(function() { section.change_title(title_inp.val(),title_inp); });
         
         
-        var variations_list = $('<ul/>').attr( {'class': 'ns-variations-ul'} );
+        var variations_list = $('<ul/>').attr( {'class': 'es-variatioes-ul'} );
         
         var i;
         for (i=0;i<this.variations_count;i++) {
-          var list_item = $('<li/>').attr({ 'class':'ns-variation_li' });
+          var list_item = $('<li/>').attr({ 'class':'es-variation_li' });
           var variation_div = this.build_variation(i+1);
           
           list_item.append(variation_div);
@@ -259,9 +260,9 @@ $(document).ready(function(){
         
         section_div.append(variations_list);
         
-        var options_div = $('<div/>').attr('class','ns-section_opts');
+        var options_div = $('<div/>').attr('class','es-section_opts');
         
-        var add_var_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'ns-add_variation_link' }).html('Add Variation').click(function() {
+        var add_var_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-add_variation_link' }).html('Add Variation').click(function() {
           section.add_variation();
           sections_list.build();
         });
@@ -296,27 +297,24 @@ $(document).ready(function(){
       this.sections.push(new_section(title));
       this.build();
       
-      var new_section_title = $('.ns-section_title_inp').last();
+      var new_section_title = $('.es-section_title_inp').last();
       
       new_section_title.focus();
       new_section_title.select();
     },
-    build: function() {
-      var sections_list = $("#ns-sections_ul");
-      
-      sections_list.empty();
+    build: function(sections_list) {
+      var sections_ul = $("#es-sections_ul");
+      sections_ul.empty();
       
       this.sections.forEach(function(section) {
-        var list_item = $('<li/>').attr({ 'class':'ns-section_li' });
+        var list_item = $('<li/>').attr({ 'class':'es-section_li' });
         var section_div = section.build();
         
         list_item.append(section_div);
-        sections_list.append(list_item);
+        sections_ul.append(list_item);
         
       });
     }
   };
-
-  $('#ns-add_section_link').click(function() { sections_list.add_section(); });
   
 });

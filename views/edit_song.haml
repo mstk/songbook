@@ -1,0 +1,61 @@
+%link{:href => '/css/pages/new_song.css', :rel => 'stylesheet', :type => 'text/css'}
+
+- %w[ core widget mouse position autocomplete ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/jquery.ui.#{dep}.min.js"}
+
+- %w[ jquery.autogrow jquery.defaultvalue ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/#{dep}.js"}
+
+- %w[ sections_editor structure_editor edit_song ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/scripts/#{dep}.js"}
+
+.grid_12#subtitle
+
+  %h2 Edit Song
+  
+#content
+  %form#es-form
+    
+    .grid_4#es-info_struct_col
+      
+      #es-data
+        #es-info
+          %p
+            %label{:for => 'song_title'} Song Title
+            %br/
+            %input{:type => 'text', :name => 'song_title', :id => 'song_title', :placeholder => 'Title'}/
+          
+          %p
+            %label{:for => 'artist'} Artist
+            %br/
+            %input{:type => 'text', :name => 'artist', :id => 'artist', :placeholder => 'Artist'}/
+        
+        #es-settings
+          %p
+            %label{:for => 'key'} Key
+            %br/
+            %input{:type => 'text', :name => 'key', :id => 'key', :placeholder => 'Key'}/
+          
+          %p
+            %label{:for => 'time_signature'} Time Signature
+            %br/
+            %input{:type => 'text', :name => 'time_signature', :id => 'time_signature', :placeholder => 'Time Signature' }/
+        
+        #es-misc
+          %p
+            %label{:for => 'time_signature'} Comments
+            %br/
+            %input{:type => 'text', :name => 'comments', :id => 'comments', :placeholder => 'Comments' }/
+          
+          %p
+            %label{:for => 'tags'}  Tags
+            %br/
+            %input{:type => 'text', :name => 'tags', :id => 'tags', :placeholder => 'Tags'}/
+      
+      #es-structure_container
+    
+    .grid_8#es-sections_col
+      #es-sections_container
+        %ul#es-sections_ul
+      %a#es-add_section_link{:href => 'javascript:;'}
+        Add Section

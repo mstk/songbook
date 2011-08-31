@@ -37,6 +37,40 @@ class ChordProgression
     progression.length
   end
   
+  # The repeat structure of each of the chords.  Useful mostly for interpolating the original
+  #   chord progression from a "simplified" output, which merges repeated chords.
+  # This array is cached.
+  #
+  # @return [Array<Integer>]
+  #   Array of integers signifying how many times each corresponding chord is repeated.  For
+  #     example, `[:I, :I, :IV, :V]` would have a repeat structure of `[2,1,1]`.
+  # 
+  def repeat_structure
+    
+    unless @repeat_structure
+      
+      
+      reduced_chords = []
+      @repeat_structure = []
+      
+      progression.each do |chord|
+        
+        if chord == reduced_chords[-1]
+          @repeat_structure[-1] += 1
+        else
+          reduced_chords << chord
+          @repeat_structure << 1
+        end
+        
+      end
+      
+      
+    end
+    
+    return @repeat_structure
+    
+  end
+  
   private
   
   # Access the array of Chord instances corresponding with the array of chord_symbols stored in the

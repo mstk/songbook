@@ -1,0 +1,54 @@
+%link{:href => '/css/pages/new_song.css', :rel => 'stylesheet', :type => 'text/css'}
+
+- %w[ core widget position autocomplete ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/jquery.ui.#{dep}.min.js"}
+
+- %w[ jquery.defaultvalue ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/plugins/#{dep}.js"}
+
+- %w[ new_song ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/scripts/#{dep}.js"}
+
+.grid_12#subtitle
+
+  %h2 New Song
+
+#content
+  %form#ns-form
+    
+    .grid_4#ns-info
+      %p
+        %label{:for => 'song_title'} Song Title
+        %br/
+        %input{:type => 'text', :name => 'song_title', :id => 'song_title', :placeholder => 'Title'}/
+      
+      %p
+        %label{:for => 'artist'} Artist
+        %br/
+        %input{:type => 'text', :name => 'artist', :id => 'artist', :placeholder => 'Artist'}/
+    
+    .grid_4#ns-settings
+      %p
+        %label{:for => 'key'} Key
+        %br/
+        %input{:type => 'text', :name => 'key', :id => 'key', :placeholder => 'Key'}/
+      
+      %p
+        %label{:for => 'time_signature'} Time Signature
+        %br/
+        %input{:type => 'text', :name => 'time_signature', :id => 'time_signature', :placeholder => 'Time Signature' }/
+    
+    .grid_4#ns-misc
+      %p
+        %label{:for => 'time_signature'} Comments
+        %br/
+        %input{:type => 'text', :name => 'comments', :id => 'comments', :placeholder => 'Comments' }/
+      
+      %p
+        %label{:for => 'tags'}  Tags
+        %br/
+        %input{:type => 'text', :name => 'tags', :id => 'tags', :placeholder => 'Tags'}/
+        
+    
+    %div.grid_12
+      %input{:type => 'submit', :value => 'Submit Song', :id => 'ns-submit_song_button'}/

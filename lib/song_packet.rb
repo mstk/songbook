@@ -5,7 +5,7 @@
 #
 class SongPacket
   
-  attr_reader :title, :song_key, :artist, :time_signature
+  attr_reader :title, :song_key, :artist, :time_signature, :comments
   
   # Starts off a new Song Packet, with a title, song_key, artist, and time signature.  Title is
   # required.
@@ -29,6 +29,8 @@ class SongPacket
     @song_key = params[:song_key] || 'C'
     @artist = params[:artist] || ''
     @time_signature = params[:time_signature] || '4/4'
+    @comments = params[:comments] || ''
+    @tags = params[:tags] || []
     
     @edited = true
     
@@ -63,13 +65,16 @@ class SongPacket
     
     raise "Already built" if force && @song
     
+    
+    ## lol wtf...have some way to edit the previous song?
     @song.delete if @song
     
     @song = Song.create(  :title => @title,
                           :song_key => SongKey.KEY( @song_key.intern ),
                           :artist   => @artist,
                           :time_signature => @time_signature,
-                          :structure => @structure )
+                          :structure => @structure,
+                          :comments => @comments )
     
     @sections.each do |section_data|
       
@@ -103,6 +108,10 @@ class SongPacket
         
         added_lyric_variations << lyric[:lyric_variation]
       end
+    end
+    
+    @tags.each do |tag|
+      @song.tags.first_or_create(:text => tag)
     end
     
     @edited = false
@@ -181,7 +190,7 @@ class SongPacket
   # @param [Hash] params
   #   New section with parameters.
   #   See `Song#structure_interpreter` for details on parameters
-  #
+  # 
   def add_structure(params)
     raise ArgumentError unless params[:type]
     
@@ -190,7 +199,7 @@ class SongPacket
   end
   
   # Clears the current stored structure.
-  #
+  # 
   def clear_structure
     @structure = Array.new
     @edited = true
@@ -199,7 +208,7 @@ class SongPacket
   # Changes the value for the given field to the new value.
   # 
   # @param [Symbol] field
-  #   `:title`, `:song_key`, `:artist`, or `:time_signature`.
+  #   `:title`, `:song_key`, `:artist`, `:time_signature`, or `:comments`.
   # @param [String] new_value
   #   New value for the given field
   # 
@@ -213,11 +222,37 @@ class SongPacket
       @artist = new_value
     when :time_signature
       @time_signature = new_value
+    when :comments
+      @comments = new_value
     else
       raise ArgumentError
     end
     
     @edited = true
+  end
+  
+  # Adds a new tags to the tag list.
+  # 
+  # @param [String]
+  #   The new tag to add.
+  # 
+  def add_tag(new_tag)
+    @tags << new_tag
+  end
+  
+  # Deletes a new tags to the tag list.
+  # 
+  # @param [String]
+  #   The tag to delete.
+  # 
+  def delete_tag(to_delete)
+    @tags.delete(to_delete)
+  end
+  
+  # Clears the current stored tags.
+  # 
+  def clear_tags
+    @tags = []
   end
   
 end

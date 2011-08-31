@@ -182,7 +182,7 @@ class Section
   #   - `:repeat`, the number of times this chord progression is repeated in a row.  Will always be
   #       1, as this particular method never merges consecutive chord progressions.  See 
   #       render_progression_summary.
-  #   - `:instrumental`, which is always false (see render_progression_summary)
+  #   - `:instrumental`, which is always false (see `render_progression_summary`)
   #   - `:lyrics`, the lyrics for the line, organized in an array, split at every chord change.
   # 
   def each_rendered_line(options={})
@@ -267,11 +267,41 @@ class Section
     end
   end
   
+  # Returns the number of variations of lyrics this section currently has.
+  #
+  # @return [Integer]
+  #   The number of lyrical variations for this section.
+  # 
+  def lyric_variation_count
+    # lyrics.max(:variation) - 1
+    lyrics.size
+  end
+  
+  # Returns an array of the variations of lyrics this section currently has.
+  #
+  # @return [Array<Integer>]
+  #   Array containing the variation number of each lyric.
+  # 
+  def lyric_variation_nums
+    lyrics.all.map { |l| l.variation }
+  end
+  
   # Deletes section resource from the database, as well as all associated Lyric resources.
   #
   def delete
     lyrics.each { |lyric| lyric.delete }
     super
   end
+  
+  # Returns an array of the repeat structures for the chord progressions of each line.
+  #
+  # @return [Array<Array<Integer>>]
+  #   Array containing the repeat structures of the chord progression for each line.
+  # 
+  def repeat_structures
+    progressions = prog_order.map { |prog_id| ChordProgression.get(prog_id) }
+    progressions.map { |p| p.repeat_structure }
+  end
+  
   
 end

@@ -6,24 +6,24 @@ class Song
   property :structure,      Yaml, :default => lambda { |r,p| Array.new }
   property :artist,         String
   property :time_signature, String, :default => "4/4"
-  property :comment,        Text
+  property :comments,       Text
   property :created_on,     Date
   
   belongs_to :song_key
   
   has n, :sections
   
-  # has n, :tags, :through => Resource
+  has n, :tags, :through => Resource
 end
 
-# class Tag
-  # include DataMapper::Resource
+class Tag
+  include DataMapper::Resource
   
-  # property :id,     Serial
-  # property :name,   String, :required => true
+  property :id,     Serial
+  property :text,   String, :required => true
   
-  # has n, :songs, :through => Resource
-# end
+  has n, :songs, :through => Resource
+end
 
 class SongKey
   include DataMapper::Resource
