@@ -120,13 +120,17 @@ class Section
     if force_lyrics or (lyric && !lyric.is_empty?)
     
       chords = render_chords(modulation,render_full)
-    
-      lyric_lines = lyric.render_lines
+      
+      if lyric
+        lyric_lines = lyric.render_lines
+      else
+        lyric_lines = Array.new(chords.length) { |i| Array.new(chords[i].length+1) { ' ' } }
+      end
       
       if render_full
-        return (0..chords.length-1).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n], :instrumental => false, :repeat => 1 } }
+        return (0...chords.length).map { |n| { :chords => [:''] + chords[n], :lyrics => lyric_lines[n], :instrumental => false, :repeat => 1 } }
       else
-        return (0..chords.length-1).map do |n|
+        return (0...chords.length).map do |n|
           
           has_pickup = lyric_lines[n][0].length > 0 && lyric_lines[n][0] != ' '
           
@@ -273,17 +277,9 @@ class Section
   #   The number of lyrical variations for this section.
   # 
   def lyric_variation_count
+    # todo: account for this lol
     # lyrics.max(:variation) - 1
     lyrics.size
-  end
-  
-  # Returns an array of the variations of lyrics this section currently has.
-  #
-  # @return [Array<Integer>]
-  #   Array containing the variation number of each lyric.
-  # 
-  def lyric_variation_nums
-    lyrics.all.map { |l| l.variation }
   end
   
   # Deletes section resource from the database, as well as all associated Lyric resources.

@@ -14,7 +14,7 @@ describe 'song' do
                    { :type => "BRIDGE", :repeat => 3 },
                    { :type => "CHORUS", :repeat => 2, :modulation => 2 } ]
     
-    @bbyn = Song.create( :title => 'Blessed Be Your Name', :song_key => SongKey.KEY( :Bb ), :structure => @structure )
+    @bbyn = Song.create( :title => 'Blessed Be Your Name', :song_key => SongKey.KEY( :Bb ), :structure => @structure, :artist => "Matt Redman" )
     
     prog_1 = ChordProgression.first_or_create(:progression => [:I,:V,:vi,:IV] )
     prog_2 = ChordProgression.first_or_create(:progression => [:I,:V,:IV,:IV] )
@@ -216,6 +216,15 @@ BRIDGE
     rendered[:repeats].should == 2
     rendered[:lines][0][:chords].should == [:'',:C,:G,:Am,:F]
     rendered[:lines][1][:chords].should == [:'',:C,:G,:Am,:G,:F]
+  end
+  
+  # TODO Spec this out more lol
+  specify 'render_data should work right' do
+    data = @bbyn.render_data
+    
+    data[:info][:title].should == "Blessed Be Your Name"
+    data[:info][:artist].should == "Matt Redman"
+    
   end
   
 end

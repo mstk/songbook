@@ -81,14 +81,20 @@ class Song
       out[:sections] = sections.all.map do |section|
         section_data =  { :title  => section.title }
         
-        rendered_lines = section.lyric_variation_nums.map { |v| section.render_lines( :variation  => v ) }
+        num_vars = section.lyric_variation_count
+        num_vars = 1 if num_vars < 1
+        
+        rendered_lines = (0...num_vars).map { |v| section.render_lines( :variation  => v+1, :force_lyrics => true ) }
         repeat_structures = section.repeat_structures
         
+        
         section_data[:lines] = (0...section.line_count).map do |n|
-          { :chords           => rendered_lines[n][:chords],
+          { :chords           => rendered_lines[0][n][:chords],
             :repeat_structure => repeat_structures[n],
             :lyrics           => rendered_lines.map { |l| l[n][:lyrics] } }
         end
+        
+        next section_data
       end
     end
     

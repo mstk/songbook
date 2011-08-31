@@ -72,8 +72,9 @@ end
 
 post '/ajax/song_data/?' do
   ## handle bad songs
-  @song = Song.get(params[:id])
+  @song = Song.get(params[:id].to_i)
   
+  ## this doesn't work but w/e
   to_render = [:info,:sections,:structure].select { |n| params[n] }
   
   @data = @song.render_data(to_render)

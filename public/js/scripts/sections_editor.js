@@ -31,7 +31,7 @@ $(document).ready(function(){
         var lyrics_div = $('<div/>').attr('class','es-lyrics');
         var options_div = $('<div/>').attr('class','es-segment_opts');
         
-        var lyrics_inp = $('<input/>').attr('class','es-lyrics_inp').val(this.lyrics[variation]);
+        var lyrics_inp = $('<input/>').attr('class','es-lyrics_inp').val(this.lyrics[variation-1]);
         
         segment_div.append(chord_div,lyrics_div,options_div);
         lyrics_div.append(lyrics_inp);
@@ -56,7 +56,7 @@ $(document).ready(function(){
           }
         }
         
-        lyrics_inp.change(function() { segment.change_lyrics(variation,lyrics_inp.val()); });
+        lyrics_inp.change(function() { segment.change_lyrics(variation-1,lyrics_inp.val()); });
         
         return segment_div;
       },
@@ -147,8 +147,8 @@ $(document).ready(function(){
     
     // get from time signature or something
     line.add_segment('0');
-    line.add_segment('1');
-    line.split_segment(line.segments[0]);
+    line.split_segment(line.segments[1]);
+    line.split_segment(line.segments[2]);
     line.split_segment(line.segments[1]);
     
     return line;
@@ -293,14 +293,22 @@ $(document).ready(function(){
   // list of sections -- singleton
   sections_list = {
     sections: [],
-    add_section: function(title) {
-      this.sections.push(new_section(title));
-      this.build();
+    add_section: function(title,no_build,no_focus) {
+      var added = new_section(title);
+      this.sections.push(added);
       
-      var new_section_title = $('.es-section_title_inp').last();
+      if (!no_build) {
+        this.build();
+        
+        var new_section_title = $('.es-section_title_inp').last();
+        
+        if (!no_focus) {
+          new_section_title.focus();
+          new_section_title.select();
+        }
+      }
       
-      new_section_title.focus();
-      new_section_title.select();
+      return added;
     },
     build: function(sections_list) {
       var sections_ul = $("#es-sections_ul");
