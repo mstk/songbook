@@ -84,7 +84,9 @@ class Song
         num_vars = section.lyric_variation_count
         num_vars = 1 if num_vars < 1
         
-        rendered_lines = (0...num_vars).map { |v| section.render_lines( :variation  => v+1, :force_lyrics => true ) }
+        rendered_lines = (0...num_vars).map { |v| section.render_lines( :variation  => v+1,
+                                                                        :force_lyrics => true,
+                                                                        :render_full => true ) }
         repeat_structures = section.repeat_structures
         
         

@@ -18,15 +18,14 @@ $(document).ready(function(){
   
   var display_sections = function(sections) {
     sections.forEach(function(section) {
-      // alert(JSON.stringify(section));
-      // alert(section.toString());
+      alert(JSON.stringify(section));
       var new_section = sections_list.add_section(section.title,true,true);
       
       curr_line = new_section.lines[0];
       
       section.lines.forEach(function(line) {
-        var repeat_structure = line.repeat_structure
-        var has_pickup = (line.chords[0] == "") ? true : false
+        // var repeat_structure = line.repeat_structure
+        // var has_pickup = (line.chords[0] == "") ? true : false
         // alert(JSON.stringify(line));
         
         // if (has_pickup) {
@@ -34,7 +33,7 @@ $(document).ready(function(){
         // }
         
         // hack to sum an array to var resolution
-        for(var resolution = 0, i = repeat_structure.length; i; resolution += repeat_structure[--i]);
+        // for(var resolution = 0, i = repeat_structure.length; i; resolution += repeat_structure[--i]);
         
         
         
