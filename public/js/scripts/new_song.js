@@ -9,11 +9,8 @@ $(document).ready(function(){
     
     // validate here or something idk
     
-    $.post('new_song', $('#ns-form').serialize(), function(data) {
-      
-      alert(data);
+    $.post('/new_song', $('#ns-form').serialize(), function(data) {
       window.location.href = "/edit_song/" + data;
-      
     });
     
   });

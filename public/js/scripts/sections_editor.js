@@ -4,6 +4,7 @@ $(document).ready(function(){
   sections_list = { build: $.noop() };
   
   // segment class
+  // find some way to make it an instrumental
   var new_segment = function(line,position,chord,lyrics) {
     var segment = {
       line: line,
@@ -22,6 +23,31 @@ $(document).ready(function(){
       },
       clone: function() {
         return new_segment(this.line,this.position,this.chord,this.lyrics.slice(0));
+      },
+      merge_lyrics: function(other) {
+        var merged_lyrics = [];
+        var variation_count = lyrics.length;
+        for(var i=0; i<variation_count; i++) {
+          var lyric_1 = this.lyrics[i];
+          var lyric_2 = other.lyrics[i];
+          
+          var merged_lyric = lyric_1;
+          
+          // fix some edge cases like double spaces. idk.
+          
+          if (merged_lyric.slice(-1) == '-') {
+            merged_lyric = merged_lyric.slice(0,-1);
+          }
+          
+          if (lyric_2 == '' || lyric_2 == ' ' || lyric_2.trim == '') {
+            merged_lyrics.push(merged_lyric);
+          } else {
+            merged_lyrics.push(merged_lyric + lyric_2);
+          }
+          
+          
+        }
+        return merged_lyrics;
       },
       build: function(variation) {
         
@@ -60,7 +86,10 @@ $(document).ready(function(){
         
         return segment_div;
       },
-      change_chord: function(new_chord,textbox) {
+      update: function() {
+        
+      },
+      change_chord: function(new_chord,textbox) {       //textbox will be null if not called from textbox
         if (false) {
           alert('Invalid chord.');
           textbox.focus();
@@ -79,12 +108,14 @@ $(document).ready(function(){
   };
   
   // line class
-  var new_line = function(section) {
+  var new_line = function(section,starting_segments) {
     var line = {
       section: section,
       segments: [],
       add_segment: function(pos) {
-        this.segments.push(new_segment(this,pos));
+        var added_segment = new_segment(this,pos);
+        this.segments.push(added_segment);
+        return added_segment;
       },
       split_segment: function(segment) {
         var segment_index = this.segments.indexOf(segment);
@@ -97,6 +128,28 @@ $(document).ready(function(){
         new_segment_2.clear_lyrics();
         
         this.segments.splice(segment_index,1,new_segment_1,new_segment_2);
+        
+        return [new_segment_1,new_segment_2];
+      },
+      merge_segments: function(position) {
+        var to_merge = this.segments.filter( function (segment) {
+          segment.position.indexOf(position) == 0;
+        });
+        
+        if (to_merge.length != 2) {
+          alert('Bad position: ' + to_merge.length + ' sections have position ' + position + '.');
+          return null;
+        } else {
+          // consider not making a new segment but simply changing the to_merge[0] ?
+          var merged_segment = to_merge[0].clone();
+          var merged_lyrics = to_merge[0].merge_lyrics(to_merge[1]);
+          
+          merged_segment.lyrics = merged_lyrics;
+          merged_segment.position = position;
+          var segment_index = this.segments.index_of(to_merge[0]);
+          this.segments.splice(segment_index,2,merged_segment);
+          return merged_segment;
+        }
       },
       add_variation: function() {
         this.segments.forEach(function(segment) {
@@ -140,28 +193,52 @@ $(document).ready(function(){
         line_div.append(options_div);
         
         return line_div;
+      },
+      update: function() {
+        this.segments.forEach( function(segment) {
+          segment.update();
+        });
       }
     };
     
     line.add_segment('p');
     
-    // get from time signature or something
-    line.add_segment('0');
-    line.split_segment(line.segments[1]);
-    line.split_segment(line.segments[2]);
-    line.split_segment(line.segments[1]);
+    var sg = starting_segments ? starting_segments : 4;
+    
+    // make this work for other time signatures or something.  hm.
+    if (sg > 0) {
+      var segment_0 = line.add_segment('0');
+      var all_segments = [segment_0];
+      
+      while (all_segments.length < sg) {
+        
+        var segment_pool = [];
+        all_segments.forEach( function(segment) {
+          var children = line.split_segment(segment);
+          segment_pool.push(children[0]);
+          segment_pool.push(children[1]);
+        });
+        
+        all_segments = segment_pool;
+        
+      }
+    }
     
     return line;
   };
   
   // section class
-  var new_section = function(title) {
+  // find some way to make it an instrumental
+  var new_section = function(title,instrumental,no_line) {
     var section = {
       title: title ? title : "",
       variations_count: 1,
       lines: [],
-      add_line: function() {
-        this.lines.push(new_line(this));
+      instrumental: instrumental ? true : false,
+      add_line: function(starting_segments) {
+        var added_line = new_line(this,starting_segments);
+        this.lines.push(added_line);
+        return added_line;
       },
       delete_line: function(line) {
         var line_num = this.lines.indexOf(line);
@@ -262,15 +339,24 @@ $(document).ready(function(){
         
         var options_div = $('<div/>').attr('class','es-section_opts');
         
-        var add_var_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-add_variation_link' }).html('Add Variation').click(function() {
-          section.add_variation();
-          sections_list.build();
-        });
-        options_div.append(add_var_link);
+        if (!instrumental) {
+        
+          var add_var_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-add_variation_link' }).html('Add Variation').click(function() {
+            section.add_variation();
+            sections_list.build();
+          });
+          options_div.append(add_var_link);
+        
+        }
         
         section_div.append(options_div);
         
         return section_div;
+      },
+      update: function() {
+        this.lines.forEach( function(line) {
+          line.update();
+        });
       },
       change_title: function(new_title,textbox) {
         if (false) {
@@ -283,7 +369,10 @@ $(document).ready(function(){
       }
     };
     
-    section.add_line();
+    
+    if (!no_line) {
+      section.add_line();
+    }
     
     return section;
     
@@ -293,8 +382,8 @@ $(document).ready(function(){
   // list of sections -- singleton
   sections_list = {
     sections: [],
-    add_section: function(title,no_build,no_focus) {
-      var added = new_section(title);
+    add_section: function(title,instrumental,no_build,no_focus,no_line) {
+      var added = new_section(title,instrumental,no_line);
       this.sections.push(added);
       
       if (!no_build) {
@@ -310,7 +399,7 @@ $(document).ready(function(){
       
       return added;
     },
-    build: function(sections_list) {
+    build: function() {
       var sections_ul = $("#es-sections_ul");
       sections_ul.empty();
       
@@ -321,6 +410,11 @@ $(document).ready(function(){
         list_item.append(section_div);
         sections_ul.append(list_item);
         
+      });
+    },
+    update: function() {
+      this.sections.forEach(function(section) {
+        section.update();
       });
     }
   };

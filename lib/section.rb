@@ -143,7 +143,7 @@ class Section
             curr_line = lyric_lines[n][i+1]
             
             if chords[n][i] == :''
-              full_lyrics[-1] = full_lyrics[-1][0..-2] if full_lyrics[-1][-1] == '-'
+              full_lyrics[-1] = full_lyrics[-1][0...-1] if full_lyrics[-1][-1] == '-'
               full_lyrics[-1] += curr_line unless curr_line == ' '
             else
               full_lyrics << curr_line

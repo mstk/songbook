@@ -5,3 +5,15 @@
 - reorganize to be better lol
 - internal lyric variations are kinda crazy.  fix this.  maybe make it an array, and keys and lyrics
   don't have to be database objects what the heck.
+
+GRAND CHECKLIST
+- Refactor a bit so it will work on Heroku, and model it after those skeleton apps I looked at.
+- CSS-up the Edit Songs area so that the lyrics and chords entry show up right, and in order and stuff
+- Design the layout and stuff of the site.
+- Implement user accounts and making songs store per user, and giving them the ability to make songbooks
+- Move everything that isn't necessary out of the models (actaully there might not be much here so idk)
+- Implement the Sections Editor/Optimize it
+- Implement the Structure Editor drag and drop interface.
+- Implement saving the edited song
+- Look up proper security
+- Optimize/Profile

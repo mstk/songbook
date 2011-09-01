@@ -69,6 +69,7 @@ class Song
   #     - `:sections`
   #     - `:structure`
   #
+  #
   def render_data(to_render = [:info,:sections,:structure])
     
     out = {}
@@ -85,14 +86,17 @@ class Song
         num_vars = 1 if num_vars < 1
         
         rendered_lines = (0...num_vars).map { |v| section.render_lines( :variation  => v+1,
-                                                                        :force_lyrics => true,
-                                                                        :render_full => true ) }
-        repeat_structures = section.repeat_structures
+                                                                        :force_lyrics => true,  # make this work lol. eventually
+                                                                        :full => true ) }
+        
+        
+        
+        # repeat_structures = section.repeat_structures
         
         
         section_data[:lines] = (0...section.line_count).map do |n|
           { :chords           => rendered_lines[0][n][:chords],
-            :repeat_structure => repeat_structures[n],
+            # :repeat_structure => repeat_structures[n],
             :lyrics           => rendered_lines.map { |l| l[n][:lyrics] } }
         end
         

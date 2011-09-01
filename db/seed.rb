@@ -88,7 +88,8 @@ praise
  
  When the darkness
 closes in, Lord,
- still I will say
+ still I will
+say
 PRECHORUS
 
 chorus_text = <<CHORUS

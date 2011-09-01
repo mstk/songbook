@@ -17,26 +17,35 @@ $(document).ready(function(){
   };
   
   var display_sections = function(sections) {
+    var i,j;
+    
     sections.forEach(function(section) {
-      alert(JSON.stringify(section));
-      var new_section = sections_list.add_section(section.title,true,true);
+      // alert(JSON.stringify(section));
+      var dom_section = sections_list.add_section(section.title,false,true,true,true);
       
-      curr_line = new_section.lines[0];
+      var num_variations = section.lines[0].lyrics.length;
+        
+      for (i = 1; i < num_variations; i++) {
+        dom_section.add_variation();
+      }
+      
       
       section.lines.forEach(function(line) {
-        // var repeat_structure = line.repeat_structure
-        // var has_pickup = (line.chords[0] == "") ? true : false
-        // alert(JSON.stringify(line));
         
-        // if (has_pickup) {
-          // curr_line.segments[0].change_lyrics(0,line.lyrics[0][0]);
-        // }
+        var dom_line = dom_section.add_line(line.chords.length - 1);
+        var segments = dom_line.segments;
         
-        // hack to sum an array to var resolution
-        // for(var resolution = 0, i = repeat_structure.length; i; resolution += repeat_structure[--i]);
+        for (j = 1; j < line.chords.length; j++) {
+          segments[j].change_chord(line.chords[j]);
+        }
         
-        
-        
+        for (i = 0; i < num_variations; i++) {
+          segments[0].change_lyrics(i,line.lyrics[i][0]);
+          
+          for (j = 1; j < line.chords.length; j++) {
+            segments[j].change_lyrics(i,line.lyrics[i][j]);
+          }
+        }
         
       });
     });
