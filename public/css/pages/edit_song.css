@@ -1,11 +1,12 @@
 .es-chord_inp {
   width: 2em;
-  border: 1px dotted;
+  border: 1px;
 }
 .es-lyrics_inp {
   width: 100%;
-  border: 1px dotted;
+  border-width: 1px 0 1px 0;
 }
+
 .es-pickup_li .es-lyrics_inp {
   text-align:right;
 }
@@ -17,8 +18,13 @@
   border: 1px solid;
 }
 
+.es-variation {
+  padding: 1em;
+  margin-right: 1em;
+}
+
 .es-section_li {
-  margin-bottom: 2em;
+  margin: 2em;
 }
 .es-variation_li {
   margin-bottom: 2em;

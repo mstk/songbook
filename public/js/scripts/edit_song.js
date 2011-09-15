@@ -126,8 +126,11 @@ $(document).ready(function(){
   };
   
   var load_song = function() {
+    alert('loading data');
     $.post( '/ajax/song_data', { id: song_id, info: true, sections: false, structure: false }, function(data) {
+      alert('data loaded');
       display_song(data);
+      alert('data rendered');
     }, 'json');
   };
   

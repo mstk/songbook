@@ -76,11 +76,26 @@ $(document).ready(function(){
           } else {
             chord_inp.change(function() { segment.change_chord(chord_inp.val(),chord_inp); });
             
-            var split_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-split_segment_link' }).html('Split').click(function() {
-              segment.line.split_segment(segment);
-              sections_list.build();
-            });
-            options_div.append(split_link);
+            if (segment.line.splittable_segment(segment)) {
+              var split_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-split_segment_link' }).html('Split').click(function() {
+                segment.line.split_segment(segment);
+                sections_list.build();
+              });
+              options_div.append(split_link);
+            }
+            
+            
+            if (this.position.charAt(this.position.length - 1) == "1") {
+              var root = this.position.slice(0,-1)
+              
+              if (segment.line.mergeable_segments(root)) {
+                var merge_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-merge_segment_link' }).html('Merge').click(function() {
+                  segment.line.merge_segments(root);
+                  sections_list.build();
+                });
+                options_div.append(merge_link);
+              }
+            }
           }
         }
         
@@ -102,7 +117,7 @@ $(document).ready(function(){
           textbox.select();
         } else {
           this.chord = new_chord;
-          // sections_list.build();
+          sections_list.build();
         }
       },
       change_lyrics: function(variation,new_lyrics) {
@@ -137,6 +152,13 @@ $(document).ready(function(){
         
         return [new_segment_1,new_segment_2];
       },
+      splittable_segment: function(segment) {
+        if (segment.position.length < 5) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       merge_segments: function(position) {
         
         // alert(position);
@@ -161,6 +183,17 @@ $(document).ready(function(){
           var segment_index = this.segments.indexOf(to_merge[0]);
           this.segments.splice(segment_index,2,merged_segment);
           return merged_segment;
+        }
+      },
+      mergeable_segments: function(position) {
+        var to_merge = this.segments.filter( function (segment) {
+          return (segment.position.indexOf(position) == 0);
+        });
+        
+        if (to_merge.length == 2) {
+          return true;
+        } else {
+          return false;
         }
       },
       add_pickup: function() {
@@ -273,7 +306,6 @@ $(document).ready(function(){
   };
   
   // section class
-  // find some way to make it an instrumental
   var new_section = function(title,instrumental,no_line) {
     var section = {
       title: title ? title : "",
@@ -444,6 +476,15 @@ $(document).ready(function(){
           options_div.append(unmake_instrumental_link);
         }
         
+        if (sections_list.sections.length > 1) {
+          var delete_section_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-delete_section_link' }).html('Delete Section').click(function() {
+            sections_list.delete_section(section);
+            sections_list.build();
+          });
+          
+          options_div.append(delete_section_link);
+        }
+        
         section_div.append(options_div);
         
         return section_div;
@@ -473,6 +514,17 @@ $(document).ready(function(){
     
   };
   
+  var order_tabs = function() {
+    var curr_index = 1;
+    $('.es-lyrics_inp').each( function(index,element) {
+      $(element).attr('tabindex',curr_index);
+      curr_index += 1;
+    });
+    $('.es-chord_inp').each( function(index,element) {
+      $(element).attr('tabindex',curr_index);
+      curr_index += 1;
+    });
+  };
   
   // list of sections -- singleton
   sections_list = {
@@ -494,6 +546,10 @@ $(document).ready(function(){
       
       return added;
     },
+    delete_section: function(section) {
+      var section_num = this.sections.indexOf(section);
+      this.sections.splice(section_num,1);
+    },
     build: function() {
       var sections_ul = $(".es-sections_ul");
       sections_ul.empty();
@@ -506,6 +562,8 @@ $(document).ready(function(){
         sections_ul.append(list_item);
         
       });
+      
+      order_tabs();
     },
     update: function() {
       this.sections.forEach(function(section) {
