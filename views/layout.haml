@@ -10,11 +10,29 @@
     
     %script{:type => 'text/javascript', :src => '/js/lib/jquery.min.js'}
   %body
-    .container_12
-      .grid_12#header
-        %h1
-          %a{:href => '/'}= SiteConfig.title
-      #content_wrapper
+    #header_bg
+      #header_bg_center
+        .container_12#header_container
+          .grid_6.prefix_6#nav_bar
+            %ul#nav_ul
+              %li.nav_li
+                %a{:href => "/"} home
+              %li.nav_li
+                %a{:href => "/songs"} browse
+              %li.nav_li
+                %a{:href => "/new_song"} new
+              %li.nav_li
+                %a{:href => "http://www.google.com"} google
+          #title
+    #main_bg
+      #main_head
+        #main_head_center
+      .container_12#main_container
         =yield
-      .grid_12#footer
-        %p#legal= "&mdash; &copy; #{Time.now.strftime('%Y')} #{SiteConfig.author} &mdash;"
+      #main_tail
+        #main_tail_center
+    #footer_bg
+      #footer_bg_center
+        .container_12#footer_container
+          .grid_12#footer
+            %p#legal= "&mdash; &copy; #{Time.now.strftime('%Y')} #{SiteConfig.author} &mdash;"

@@ -94,13 +94,13 @@ PRECHORUS
 
 chorus_text = <<CHORUS
 Blessed be the
-name of the
-Lord, Blessed be your
+name of the Lord,
+Blessed be your
 name
 
 Blessed be the
-name of the
-Lord, Blessed be your
+name of the Lord,
+Blessed be your
 Glo-
 rious
 name

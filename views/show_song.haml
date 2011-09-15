@@ -1,9 +1,14 @@
 %link{:href => '/css/pages/show_song.css', :rel => 'stylesheet', :type => 'text/css'}
 
+- %w[ show_song ].each do |dep|
+  %script{:type => 'text/javascript', :src => "/js/scripts/#{dep}.js"}
+
 .grid_12#content
   
   #song_container
     %h2= @song.title
+    
+    %a#ss-edit_song_link{:href => 'javascript:;'} Edit song
 
     #song_info
 

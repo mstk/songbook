@@ -3,6 +3,8 @@ $(document).ready(function(){
   // find a way to get around this global variable thing.
   sections_list = { build: $.noop() };
   
+  var powers_of_two = { 0:1, 1:2, 2:4, 3:8, 4:16, 5:32, 6:64 };
+  
   // segment class
   // find some way to make it an instrumental
   var new_segment = function(line,position,chord,lyrics) {
@@ -39,7 +41,7 @@ $(document).ready(function(){
             merged_lyric = merged_lyric.slice(0,-1);
           }
           
-          if (lyric_2 == '' || lyric_2 == ' ' || lyric_2.trim == '') {
+          if (lyric_2 == '' || lyric_2 == ' ' || $.trim(lyric_2) == '') {
             merged_lyrics.push(merged_lyric);
           } else {
             merged_lyrics.push(merged_lyric + lyric_2);
@@ -49,7 +51,7 @@ $(document).ready(function(){
         }
         return merged_lyrics;
       },
-      build: function(variation) {
+      build: function(variation,instrumental) {
         
         var segment_div = $('<div/>').attr('class','es-segment');
         
@@ -83,6 +85,10 @@ $(document).ready(function(){
         }
         
         lyrics_inp.change(function() { segment.change_lyrics(variation-1,lyrics_inp.val()); });
+        
+        if (instrumental) {
+          lyrics_div.css('display','none');
+        }
         
         return segment_div;
       },
@@ -132,12 +138,18 @@ $(document).ready(function(){
         return [new_segment_1,new_segment_2];
       },
       merge_segments: function(position) {
+        
+        // alert(position);
+        // alert(JSON.stringify($.map(this.segments.slice(1),function (segment) { return (segment ? segment.position : "") ;  })));
+        
         var to_merge = this.segments.filter( function (segment) {
-          segment.position.indexOf(position) == 0;
+          return (segment.position.indexOf(position) == 0);
         });
         
+        // alert(JSON.stringify($.map(to_merge,function (segment) { return (segment ? segment.position : "") ;  })));
+        
         if (to_merge.length != 2) {
-          alert('Bad position: ' + to_merge.length + ' sections have position ' + position + '.');
+          alert('Bad position: ' + to_merge.length + ' sections have position "' + position + '".');
           return null;
         } else {
           // consider not making a new segment but simply changing the to_merge[0] ?
@@ -146,11 +158,26 @@ $(document).ready(function(){
           
           merged_segment.lyrics = merged_lyrics;
           merged_segment.position = position;
-          var segment_index = this.segments.index_of(to_merge[0]);
+          var segment_index = this.segments.indexOf(to_merge[0]);
           this.segments.splice(segment_index,2,merged_segment);
           return merged_segment;
         }
       },
+      add_pickup: function() {
+        var pickup = new_segment(this,'p');
+        if (this.segments.length == 0) {
+          this.segments.push(pickup);
+        } else {
+          this.segments.splice(0,0,pickup);
+        }
+        return pickup;
+      },
+      // delete_pickup: function() {
+        // var pickup = this.segments[0];
+        // if (pickup.position == 'p') {
+          // this.segments.splice(0,1);
+        // }
+      // },
       add_variation: function() {
         this.segments.forEach(function(segment) {
           segment.add_variation();
@@ -161,16 +188,32 @@ $(document).ready(function(){
           segment.delete_variation(variation);
         });
       },
-      build: function(variation) {
+      build: function(variation,instrumental) {
         var line_div = $('<div/>').attr('class','es-line');
         var segments_list = $('<ul/>').attr( {'class': 'es-segments_ul'} );
         
         this.segments.forEach(function(segment) {
           var list_item = $('<li/>').attr({ 'class':'es-segment_li' });
-          var segment_div = segment.build(variation);
+          var segment_div = segment.build(variation,instrumental);
+          
+          if (segment.position != 'p') {
+            if (instrumental) {
+              list_item.css('width',100 / powers_of_two[segment.position.length - 1] + '%');
+            } else {
+              list_item.css('width',85 / powers_of_two[segment.position.length - 1] + '%');
+            }
+          } else {
+            list_item.addClass('es-pickup_li');
+            list_item.css('width','15%');
+          }
           
           list_item.append(segment_div);
           segments_list.append(list_item);
+          
+          if (instrumental && segment.position == 'p') {
+            list_item.css('display','none');
+          }
+          
         });
         
         line_div.append(segments_list);
@@ -201,7 +244,9 @@ $(document).ready(function(){
       }
     };
     
-    line.add_segment('p');
+    line.add_pickup();
+    
+    // alert(JSON.stringify($.map(this.segments,function (segment) { return (segment ? segment.position : "") ;  })));
     
     var sg = starting_segments ? starting_segments : 4;
     
@@ -245,19 +290,44 @@ $(document).ready(function(){
         this.lines.splice(line_num,1);
       },
       add_variation: function() {
-        this.lines.forEach(function(line) {
-          line.add_variation();
-        });
-        this.variations_count += 1;
+        if (this.instrumental) {
+          alert('what the heck are you doing, adding a variation to an instrumental?');
+        } else {
+          this.lines.forEach(function(line) {
+            line.add_variation();
+          });
+          this.variations_count += 1;
+        }
       },
       delete_variation: function(variation) {
-        if (variation <= variations_count) {
+        if (variation <= this.variations_count) {
           this.lines.forEach(function(line) {
             line.delete_variation(variation);
           });
           this.variations_count -= 1;
         }
       },
+      make_instrumental: function(variation) {
+        // maybe add confirmation?
+        if (!this.instrumental) {
+          // while (this.variations_count > 1) {
+            // this.delete_variation(this.variations_count);
+          // }
+          // lines.forEach(function(line) {
+            // line.add_pickup();
+          // })
+          this.instrumental = true;
+        }
+      },
+      unmake_instrumental: function(variation) {
+        if (this.instrumental) {
+          // lines.forEach(function(line) {
+              // line.delete_pickup();
+            // })
+          this.instrumental = false;
+        }
+      },
+      // variations start from 1, here
       build_variation: function(variation) {
         var variation_div = $('<div/>').attr('class','es-variation');
         
@@ -267,11 +337,13 @@ $(document).ready(function(){
         title_div.append(title_span);
         variation_div.append(title_div);
         
-        var lines_list = $('<ul/>').attr( {'class': 'es-lines-ul'} );
+        var lines_list = $('<ul/>').attr('class', 'es-lines_ul');
+        
+        var instrumental = this.instrumental;
         
         this.lines.forEach(function(line) {
-          var list_item = $('<li/>').attr({ 'class':'es-line_li' });
-          var line_div = line.build(variation);
+          var list_item = $('<li/>').attr('class','es-line_li');
+          var line_div = line.build(variation,instrumental);
           
           list_item.append(line_div);
           lines_list.append(list_item);
@@ -309,6 +381,9 @@ $(document).ready(function(){
       },
       build: function() {
         var section_div = $('<div/>').attr('class','es-section');
+        if (this.instrumental) {
+          section_div.addClass('es-instrumental-section');
+        }
         
         var title_div = $('<div/>').attr('class','es-section_title');
         // var title_span = $('<span/>').attr('class','es-section_title_span').html(this.title);
@@ -318,17 +393,27 @@ $(document).ready(function(){
         
         title_inp.val(this.title);
         
+        var instrumental_indicator = $('<span/>').attr('class','es-instrumental_indicator');
+        
         title_div.append(title_inp);
+        title_div.append(instrumental_indicator);
         section_div.append(title_div);
         
         title_inp.change(function() { section.change_title(title_inp.val(),title_inp); });
+        if (this.instrumental) {
+          instrumental_indicator.html('(Instrumental)');
+        }
         
+        var variations_list = $('<ul/>').attr('class', 'es-variations_ul');
         
-        var variations_list = $('<ul/>').attr( {'class': 'es-variatioes-ul'} );
+        var iter_count = 1;
+        if (!this.instrumental) {
+          iter_count = this.variations_count;
+        }
         
         var i;
-        for (i=0;i<this.variations_count;i++) {
-          var list_item = $('<li/>').attr({ 'class':'es-variation_li' });
+        for (i=0;i<iter_count;i++) {
+          var list_item = $('<li/>').attr('class','es-variation_li' );
           var variation_div = this.build_variation(i+1);
           
           list_item.append(variation_div);
@@ -339,14 +424,24 @@ $(document).ready(function(){
         
         var options_div = $('<div/>').attr('class','es-section_opts');
         
-        if (!instrumental) {
+        if (!this.instrumental) {
         
           var add_var_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-add_variation_link' }).html('Add Variation').click(function() {
             section.add_variation();
             sections_list.build();
           });
+          var make_instrumental_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-make_instrumental_link' }).html('Make Instrumental').click(function() {
+            section.make_instrumental();
+            sections_list.build();
+          });
           options_div.append(add_var_link);
-        
+          options_div.append(make_instrumental_link);
+        } else {
+          var unmake_instrumental_link = $('<a/>').attr({ 'href':'javascript:;', 'class':'es-unmake_instrumental_link' }).html('Make Not Instrumental').click(function() {
+            section.unmake_instrumental();
+            sections_list.build();
+          });
+          options_div.append(unmake_instrumental_link);
         }
         
         section_div.append(options_div);
@@ -400,11 +495,11 @@ $(document).ready(function(){
       return added;
     },
     build: function() {
-      var sections_ul = $("#es-sections_ul");
+      var sections_ul = $(".es-sections_ul");
       sections_ul.empty();
       
       this.sections.forEach(function(section) {
-        var list_item = $('<li/>').attr({ 'class':'es-section_li' });
+        var list_item = $('<li/>').attr('class','es-section_li');
         var section_div = section.build();
         
         list_item.append(section_div);

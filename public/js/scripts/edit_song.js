@@ -1,12 +1,29 @@
 $(document).ready(function(){
   
+  var utils = {
+    is_instrumental: function(section) {
+      var well_is_it = true;
+      
+      section.lines.forEach(function(line) {
+        line.lyrics.forEach(function(variation) {
+          variation.forEach(function(lyric) {
+            if ($.trim(lyric) != '' ) {
+              well_is_it = false;
+            }
+          });
+        });
+      });
+      
+      return well_is_it;
+    }
+  };
+  
   var log_table = { 1:0, 2:1, 4:2, 8:3, 16:4, 32:5 }
   
   var song_id = window.location.href.match(/\/(\d+)$/)[1] * 1;
   
   var display_info = function(info) {
-    
-    var info_boxes = $('#es-data');
+    var info_boxes = $('#es-data_grid');
     info_boxes.find('#song_title').val(info.title);
     info_boxes.find('#artist').val(info.artist);
     info_boxes.find('#key').val(info.key);
@@ -21,7 +38,12 @@ $(document).ready(function(){
     
     sections.forEach(function(section) {
       // alert(JSON.stringify(section));
-      var dom_section = sections_list.add_section(section.title,false,true,true,true);
+      // alert(utils.is_instrumental(section));
+      
+      var is_instrumental = utils.is_instrumental(section);
+      var dom_section = sections_list.add_section(section.title,is_instrumental,true,true,false);
+      // alert(dom_section.instrumental);
+      // alert("--");
       
       var num_variations = section.lines[0].lyrics.length;
         
@@ -30,9 +52,14 @@ $(document).ready(function(){
       }
       
       
-      section.lines.forEach(function(line) {
+      section.lines.forEach(function(line,line_num) {
         
-        var dom_line = dom_section.add_line(line.chords.length - 1);
+        var dom_line;
+        if (line_num > 0) {
+          dom_line = dom_section.add_line(line.chords.length - 1);
+        } else {
+          dom_line = dom_section.lines[0];
+        }
         var segments = dom_line.segments;
         
         for (j = 1; j < line.chords.length; j++) {
@@ -40,12 +67,42 @@ $(document).ready(function(){
         }
         
         for (i = 0; i < num_variations; i++) {
+          
           segments[0].change_lyrics(i,line.lyrics[i][0]);
           
           for (j = 1; j < line.chords.length; j++) {
             segments[j].change_lyrics(i,line.lyrics[i][j]);
           }
         }
+        
+        // merges the appropriate sections
+        // does not work for non-4/4 sections as of yet.
+        // that's a todo lol.
+        var reduced_segments_array = segments.slice(1);
+        
+        while (reduced_segments_array.length > 1) {
+          
+          // alert(JSON.stringify($.map(reduced_segments_array,function (segment) { return (segment ? segment.chord : "") ;  })));
+          
+          var placeholder_array = [];
+          
+          var iters = Math.floor(reduced_segments_array.length/2);
+          for (i=0;i<iters;i++) {
+            var sample_1 = reduced_segments_array[2*i];
+            var sample_2 = reduced_segments_array[2*i+1];
+            
+            if (sample_1 == null || sample_2 == null || sample_1.chord != sample_2.chord) {
+              placeholder_array.push(null);
+            } else {
+              // alert(JSON.stringify([sample_1.position,sample_1.position.slice(0,-1)]));
+              placeholder_array.push(dom_line.merge_segments(sample_1.position.slice(0,-1)));
+            }
+          }
+          
+          reduced_segments_array = placeholder_array;
+          
+        };
+        
         
       });
     });

@@ -1,0 +1,63 @@
+.es-chord_inp {
+  width: 2em;
+  border: 1px dotted;
+}
+.es-lyrics_inp {
+  width: 100%;
+  border: 1px dotted;
+}
+.es-pickup_li .es-lyrics_inp {
+  text-align:right;
+}
+.es-pickup_indicator {  
+  display:none;
+}
+
+.es-section, .es-variation {
+  border: 1px solid;
+}
+
+.es-section_li {
+  margin-bottom: 2em;
+}
+.es-variation_li {
+  margin-bottom: 2em;
+}
+
+.es-segments_ul, .es-lines_ul, .es-variations_ul, .es-sections_ul {
+  list-style-type: none;
+}
+
+.es-segments_ul {
+  margin:0 auto;
+  padding:0;
+  width: 95%;
+}
+
+.es-segment_li {
+  display: inline-block;
+  float: left;
+  padding: 0;
+  margin: 0;
+}
+
+.es-line_li {
+  display: inline-block;
+  width: 100%;
+  margin: 0em;
+  clear: both;
+}
+
+.es-chord {
+  height: 2em;
+}
+
+.es-segments_ul {
+  float: left;
+  clear: both;
+}
+
+.es-line_opts {
+  float: left;
+  clear: both;
+}
