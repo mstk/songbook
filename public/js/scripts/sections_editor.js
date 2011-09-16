@@ -5,18 +5,28 @@ $(document).ready(function(){
   
   var powers_of_two = { 0:1, 1:2, 2:4, 3:8, 4:16, 5:32, 6:64 };
   
+  section_change_manager = {
+    changes: [],
+    add_change: function(field,data) {
+      this.changes.push({field: field, data: data});
+      // alert(JSON.stringify(this.changes[this.changes.length-1]));
+    },
+    clear_changes: function() {
+      this.changes = [];
+    }
+  };
+  
+  
+  
   // segment class
   // find some way to make it an instrumental
   var new_segment = function(line,position,chord,lyrics) {
     var segment = {
       line: line,
       position: position,
-      chord: chord ? chord : "",
+      chord: chord ? chord : $('#es-data_grid').find('#key').val(),
       lyrics: lyrics ? lyrics : [""],
       pickup: (position == 'p') ? true : false,
-      clear_lyrics: function() {
-        this.lyrics = $.map(this.lyrics, function(lyrics,i) { return ""; } );
-      },
       add_variation: function() {
         this.lyrics.push("");
       },
@@ -110,19 +120,36 @@ $(document).ready(function(){
       update: function() {
         
       },
-      change_chord: function(new_chord,textbox) {       //textbox will be null if not called from textbox
-        if (false) {
+      change_chord: function(new_chord,textbox,ignore_change) {       //textbox will be null if not called from textbox
+        if (new_chord == '' || new_chord == ' ' || $.trim(new_chord) == '') {
           alert('Invalid chord.');
           textbox.focus();
           textbox.select();
         } else {
-          this.chord = new_chord;
-          sections_list.build();
+          
+            this.chord = new_chord;
+            if (!ignore_change) {
+              section_change_manager.add_change('change_chord_progression',{ section: this.line.section.title, line_num: this.line.section.lines.indexOf(this.line), new_progression: this.line.compile_progression() });
+              sections_list.build();
+            }
         }
       },
-      change_lyrics: function(variation,new_lyrics) {
+      change_lyrics: function(variation,new_lyrics,ignore_change) {
         this.lyrics[variation] = new_lyrics;
         // sections_list.build();
+        
+        if (!ignore_change) {
+          section_change_manager.add_change('change_lyrics',{section: this.line.section.title, variation: variation, line_num: this.line.section.lines.indexOf(this.line), new_lyric: this.line.compile_lyrics(variation)});
+        }
+      },
+      clear_lyrics: function(variation,ignore_change) {
+        if (variation) {
+          this.change_lyrics(variation,"",ignore_change);
+        } else {
+          for (var i=0; i<this.lyrics.length; i++) {
+            this.change_lyrics(i,"",ignore_change);
+          }
+        }
       }
     };
     return segment;
@@ -138,7 +165,7 @@ $(document).ready(function(){
         this.segments.push(added_segment);
         return added_segment;
       },
-      split_segment: function(segment) {
+      split_segment: function(segment,ignore_change) {
         var segment_index = this.segments.indexOf(segment);
         var new_segment_1 = segment.clone();
         var new_segment_2 = segment.clone();
@@ -146,9 +173,13 @@ $(document).ready(function(){
         new_segment_1.position += "0";
         new_segment_2.position += "1";
         
-        new_segment_2.clear_lyrics();
+        new_segment_2.clear_lyrics(null,true);
         
         this.segments.splice(segment_index,1,new_segment_1,new_segment_2);
+        
+        if (!ignore_change) {
+          this.report_segment_changes();
+        }
         
         return [new_segment_1,new_segment_2];
       },
@@ -159,7 +190,7 @@ $(document).ready(function(){
           return false;
         }
       },
-      merge_segments: function(position) {
+      merge_segments: function(position,ignore_change) {
         
         // alert(position);
         // alert(JSON.stringify($.map(this.segments.slice(1),function (segment) { return (segment ? segment.position : "") ;  })));
@@ -182,6 +213,12 @@ $(document).ready(function(){
           merged_segment.position = position;
           var segment_index = this.segments.indexOf(to_merge[0]);
           this.segments.splice(segment_index,2,merged_segment);
+          
+          if (!ignore_change) {
+            this.report_segment_changes();
+          }
+          
+          
           return merged_segment;
         }
       },
@@ -270,6 +307,80 @@ $(document).ready(function(){
         
         return line_div;
       },
+      max_depth: function() {
+        var max = 1;
+        this.segments.forEach( function(segment) {
+          if (segment.position.length > max) {
+            max = segment.position.length;
+          }
+        });
+        
+        return max;
+      },
+      compile_progression: function() {
+        var max_depth = this.max_depth();
+        
+        var compiled = [];
+        
+        this.segments.forEach( function(segment) {
+          if (!segment.pickup) {
+            var num_to_add = powers_of_two[max_depth - segment.position.length];
+            for (var i=0; i<num_to_add; i++) {
+              compiled.push(segment.chord)
+            }
+          }
+        });
+        
+        return compiled;
+      },
+      compile_lyrics: function(variation) {
+        var max_depth = this.max_depth();
+        
+        
+        var compiled = [];
+        
+        
+        
+        
+        this.segments.forEach( function(segment) {
+          if (segment.lyrics[variation] == '') {
+            compiled.push(' ');
+          } else {
+            compiled.push(segment.lyrics[variation]);
+          }
+          
+          if (!segment.pickup) {
+            var num_to_add = powers_of_two[max_depth - segment.position.length] - 1;
+            if (num_to_add > 0) {
+              for (var i=0; i<num_to_add; i++) {
+                compiled.push(" ")
+              }
+            }
+          }
+        });
+        
+        return compiled.join('\n');
+      },
+      clear_lyrics: function(variation,ignore_change) {
+        this.segments.forEach( function(segment) {
+          segment.clear_lyrics(variation,true);
+        });
+        
+        if (!ignore_change) {
+          for(var i=0; i < this.section.variations_count; i++) {
+            
+            section_change_manager.add_change('change_lyrics',{section: this.section.title, variation: i, line_num: this.section.lines.indexOf(this), new_lyric: this.compile_lyrics(i)});
+            
+          }
+        }
+        
+      },
+      report_segment_changes: function() {
+        section_change_manager.add_change('change_chord_progression',{ section: this.section.title, line_num: this.section.lines.indexOf(this), new_progression: this.compile_progression() });
+        for (var i=0; i<this.section.variations_count; i++) {
+          section_change_manager.add_change('change_lyrics',{section: this.section.title, variation: i, line_num: this.section.lines.indexOf(this), new_lyric: this.compile_lyrics(i)});
+        }
+      },
       update: function() {
         this.segments.forEach( function(segment) {
           segment.update();
@@ -292,7 +403,7 @@ $(document).ready(function(){
         
         var segment_pool = [];
         all_segments.forEach( function(segment) {
-          var children = line.split_segment(segment);
+          var children = line.split_segment(segment,true);
           segment_pool.push(children[0]);
           segment_pool.push(children[1]);
         });
@@ -312,16 +423,24 @@ $(document).ready(function(){
       variations_count: 1,
       lines: [],
       instrumental: instrumental ? true : false,
-      add_line: function(starting_segments) {
+      add_line: function(starting_segments,ignore_change) {
         var added_line = new_line(this,starting_segments);
         this.lines.push(added_line);
+        
+        if (!ignore_change) {
+          section_change_manager.add_change('add_line',{ section: this.title });
+        }
+        
         return added_line;
       },
       delete_line: function(line) {
         var line_num = this.lines.indexOf(line);
         this.lines.splice(line_num,1);
+        
+        
+        section_change_manager.add_change('delete_line',{ section: this.title, line_num: line_num });
       },
-      add_variation: function() {
+      add_variation: function(ignore_change) {
         if (this.instrumental) {
           alert('what the heck are you doing, adding a variation to an instrumental?');
         } else {
@@ -329,6 +448,10 @@ $(document).ready(function(){
             line.add_variation();
           });
           this.variations_count += 1;
+          
+          if (!ignore_change) {
+            section_change_manager.add_change('add_variation',{ section: this.title });
+          }
         }
       },
       delete_variation: function(variation) {
@@ -337,17 +460,20 @@ $(document).ready(function(){
             line.delete_variation(variation);
           });
           this.variations_count -= 1;
+          
+          
+          section_change_manager.add_change('delete_variation',{ section: this.title, variation_num: variation });
         }
       },
-      make_instrumental: function(variation) {
+      make_instrumental: function(variation,ignore_change) {
         // maybe add confirmation?
         if (!this.instrumental) {
-          // while (this.variations_count > 1) {
-            // this.delete_variation(this.variations_count);
-          // }
-          // lines.forEach(function(line) {
-            // line.add_pickup();
-          // })
+          while (this.variations_count > 1) {
+            this.delete_variation(this.variations_count);
+          }
+          this.lines.forEach(function(line) {
+            line.clear_lyrics(null,ignore_change);
+          })
           this.instrumental = true;
         }
       },
@@ -402,7 +528,7 @@ $(document).ready(function(){
             section.delete_variation(variation);
             sections_list.build();
           });
-          options_div.append(add_line_link);
+          options_div.append(delete_variation_link);
           
         }
         
@@ -494,20 +620,22 @@ $(document).ready(function(){
           line.update();
         });
       },
-      change_title: function(new_title,textbox) {
-        if (false) {
+      change_title: function(new_title,textbox,ignore_change) {
+        if (new_title == '' || $.trim(new_title) == '' ) {
           alert('Invalid Title');
           textbox.focus();
           textbox.select();
         } else {
+          if (!ignore_change) {
+            section_change_manager.add_change('section_title',{ old_title: this.title, new_title: new_title });
+          }
           this.title = new_title;
         }
       }
     };
     
-    
     if (!no_line) {
-      section.add_line();
+      section.add_line(null,true);
     }
     
     return section;
@@ -529,7 +657,7 @@ $(document).ready(function(){
   // list of sections -- singleton
   sections_list = {
     sections: [],
-    add_section: function(title,instrumental,no_build,no_focus,no_line) {
+    add_section: function(title,instrumental,no_build,no_focus,no_line,ignore_change) {
       var added = new_section(title,instrumental,no_line);
       this.sections.push(added);
       
@@ -544,11 +672,16 @@ $(document).ready(function(){
         }
       }
       
+      if (!ignore_change) {
+        section_change_manager.add_change('add_section',{ section: added.title });
+      }
+      
       return added;
     },
     delete_section: function(section) {
       var section_num = this.sections.indexOf(section);
       this.sections.splice(section_num,1);
+      section_change_manager.add_change('delete_section',{ title: section.title });
     },
     build: function() {
       var sections_ul = $(".es-sections_ul");

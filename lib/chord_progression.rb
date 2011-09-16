@@ -13,6 +13,15 @@
 # 
 class ChordProgression
   
+  
+  def ChordProgression.empty_progression
+    return @@empty_progression if @@empty_progression
+    
+    @@empty_progression = ChordProgression.first_or_create(:progression => Array.new(4) { SongKey.CHORD(:I) } )
+    
+    return @@empty_progression
+  end
+  
   # Render the ChordProgression to the given key and color scheme.
   # 
   # @param [SongKey] song_key

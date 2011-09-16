@@ -1,5 +1,7 @@
 $(document).ready(function(){
   
+  var song_id = window.location.href.match(/\/(\d+)$/)[1] * 1;
+  
   var utils = {
     is_instrumental: function(section) {
       var well_is_it = true;
@@ -20,8 +22,6 @@ $(document).ready(function(){
   
   var log_table = { 1:0, 2:1, 4:2, 8:3, 16:4, 32:5 }
   
-  var song_id = window.location.href.match(/\/(\d+)$/)[1] * 1;
-  
   var display_info = function(info) {
     var info_boxes = $('#es-data_grid');
     info_boxes.find('#song_title').val(info.title);
@@ -41,14 +41,14 @@ $(document).ready(function(){
       // alert(utils.is_instrumental(section));
       
       var is_instrumental = utils.is_instrumental(section);
-      var dom_section = sections_list.add_section(section.title,is_instrumental,true,true,false);
+      var dom_section = sections_list.add_section(section.title,is_instrumental,true,true,false,true);
       // alert(dom_section.instrumental);
       // alert("--");
       
       var num_variations = section.lines[0].lyrics.length;
         
       for (i = 1; i < num_variations; i++) {
-        dom_section.add_variation();
+        dom_section.add_variation(true);
       }
       
       
@@ -56,22 +56,22 @@ $(document).ready(function(){
         
         var dom_line;
         if (line_num > 0) {
-          dom_line = dom_section.add_line(line.chords.length - 1);
+          dom_line = dom_section.add_line(line.chords.length - 1,true);
         } else {
           dom_line = dom_section.lines[0];
         }
         var segments = dom_line.segments;
         
         for (j = 1; j < line.chords.length; j++) {
-          segments[j].change_chord(line.chords[j]);
+          segments[j].change_chord(line.chords[j],null,true);
         }
         
         for (i = 0; i < num_variations; i++) {
           
-          segments[0].change_lyrics(i,line.lyrics[i][0]);
+          segments[0].change_lyrics(i,line.lyrics[i][0],true);
           
           for (j = 1; j < line.chords.length; j++) {
-            segments[j].change_lyrics(i,line.lyrics[i][j]);
+            segments[j].change_lyrics(i,line.lyrics[i][j],true);
           }
         }
         
@@ -95,7 +95,7 @@ $(document).ready(function(){
               placeholder_array.push(null);
             } else {
               // alert(JSON.stringify([sample_1.position,sample_1.position.slice(0,-1)]));
-              placeholder_array.push(dom_line.merge_segments(sample_1.position.slice(0,-1)));
+              placeholder_array.push(dom_line.merge_segments(sample_1.position.slice(0,-1),true));
             }
           }
           
@@ -126,11 +126,8 @@ $(document).ready(function(){
   };
   
   var load_song = function() {
-    alert('loading data');
     $.post( '/ajax/song_data', { id: song_id, info: true, sections: false, structure: false }, function(data) {
-      alert('data loaded');
       display_song(data);
-      alert('data rendered');
     }, 'json');
   };
   
@@ -151,9 +148,22 @@ $(document).ready(function(){
   
   
   
-  
   sections_list.build();
+  
   $('#es-add_section_link').click(function() { sections_list.add_section(); });
   
+  var save = function() {
+    var all_changes = [];
+    var section_changes = section_change_manager.changes;
+    section_changes.forEach(function(change) {
+      var full_change = {type: 'sections', field: change.field, data: change.data }
+      all_changes.push(full_change);
+    });
+    
+    $.post( '/edit_song/' + song_id, {changes: all_changes }, function(data) {
+      alert(data);
+    }, 'html' );
+  };
   
+  $('#es-save_link').click(function() { save(); });
 });

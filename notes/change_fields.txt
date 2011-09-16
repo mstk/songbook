@@ -1,0 +1,26 @@
+section_title
+	old_title
+	new_title
+delete_section
+	title
+add_section
+	title
+change_lyrics
+	section
+	variation
+	line_num
+	new_lyric
+change_chord_progression
+	section
+	line_num
+	new_progression
+add_line
+	section
+delete_line
+	section
+	line_num
+add_variation
+	section
+delete_variation
+	section
+	variation_num

@@ -2,7 +2,6 @@ require 'sinatra'
 require 'json'
 require_relative 'environment'
 
-
 configure do
   set :views, "#{File.dirname(__FILE__)}/views"
 end
@@ -46,7 +45,7 @@ post '/new_song/?' do
 end
 
 get '/edit_song/:id' do
-  @song = Song.get(params[:id])
+  @song = Song.get(params[:id].to_i)
   if @song
     haml :edit_song
   else
@@ -54,12 +53,36 @@ get '/edit_song/:id' do
   end
 end
 
+post '/edit_song/:id' do
+  @song = Song.get(params[:id].to_i)
+  if @song
+    if params[:changes]
+      @changes = params[:changes].values
+      puts @changes.to_yaml
+      begin
+        @song.process_changes(@changes)
+        puts "save successful"
+      rescue Exception => err
+        puts "ERROR: #{err.class.name}: #{err.message}"
+        for i in err.backtrace
+          puts "ERROR: #{i}"
+        end
+        failed = true
+      end
+    end
+  else
+    failed = true
+  end
+  
+  return (failed ? "Failure" : "Success")
+end
+
 get '/songs/?' do
   haml :song_list
 end
 
 get '/songs/:id' do
-  @song = Song.get(params[:id])
+  @song = Song.get(params[:id].to_i)
   @rendered_sections = @song.render_sections
   if @song
     haml :show_song

@@ -49,6 +49,28 @@ class Section
     section
   end
   
+  def Section.empty_section(song,type = "CHORUS",variation = 1)
+    section = Section.create( :type => type,
+                              :song => song,
+                              :variation => variation,
+                              :prog_order => [ChordProgression.empty_progression.id] )
+    
+    section.chord_progressions << ChordProgression.empty_progression
+    ChordProgression.empty_progression.save
+    
+    section.save
+    section
+  end
+  
+  def Section.get_type_variation(title)
+    tag = title.scan(/^\S*\s(\S)\s*$/)
+    if tag.empty?
+      return [title,1]
+    else
+      return [title[0...-2],tag[0][0].to_i(36) - 9]
+    end
+  end
+  
   # Renders every chord progression in the section into the key of the song (or a modulation of it)
   # and returns them as an array of lines of absolute chords.
   #
@@ -284,9 +306,8 @@ class Section
   
   # Deletes section resource from the database, as well as all associated Lyric resources.
   #
-  def delete
-    lyrics.each { |lyric| lyric.delete }
-    super
+  before :destroy do |section|
+    lyrics.each { |lyric| lyric.destroy }
   end
   
   # Returns an array of the repeat structures for the chord progressions of each line.
@@ -299,5 +320,75 @@ class Section
     progressions.map { |p| p.repeat_structure }
   end
   
+  def change_lyrics(variation,line_num,new_lyric)
+    lyric = lyrics.all.find { |l| l.variation == lyric_variation }
+    
+    if lyric
+      lyric.change_lyrics(line_num,new_lyric)
+    end
+    
+  end
   
+  def change_chord_progression(line_num,new_progression)
+    #TODO make more naive
+    progression_symbols = new_progression.map do |chord|
+      chord_string = chord.to_s
+      if ['I','V','i','v','b'].include? chord[0]
+        next chord.intern
+      else
+        next Chord.RELATIVE(chord.intern,@song.song_key).symbol
+      end
+    end
+    
+    new_progression = ChordProgression.first_or_create(:progression => progression_symbols )
+    
+    old_prog_id = prog_order[line_num]
+    prog_order[line_num] = new_progression.id
+    
+    chord_progressions << new_progression unless chord_progressions.include? new_progression
+    clean_progressions
+    
+    save
+  end
+  
+  def add_blank_line
+    chord_progressions << ChordProgression.empty_progression
+    prog_order << ChordProgression.empty_progression.id
+    
+    lyrics.each { |lyric| lyric.update_to_section }
+    
+    save
+  end
+  
+  def delete_line(line_num)
+    lyrics.each { |lyric| lyric.delete_line(line_num) }
+    prog_id = prog_order[line_num]
+    prog_order.delete_at(line_num)
+    
+    clean_progressions
+  end
+  
+  def add_blank_variation
+    if lyrics.empty?
+      lyrics << Lyric.blank_lyric(self,1)
+    end
+    
+    curr_variation_count = lyrics.size
+    lyrics << Lyric.blank_lyric(self,curr_variaton_count + 1)
+    
+    save
+  end
+  
+  def delete_variation(variation_num)
+    lyric = lyrics.all.find { |l| l.variation == lyric_variation }
+    
+    lyrics.delete(lyric)
+    
+    save
+  end
+  
+  def clean_progressions
+    unwanted = chord_progressions.select { |p| prog_order.include? p.id }
+    unwanted.each { |p| chord_progressions.delete(p) }
+  end
 end

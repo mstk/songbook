@@ -45,6 +45,21 @@ class Lyric
   #   A parsed Lyric resource.
   # 
   def Lyric.build(text,section,variation=1,includes_invisible = false)
+    bars = Lyric.process_raw(text)
+    
+    lyric = Lyric.create(:text_tree => bars, :section => section, :variation => variation)
+    
+    unless includes_invisible
+      lyric.update_to_section
+    end
+    
+    section.lyrics << lyric
+    section.save
+    
+    lyric
+  end
+  
+  def Lyric.process_raw(text)
     lines = text.split("\n\n")
     bars = lines.map { |l| l.split("\n") }
     
@@ -67,41 +82,11 @@ class Lyric
       
     end
     
-    unless includes_invisible
-      
-      chords_summary = section.render_chords
-      
-      curr_line = 0
-      
-      bars.map! do |line|
-        
-        curr_block = 1
-        line_out = [line[0]]
-        
-        summary_line = chords_summary[curr_line]
-        
-        summary_line.each do |b|
-          if b == :''
-            line_out << ''
-          else
-            line_out << (line[curr_block] || '')
-            curr_block += 1
-          end
-        end
-        
-        curr_line += 1
-        
-        next line_out
-      end
-      
-    end
-    
-    lyric = Lyric.create(:text_tree => bars, :section => section, :variation => variation)
-    
-    section.lyrics << lyric
-    section.save
-    
-    lyric
+    return bars
+  end
+  
+  def Lyric.blank_lyric(section,variation=1)
+    Lyric.build("",section,variation,false)
   end
   
   # Renders the lines of texts into an array of lines.  Lines are represented by an array of 
@@ -150,6 +135,53 @@ class Lyric
   
   def is_empty?
     !text_tree.any? { |line| line.any? { |block| block.length > 0 && block.squeeze(' ') != ' ' } }
+  end
+  
+  def update_to_section
+    
+    chords_summary = section.render_chords
+    
+    curr_line = 0
+    
+    bars = text_tree.map do |line|
+      
+      curr_block = 1
+      line_out = [line[0]]
+      
+      summary_line = chords_summary[curr_line]
+      
+      summary_line.each do |b|
+        if b == :''
+          line_out << ''
+        else
+          line_out << (line[curr_block] || '')
+          curr_block += 1
+        end
+      end
+      
+      curr_line += 1
+      
+      next line_out
+    end
+    
+    text_tree = bars
+    
+    save
+  end
+  
+  def delete_line(line_num)
+    text_tree.delete_at(line_num)
+    save
+  end
+  
+  def change_lyrics(line_num,new_lyric)
+    new_line = Lyric.process_raw(new_lyric)
+    
+    raise "hey, you can't do #{new_line.to_yaml}." if new_line.size != 1
+    
+    text_tree[line_num] == new_line[0]
+    
+    update_to_section
   end
   
 end

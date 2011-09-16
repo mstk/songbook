@@ -70,7 +70,7 @@ class SongPacket
     @song.delete if @song
     
     @song = Song.create(  :title => @title,
-                          :song_key => SongKey.KEY( @song_key.intern ),
+                          :song_key => SongKey.KEY( @song_key ),
                           :artist   => @artist,
                           :time_signature => @time_signature,
                           :structure => @structure,

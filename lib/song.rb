@@ -235,6 +235,19 @@ class Song
     super
   end
   
+  def process_changes(changes)
+    changes.each do |change|
+      case change['type']
+      when 'info'
+        process_info_change(change)
+      when 'sections'
+        process_sections_change(change)
+      when 'structure'
+        process_structure_change(change)
+      end
+    end
+  end
+  
   private
   
   def default_structure
@@ -312,6 +325,65 @@ class Song
     
     return out
     
+  end
+  
+  def process_info_change(change)
+    case change['field']
+    when 'title'
+      title = change['data']
+    when 'artist'
+      artist = change['data']
+    when 'key'
+      song_key = SongKey.KEY( change['data'] )
+    when 'time_signature'
+      time_signature = change['data']
+    when 'comments'
+      comments = change['data']
+    when 'tags'
+      tags = change['data']
+    end
+    
+    save
+  end
+  
+  def process_sections_change(change)
+    data = change['data']
+    case change['field']
+    when 'section_title'
+      section = sections.all.find { |s| s.title == data['old_title'].strip }
+      type,variation = Section.get_type_variation(data['new_title'])
+      section.type = type
+      section.variation = variation
+      section.save
+    when 'delete_section'
+      section = sections.all.find { |s| s.title == data['title'].strip }
+      section.destroy
+    when 'add_section'
+      type,variation = Section.get_type_variation(data['new_title'])
+      Section.empty_section(self,type,variation)
+    when 'change_lyrics'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.change_lyrics(data['variation'].to_i,data['line_num'].to_i,data['new_lyric'])
+    when 'change_chord_progression'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.change_chord_progression(data['line_num'].to_i,data['new_progression'])
+    when 'add_line'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.add_blank_line
+    when 'delete_line'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.delete_line(data['line_num'].to_i)
+    when 'add_variation'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.add_blank_variation
+    when 'delete_variation'
+      section = sections.all.find { |s| s.title == data['section'].strip }
+      section.delete_variation(data['variation_num'].to_i)
+    end
+  end
+  
+  def process_structure_change(change)
+    field = change['field']
   end
   
 end

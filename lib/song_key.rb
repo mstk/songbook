@@ -46,12 +46,19 @@ class SongKey
   
   # Retrieve the SongKey for a given key_symbol.
   #
-  # @param [Symbol] key_symbol A key symbol from SongKey::KEYS.
+  # @param [Symbol] key_symbol A key symbol from SongKey::KEYS.  Can be a string too, to prevent
+  #   unecessary interning.
   # @return [SongKey] SongKey corresponding to that key symbol.
   # 
   def SongKey.KEY(key_symbol)
-    raise ArgumentError unless KEYS.include? key_symbol
-    @@KEY_INDEX[key_symbol]
+    case key_symbol
+    when Symbol
+      raise ArgumentError unless KEYS.include? key_symbol
+      return @@KEY_INDEX[key_symbol]
+    when String
+      raise ArgumentError unless KEYS.map { |k| k.to_s }.include? key_symbol
+      return @@KEY_INDEX[key_symbol.intern]
+    end
   end
   
   # Given a step `n`, returns the `n+1`th scale note of the given key.  Basically, "rendering"
